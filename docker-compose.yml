@@ -1,0 +1,62 @@
+name: biblioteca
+
+services:
+  auth:
+    build:
+      context: ./auth
+    image: biblioteca/auth:1.0.0
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Define DATABASE_URL en el archivo .env}
+      DATABASE_URL_UNPOOLED: ${DATABASE_URL_UNPOOLED:-}
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+
+  catalogo:
+    build:
+      context: ./catalogo
+    image: biblioteca/catalogo:1.0.0
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Define DATABASE_URL en el archivo .env}
+      DATABASE_URL_UNPOOLED: ${DATABASE_URL_UNPOOLED:-}
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
+
+  notificacion:
+    build:
+      context: ./notificacion
+    image: biblioteca/notificacion:1.0.0
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Define DATABASE_URL en el archivo .env}
+      DATABASE_URL_UNPOOLED: ${DATABASE_URL_UNPOOLED:-}
+      AUTH_URL: http://auth:8081
+      MAIL_HOST: ${MAIL_HOST:-localhost}
+      MAIL_PORT: ${MAIL_PORT:-1025}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-no-reply@biblioteca.local}
+      MAIL_SMTP_AUTH: ${MAIL_SMTP_AUTH:-false}
+      MAIL_SMTP_STARTTLS: ${MAIL_SMTP_STARTTLS:-false}
+    ports:
+      - "8084:8084"
+    restart: unless-stopped
+
+  prestamos:
+    build:
+      context: ./prestamos
+    image: biblioteca/prestamos:1.0.0
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Define DATABASE_URL en el archivo .env}
+      DATABASE_URL_UNPOOLED: ${DATABASE_URL_UNPOOLED:-}
+      AUTH_URL: http://auth:8081
+      CATALOGO_URL: http://catalogo:8082
+      NOTIFICACION_URL: http://notificacion:8084
+      CATALOGO_ADMIN_USUARIO_ID: ${CATALOGO_ADMIN_USUARIO_ID:-8e03853d-7058-40a4-9692-2b5fbf82d47e}
+    depends_on:
+      - auth
+      - catalogo
+      - notificacion
+    ports:
+      - "8083:8083"
+    restart: unless-stopped

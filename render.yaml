@@ -1,0 +1,82 @@
+# Blueprint de Render para el Sistema de Biblioteca.
+# Crea 4 Web Services (Docker, plan free) que usan la misma base Neon.
+# Los valores marcados con sync: false se piden una vez en el dashboard.
+
+services:
+  - type: web
+    name: biblioteca-auth-maicol
+    runtime: docker
+    plan: free
+    region: ohio
+    rootDir: auth
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_UNPOOLED
+        sync: false
+      - key: JAVA_OPTS
+        value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
+      - key: SPRING_JPA_SHOW_SQL
+        value: "false"
+
+  - type: web
+    name: biblioteca-catalogo-maicol
+    runtime: docker
+    plan: free
+    region: ohio
+    rootDir: catalogo
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_UNPOOLED
+        sync: false
+      - key: JAVA_OPTS
+        value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
+      - key: SPRING_JPA_SHOW_SQL
+        value: "false"
+
+  - type: web
+    name: biblioteca-notificacion-maicol
+    runtime: docker
+    plan: free
+    region: ohio
+    rootDir: notificacion
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_UNPOOLED
+        sync: false
+      - key: AUTH_URL
+        value: https://biblioteca-auth-maicol.onrender.com
+      - key: JAVA_OPTS
+        value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
+      - key: SPRING_JPA_SHOW_SQL
+        value: "false"
+
+  - type: web
+    name: biblioteca-prestamos-maicol
+    runtime: docker
+    plan: free
+    region: ohio
+    rootDir: prestamos
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_UNPOOLED
+        sync: false
+      - key: AUTH_URL
+        value: https://biblioteca-auth-maicol.onrender.com
+      - key: CATALOGO_URL
+        value: https://biblioteca-catalogo-maicol.onrender.com
+      - key: NOTIFICACION_URL
+        value: https://biblioteca-notificacion-maicol.onrender.com
+      - key: CATALOGO_ADMIN_USUARIO_ID
+        value: 8e03853d-7058-40a4-9692-2b5fbf82d47e
+      - key: JAVA_OPTS
+        value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
+      - key: SPRING_JPA_SHOW_SQL
+        value: "false"

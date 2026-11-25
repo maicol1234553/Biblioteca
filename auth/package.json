@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "mvnw clean package",
+    "start": "mvnw spring-boot:run"
+  },
+  "dependencies": {
+    "@neon/config": "^1.14.6",
+    "@neon/env": "^2.1.9"
+  }
+}
