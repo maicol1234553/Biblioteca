@@ -28,6 +28,8 @@ services:
     healthCheckPath: /actuator/health
     envVars:
       - fromGroup: biblioteca-config
+      - key: MODULE
+        value: auth
       - key: JAVA_OPTS
         value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
       - key: SPRING_JPA_SHOW_SQL
@@ -43,6 +45,8 @@ services:
     healthCheckPath: /actuator/health
     envVars:
       - fromGroup: biblioteca-config
+      - key: MODULE
+        value: catalogo
       - key: JAVA_OPTS
         value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
       - key: SPRING_JPA_SHOW_SQL
@@ -58,6 +62,8 @@ services:
     healthCheckPath: /actuator/health
     envVars:
       - fromGroup: biblioteca-config
+      - key: MODULE
+        value: notificacion
       - key: AUTH_URL
         value: https://biblioteca-auth-maicol.onrender.com
       - key: JAVA_OPTS
@@ -75,6 +81,8 @@ services:
     healthCheckPath: /actuator/health
     envVars:
       - fromGroup: biblioteca-config
+      - key: MODULE
+        value: prestamos
       - key: AUTH_URL
         value: https://biblioteca-auth-maicol.onrender.com
       - key: CATALOGO_URL

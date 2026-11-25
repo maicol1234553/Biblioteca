@@ -1,0 +1,10 @@
+**/target/
+**/node_modules/
+**/.git/
+**/.idea/
+**/.env
+**/.env.*
+!**/.env.example
+**/*.log
+**/*.pid
+**/HELP.md
