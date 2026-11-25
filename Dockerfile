@@ -22,6 +22,7 @@ WORKDIR /build
 COPY . .
 
 RUN set -eu; \
+    echo "MODULE=[${MODULE:-}] RENDER_SERVICE_NAME=[${RENDER_SERVICE_NAME:-}]"; \
     m="${MODULE:-}"; \
     if [ -z "$m" ] && [ -n "${RENDER_SERVICE_NAME:-}" ]; then \
         case "$RENDER_SERVICE_NAME" in \
@@ -31,10 +32,15 @@ RUN set -eu; \
             *auth*)         m=auth ;; \
         esac; \
     fi; \
-    test -n "$m" || (echo "ERROR: define MODULE=auth|catalogo|prestamos|notificacion en el servicio de Render" >&2 && exit 1); \
+    case "$m" in \
+        auth|catalogo|prestamos|notificacion) ;; \
+        *) echo "ERROR: MODULE debe ser auth|catalogo|prestamos|notificacion (recibido: [$m])" >&2; exit 1 ;; \
+    esac; \
+    test -f "$m/pom.xml" || (echo "ERROR: no se encontro $m/pom.xml en el contexto de construccion" >&2 && exit 1); \
     echo "Compilando microservicio: $m"; \
     mvn -B -q -f "$m/pom.xml" -Dmaven.test.skip=true package; \
-    cp "$m"/target/*.jar /build/app.jar
+    cp "$m"/target/*.jar /build/app.jar; \
+    test -s /build/app.jar
 
 FROM eclipse-temurin:21-jre-alpine
 RUN addgroup -S app && adduser -S app -G app
