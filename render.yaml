@@ -1,6 +1,18 @@
 # Blueprint de Render para el Sistema de Biblioteca.
-# Crea 4 Web Services (Docker, plan free) que usan la misma base Neon.
-# Los valores marcados con sync: false se piden una vez en el dashboard.
+# Crea 4 Web Services (Docker, plan free) que comparten la misma base Neon.
+#
+# Los secretos viven en el Environment Group "biblioteca-config" y se piden
+# una sola vez al aplicar el Blueprint (sync: false).
+
+envVarGroups:
+  - name: biblioteca-config
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_UNPOOLED
+        sync: false
+      - key: CATALOGO_ADMIN_USUARIO_ID
+        value: 8e03853d-7058-40a4-9692-2b5fbf82d47e
 
 services:
   - type: web
@@ -11,10 +23,7 @@ services:
     rootDir: auth
     healthCheckPath: /actuator/health
     envVars:
-      - key: DATABASE_URL
-        sync: false
-      - key: DATABASE_URL_UNPOOLED
-        sync: false
+      - fromGroup: biblioteca-config
       - key: JAVA_OPTS
         value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
       - key: SPRING_JPA_SHOW_SQL
@@ -28,10 +37,7 @@ services:
     rootDir: catalogo
     healthCheckPath: /actuator/health
     envVars:
-      - key: DATABASE_URL
-        sync: false
-      - key: DATABASE_URL_UNPOOLED
-        sync: false
+      - fromGroup: biblioteca-config
       - key: JAVA_OPTS
         value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
       - key: SPRING_JPA_SHOW_SQL
@@ -45,10 +51,7 @@ services:
     rootDir: notificacion
     healthCheckPath: /actuator/health
     envVars:
-      - key: DATABASE_URL
-        sync: false
-      - key: DATABASE_URL_UNPOOLED
-        sync: false
+      - fromGroup: biblioteca-config
       - key: AUTH_URL
         value: https://biblioteca-auth-maicol.onrender.com
       - key: JAVA_OPTS
@@ -64,18 +67,13 @@ services:
     rootDir: prestamos
     healthCheckPath: /actuator/health
     envVars:
-      - key: DATABASE_URL
-        sync: false
-      - key: DATABASE_URL_UNPOOLED
-        sync: false
+      - fromGroup: biblioteca-config
       - key: AUTH_URL
         value: https://biblioteca-auth-maicol.onrender.com
       - key: CATALOGO_URL
         value: https://biblioteca-catalogo-maicol.onrender.com
       - key: NOTIFICACION_URL
         value: https://biblioteca-notificacion-maicol.onrender.com
-      - key: CATALOGO_ADMIN_USUARIO_ID
-        value: 8e03853d-7058-40a4-9692-2b5fbf82d47e
       - key: JAVA_OPTS
         value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
       - key: SPRING_JPA_SHOW_SQL
