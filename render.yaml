@@ -64,8 +64,8 @@ services:
       - fromGroup: biblioteca-config
       - key: MODULE
         value: notificacion
-      - key: AUTH_URL
-        value: https://biblioteca-auth-maicol.onrender.com
+      # AUTH_URL se configura DESPUES del primer despliegue con la URL real
+      # del servicio auth en Render (no se inventa aqui).
       - key: JAVA_OPTS
         value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
       - key: SPRING_JPA_SHOW_SQL
@@ -83,12 +83,8 @@ services:
       - fromGroup: biblioteca-config
       - key: MODULE
         value: prestamos
-      - key: AUTH_URL
-        value: https://biblioteca-auth-maicol.onrender.com
-      - key: CATALOGO_URL
-        value: https://biblioteca-catalogo-maicol.onrender.com
-      - key: NOTIFICACION_URL
-        value: https://biblioteca-notificacion-maicol.onrender.com
+      # AUTH_URL, CATALOGO_URL y NOTIFICACION_URL se configuran DESPUES del
+      # primer despliegue con las URLs reales de Render (no se inventan aqui).
       - key: JAVA_OPTS
         value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
       - key: SPRING_JPA_SHOW_SQL
