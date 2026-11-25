@@ -1,6 +1,9 @@
 # Blueprint de Render para el Sistema de Biblioteca.
 # Crea 4 Web Services (Docker, plan free) que comparten la misma base Neon.
 #
+# Rutas explicitas: cada servicio usa SOLO su carpeta como contexto y su
+# propio Dockerfile. No hay proyecto Maven padre; cada modulo es independiente.
+#
 # Los secretos viven en el Environment Group "biblioteca-config" y se piden
 # una sola vez al aplicar el Blueprint (sync: false).
 
@@ -20,7 +23,8 @@ services:
     runtime: docker
     plan: free
     region: ohio
-    rootDir: auth
+    dockerfilePath: ./auth/Dockerfile
+    dockerContext: ./auth
     healthCheckPath: /actuator/health
     envVars:
       - fromGroup: biblioteca-config
@@ -34,7 +38,8 @@ services:
     runtime: docker
     plan: free
     region: ohio
-    rootDir: catalogo
+    dockerfilePath: ./catalogo/Dockerfile
+    dockerContext: ./catalogo
     healthCheckPath: /actuator/health
     envVars:
       - fromGroup: biblioteca-config
@@ -48,7 +53,8 @@ services:
     runtime: docker
     plan: free
     region: ohio
-    rootDir: notificacion
+    dockerfilePath: ./notificacion/Dockerfile
+    dockerContext: ./notificacion
     healthCheckPath: /actuator/health
     envVars:
       - fromGroup: biblioteca-config
@@ -64,7 +70,8 @@ services:
     runtime: docker
     plan: free
     region: ohio
-    rootDir: prestamos
+    dockerfilePath: ./prestamos/Dockerfile
+    dockerContext: ./prestamos
     healthCheckPath: /actuator/health
     envVars:
       - fromGroup: biblioteca-config
