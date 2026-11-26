@@ -19,16 +19,16 @@ class PrestamoMapperTest {
 
     @Test
     void toPrestamo_cuandoDataEsNull_debeRetornarNull() {
-        // Act
+
         Prestamo resultado = mapper.toPrestamo(null);
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void toPrestamo_debeCopiarTodosLosCampos() {
-        // Arrange
+
         LocalDateTime fechaPrestamo =
                 LocalDateTime.of(2026, 11, 20, 9, 0);
         LocalDateTime fechaVencimiento =
@@ -45,10 +45,10 @@ class PrestamoMapperTest {
         when(data.getFechaDevolucion()).thenReturn(fechaDevolucion);
         when(data.getEstado()).thenReturn("DEVUELTO");
 
-        // Act
+
         Prestamo resultado = mapper.toPrestamo(data);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("prestamo-1", resultado.getIdPrestamo()),
                 () -> assertEquals("usuario-1", resultado.getIdUsuario()),
@@ -68,7 +68,7 @@ class PrestamoMapperTest {
 
     @Test
     void toPrestamoData_debeCopiarTodosLosCampos() {
-        // Arrange
+
         LocalDateTime fechaPrestamo =
                 LocalDateTime.of(2026, 11, 20, 9, 0);
         LocalDateTime fechaVencimiento =
@@ -85,10 +85,10 @@ class PrestamoMapperTest {
         when(prestamo.getFechaDevolucion()).thenReturn(fechaDevolucion);
         when(prestamo.getEstado()).thenReturn("DEVUELTO");
 
-        // Act
+
         PrestamoData resultado = mapper.toPrestamoData(prestamo);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("prestamo-1", resultado.getIdPrestamo()),
                 () -> assertEquals("usuario-1", resultado.getIdUsuario()),
@@ -108,7 +108,7 @@ class PrestamoMapperTest {
 
     @Test
     void toPrestamoData_cuandoPrestamoEsNull_debeLanzarNullPointerException() {
-        // Act y Assert
+
         assertThrows(
                 NullPointerException.class,
                 () -> mapper.toPrestamoData(null)

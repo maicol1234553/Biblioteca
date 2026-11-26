@@ -43,7 +43,7 @@ class DevolucionDataGatewayImplTest {
 
     @Test
     void guardarDevolucion_debeBuscarPrestamoMapearGuardarYRetornarDevolucion() {
-        // Arrange
+
         Devolucion devolucion = mock(Devolucion.class);
         PrestamoData prestamoData = mock(PrestamoData.class);
         DevolucionData devolucionData = mock(DevolucionData.class);
@@ -60,10 +60,10 @@ class DevolucionDataGatewayImplTest {
         when(devolucionMapper.toDevolucion(devolucionDataGuardada))
                 .thenReturn(devolucionConvertida);
 
-        // Act
+
         Devolucion resultado = devolucionDataGateway.guardarDevolucion(devolucion);
 
-        // Assert
+
         assertSame(devolucionConvertida, resultado);
         verify(prestamoDataJpaRepository).findById("prestamo-1");
         verify(devolucionMapper).toDevolucionData(devolucion, prestamoData);
@@ -73,20 +73,20 @@ class DevolucionDataGatewayImplTest {
 
     @Test
     void guardarDevolucion_cuandoPrestamoNoExiste_debeLanzarExcepcion() {
-        // Arrange
+
         Devolucion devolucion = mock(Devolucion.class);
 
         when(devolucion.getIdPrestamo()).thenReturn("prestamo-inexistente");
         when(prestamoDataJpaRepository.findById("prestamo-inexistente"))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         PrestamoNoEncontradoException excepcion = assertThrows(
                 PrestamoNoEncontradoException.class,
                 () -> devolucionDataGateway.guardarDevolucion(devolucion)
         );
 
-        // Assert
+
         assertEquals(
                 "Prestamo no encontrado con id: prestamo-inexistente",
                 excepcion.getMessage()
@@ -97,7 +97,7 @@ class DevolucionDataGatewayImplTest {
 
     @Test
     void buscarDevolucionPorId_cuandoExiste_debeRetornarDevolucionMapeada() {
-        // Arrange
+
         String id = "devolucion-1";
         DevolucionData devolucionData = mock(DevolucionData.class);
         Devolucion devolucion = mock(Devolucion.class);
@@ -106,10 +106,10 @@ class DevolucionDataGatewayImplTest {
                 .thenReturn(Optional.of(devolucionData));
         when(devolucionMapper.toDevolucion(devolucionData)).thenReturn(devolucion);
 
-        // Act
+
         Devolucion resultado = devolucionDataGateway.buscarDevolucionPorId(id);
 
-        // Assert
+
         assertSame(devolucion, resultado);
         verify(devolucionDataJpaRepository).findById(id);
         verify(devolucionMapper).toDevolucion(devolucionData);
@@ -117,16 +117,16 @@ class DevolucionDataGatewayImplTest {
 
     @Test
     void buscarDevolucionPorId_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String id = "devolucion-inexistente";
 
         when(devolucionDataJpaRepository.findById(id))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Devolucion resultado = devolucionDataGateway.buscarDevolucionPorId(id);
 
-        // Assert
+
         assertNull(resultado);
         verify(devolucionDataJpaRepository).findById(id);
         verifyNoInteractions(devolucionMapper);
@@ -134,7 +134,7 @@ class DevolucionDataGatewayImplTest {
 
     @Test
     void buscarDevolucionPorPrestamo_cuandoExiste_debeRetornarDevolucionMapeada() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         DevolucionData devolucionData = mock(DevolucionData.class);
         Devolucion devolucion = mock(Devolucion.class);
@@ -143,11 +143,11 @@ class DevolucionDataGatewayImplTest {
                 .thenReturn(Optional.of(devolucionData));
         when(devolucionMapper.toDevolucion(devolucionData)).thenReturn(devolucion);
 
-        // Act
+
         Devolucion resultado =
                 devolucionDataGateway.buscarDevolucionPorPrestamo(idPrestamo);
 
-        // Assert
+
         assertSame(devolucion, resultado);
         verify(devolucionDataJpaRepository).findByPrestamo_IdPrestamo(idPrestamo);
         verify(devolucionMapper).toDevolucion(devolucionData);
@@ -155,17 +155,17 @@ class DevolucionDataGatewayImplTest {
 
     @Test
     void buscarDevolucionPorPrestamo_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String idPrestamo = "prestamo-sin-devolucion";
 
         when(devolucionDataJpaRepository.findByPrestamo_IdPrestamo(idPrestamo))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Devolucion resultado =
                 devolucionDataGateway.buscarDevolucionPorPrestamo(idPrestamo);
 
-        // Assert
+
         assertNull(resultado);
         verify(devolucionDataJpaRepository).findByPrestamo_IdPrestamo(idPrestamo);
         verifyNoInteractions(devolucionMapper);
@@ -173,7 +173,7 @@ class DevolucionDataGatewayImplTest {
 
     @Test
     void listarDevoluciones_debeMapearYRetornarLaLista() {
-        // Arrange
+
         DevolucionData devolucionData = mock(DevolucionData.class);
         Devolucion devolucion = mock(Devolucion.class);
 
@@ -181,10 +181,10 @@ class DevolucionDataGatewayImplTest {
                 .thenReturn(List.of(devolucionData));
         when(devolucionMapper.toDevolucion(devolucionData)).thenReturn(devolucion);
 
-        // Act
+
         List<Devolucion> resultado = devolucionDataGateway.listarDevoluciones();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(devolucion, resultado.get(0));
         verify(devolucionDataJpaRepository).findAllByOrderByFechaDevolucionDesc();
@@ -193,7 +193,7 @@ class DevolucionDataGatewayImplTest {
 
     @Test
     void listarDevolucionesPorPrestamo_debeMapearYRetornarLaLista() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         DevolucionData devolucionData = mock(DevolucionData.class);
         Devolucion devolucion = mock(Devolucion.class);
@@ -203,11 +203,11 @@ class DevolucionDataGatewayImplTest {
                 .thenReturn(List.of(devolucionData));
         when(devolucionMapper.toDevolucion(devolucionData)).thenReturn(devolucion);
 
-        // Act
+
         List<Devolucion> resultado =
                 devolucionDataGateway.listarDevolucionesPorPrestamo(idPrestamo);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(devolucion, resultado.get(0));
         verify(devolucionDataJpaRepository)
@@ -217,16 +217,16 @@ class DevolucionDataGatewayImplTest {
 
     @Test
     void eliminarDevolucion_cuandoNoExiste_debeTerminarSinEliminar() {
-        // Arrange
+
         String id = "devolucion-inexistente";
 
         when(devolucionDataJpaRepository.findById(id))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         devolucionDataGateway.eliminarDevolucion(id);
 
-        // Assert
+
         verify(devolucionDataJpaRepository).findById(id);
         verify(devolucionDataJpaRepository, never()).delete(any(DevolucionData.class));
         verify(devolucionDataJpaRepository, never()).flush();
@@ -235,7 +235,7 @@ class DevolucionDataGatewayImplTest {
 
     @Test
     void eliminarDevolucion_cuandoExisteConPrestamo_debeDesvincularYEliminar() {
-        // Arrange
+
         String id = "devolucion-1";
         DevolucionData devolucionData = mock(DevolucionData.class);
         PrestamoData prestamoData = mock(PrestamoData.class);
@@ -244,10 +244,10 @@ class DevolucionDataGatewayImplTest {
                 .thenReturn(Optional.of(devolucionData));
         when(devolucionData.getPrestamo()).thenReturn(prestamoData);
 
-        // Act
+
         devolucionDataGateway.eliminarDevolucion(id);
 
-        // Assert
+
         verify(prestamoData).setDevolucion(null);
         verify(prestamoDataJpaRepository).save(prestamoData);
         verify(devolucionDataJpaRepository).delete(devolucionData);
@@ -256,7 +256,7 @@ class DevolucionDataGatewayImplTest {
 
     @Test
     void eliminarDevolucion_cuandoTieneErrorDeIntegridad_debeLanzarRecursoEnUsoException() {
-        // Arrange
+
         String id = "devolucion-1";
         DevolucionData devolucionData = mock(DevolucionData.class);
 
@@ -265,13 +265,13 @@ class DevolucionDataGatewayImplTest {
         doThrow(new DataIntegrityViolationException("Conflicto de integridad"))
                 .when(devolucionDataJpaRepository).flush();
 
-        // Act
+
         RecursoEnUsoException excepcion = assertThrows(
                 RecursoEnUsoException.class,
                 () -> devolucionDataGateway.eliminarDevolucion(id)
         );
 
-        // Assert
+
         assertEquals(
                 "No se puede eliminar la devolucion porque tiene informacion asociada",
                 excepcion.getMessage()

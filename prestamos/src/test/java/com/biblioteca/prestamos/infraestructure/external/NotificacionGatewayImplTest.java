@@ -34,7 +34,7 @@ class NotificacionGatewayImplTest {
 
     @BeforeEach
     void setUp() {
-        // Arrange común
+
         RestClient.Builder builder = RestClient.builder()
                 .baseUrl("http://notificacion.test");
 
@@ -53,7 +53,7 @@ class NotificacionGatewayImplTest {
 
     @Test
     void enviarEvento_cuandoNotificacionesEstanHabilitadas_debeEnviarEventoComoJson() throws Exception {
-        // Arrange
+
         EventoNotificacion evento = crearEvento();
         String tipo = ((Enum<?>) evento.tipo()).name();
 
@@ -79,51 +79,53 @@ class NotificacionGatewayImplTest {
                         """.formatted(tipo)))
                 .andRespond(withSuccess());
 
-        // Act
+
         notificacionGateway.enviarEvento(evento);
 
-        // Assert
-        // servidor.verify() en @AfterEach confirma que se envió la solicitud esperada.
+
+
     }
 
     @Test
     void enviarEvento_cuandoNotificacionesEstanDeshabilitadas_noDebeEnviarSolicitud() {
-        // Arrange
+
         when(properties.servicios().notificacionHabilitada()).thenReturn(false);
 
-        // Act
+
         notificacionGateway.enviarEvento(null);
 
-        // Assert
-        // No se configura ninguna solicitud esperada; servidor.verify() confirma que no hubo HTTP.
+
+
     }
 
     @Test
     void enviarEvento_cuandoElServicioFalla_noDebePropagarLaExcepcion() throws Exception {
-        // Arrange
+
         EventoNotificacion evento = crearEvento();
 
         when(properties.servicios().notificacionHabilitada()).thenReturn(true);
         when(properties.servicios().notificacionPath())
                 .thenReturn("/api/biblioteca/notificaciones/evento");
 
-        servidor.expect(request ->
-                        assertEquals(
-                                "/api/biblioteca/notificaciones/evento",
-                                request.getURI().getPath()
-                        ))
-                .andExpect(method(HttpMethod.POST))
-                .andRespond(withServerError());
+        for (int intento = 0; intento < 3; intento++) {
+            servidor.expect(request ->
+                            assertEquals(
+                                    "/api/biblioteca/notificaciones/evento",
+                                    request.getURI().getPath()
+                            ))
+                    .andExpect(method(HttpMethod.POST))
+                    .andRespond(withServerError());
+        }
 
-        // Act y Assert
+
         assertDoesNotThrow(() -> notificacionGateway.enviarEvento(evento));
     }
 
     private EventoNotificacion crearEvento() throws Exception {
         EventoNotificacion evento = org.mockito.Mockito.mock(EventoNotificacion.class);
 
-        // Obtiene una constante del enum devuelto por evento.tipo().
-        // Así no es necesario conocer el nombre del enum para construir el test.
+
+
         Class<?> tipoClase = EventoNotificacion.class
                 .getMethod("tipo")
                 .getReturnType();

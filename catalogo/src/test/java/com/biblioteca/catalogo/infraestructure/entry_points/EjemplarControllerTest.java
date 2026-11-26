@@ -37,82 +37,82 @@ class EjemplarControllerTest {
         ejemplar = crearEjemplar();
     }
 
-    // LISTAR EJEMPLARES
+
 
     @Test
     void listarEjemplares_RetornaListaYEstado200() {
-        // Arrange
+
         List<Ejemplar> esperados = List.of(ejemplar);
 
         when(ejemplarUseCase.listarEjemplares())
                 .thenReturn(esperados);
 
-        // Act
+
         ResponseEntity<List<Ejemplar>> respuesta =
                 ejemplarController.listarEjemplares();
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertSame(esperados, respuesta.getBody());
         verify(ejemplarUseCase).listarEjemplares();
     }
 
-    // LISTAR EJEMPLARES DISPONIBLES
+
 
     @Test
     void listarEjemplaresDisponibles_RetornaListaYEstado200() {
-        // Arrange
+
         List<Ejemplar> esperados = List.of(ejemplar);
 
         when(ejemplarUseCase.listarEjemplaresDisponibles())
                 .thenReturn(esperados);
 
-        // Act
+
         ResponseEntity<List<Ejemplar>> respuesta =
                 ejemplarController.listarEjemplaresDisponibles();
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertSame(esperados, respuesta.getBody());
         verify(ejemplarUseCase).listarEjemplaresDisponibles();
     }
 
-    // LISTAR EJEMPLARES POR LIBRO
+
 
     @Test
     void listarEjemplaresPorLibro_IdValido_RetornaListaYEstado200() {
-        // Arrange
+
         String idLibro = "LIB-1";
         List<Ejemplar> esperados = List.of(ejemplar);
 
         when(ejemplarUseCase.listarEjemplaresPorLibro(idLibro))
                 .thenReturn(esperados);
 
-        // Act
+
         ResponseEntity<List<Ejemplar>> respuesta =
                 ejemplarController.listarEjemplaresPorLibro(idLibro);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertSame(esperados, respuesta.getBody());
         verify(ejemplarUseCase).listarEjemplaresPorLibro(idLibro);
     }
 
-    // BUSCAR EJEMPLAR POR ID
+
 
     @Test
     void buscarEjemplarPorId_EjemplarExiste_RetornaEjemplarYEstado200() {
-        // Arrange
+
         String id = "EJ-1";
 
         when(ejemplarUseCase.buscarEjemplarPorId(id))
                 .thenReturn(ejemplar);
 
-        // Act
+
         ResponseEntity<Ejemplar> respuesta =
                 ejemplarController.buscarEjemplarPorId(id);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertSame(ejemplar, respuesta.getBody());
         verify(ejemplarUseCase).buscarEjemplarPorId(id);
@@ -120,7 +120,7 @@ class EjemplarControllerTest {
 
     @Test
     void buscarEjemplarPorId_EjemplarNoExiste_PropagaExcepcion() {
-        // Arrange
+
         String id = "EJ-INEXISTENTE";
 
         when(ejemplarUseCase.buscarEjemplarPorId(id))
@@ -128,13 +128,13 @@ class EjemplarControllerTest {
                         "Ejemplar no encontrado con id: " + id
                 ));
 
-        // Act
+
         EjemplarNoEncontradoException excepcion = assertThrows(
                 EjemplarNoEncontradoException.class,
                 () -> ejemplarController.buscarEjemplarPorId(id)
         );
 
-        // Assert
+
         assertEquals(
                 "Ejemplar no encontrado con id: " + id,
                 excepcion.getMessage()
@@ -142,11 +142,11 @@ class EjemplarControllerTest {
         verify(ejemplarUseCase).buscarEjemplarPorId(id);
     }
 
-    // GUARDAR EJEMPLAR
+
 
     @Test
     void guardarEjemplar_RequestValido_CreaEjemplarYRetornaEstado201() {
-        // Arrange
+
         EjemplarController.EjemplarRequest request =
                 crearRequestValido();
 
@@ -156,11 +156,11 @@ class EjemplarControllerTest {
         ArgumentCaptor<Ejemplar> captor =
                 ArgumentCaptor.forClass(Ejemplar.class);
 
-        // Act
+
         ResponseEntity<Ejemplar> respuesta =
                 ejemplarController.guardarEjemplar(request);
 
-        // Assert
+
         assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
         assertSame(ejemplar, respuesta.getBody());
 
@@ -185,11 +185,11 @@ class EjemplarControllerTest {
         );
     }
 
-    // ACTUALIZAR EJEMPLAR
+
 
     @Test
     void actualizarEjemplar_RequestValido_PasaIdYEjemplarAlUseCase() {
-        // Arrange
+
         String id = "EJ-1";
         EjemplarController.EjemplarRequest request =
                 crearRequestValido();
@@ -202,11 +202,11 @@ class EjemplarControllerTest {
         ArgumentCaptor<Ejemplar> captor =
                 ArgumentCaptor.forClass(Ejemplar.class);
 
-        // Act
+
         ResponseEntity<Ejemplar> respuesta =
                 ejemplarController.actualizarEjemplar(id, request);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertSame(ejemplar, respuesta.getBody());
 
@@ -232,18 +232,18 @@ class EjemplarControllerTest {
         );
     }
 
-    // ELIMINAR EJEMPLAR
+
 
     @Test
     void eliminarEjemplar_EjemplarExiste_RetornaMensajeYEstado200() {
-        // Arrange
+
         String id = "EJ-1";
 
-        // Act
+
         ResponseEntity<String> respuesta =
                 ejemplarController.eliminarEjemplar(id);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertEquals("Ejemplar eliminado con exito", respuesta.getBody());
         verify(ejemplarUseCase).eliminarEjemplar(id);
@@ -251,20 +251,20 @@ class EjemplarControllerTest {
 
     @Test
     void eliminarEjemplar_EjemplarNoExiste_PropagaExcepcion() {
-        // Arrange
+
         String id = "EJ-INEXISTENTE";
 
         doThrow(new EjemplarNoEncontradoException(
                 "Ejemplar no encontrado con id: " + id
         )).when(ejemplarUseCase).eliminarEjemplar(id);
 
-        // Act
+
         EjemplarNoEncontradoException excepcion = assertThrows(
                 EjemplarNoEncontradoException.class,
                 () -> ejemplarController.eliminarEjemplar(id)
         );
 
-        // Assert
+
         assertEquals(
                 "Ejemplar no encontrado con id: " + id,
                 excepcion.getMessage()

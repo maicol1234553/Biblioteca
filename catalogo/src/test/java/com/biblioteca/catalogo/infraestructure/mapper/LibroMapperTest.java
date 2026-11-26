@@ -41,16 +41,16 @@ class LibroMapperTest {
 
     @Test
     void toLibro_cuandoLibroDataEsNull_debeRetornarNull() {
-        // Act
+
         Libro resultado = mapper.toLibro(null);
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void toLibro_debeMapearCamposYRelaciones() {
-        // Arrange
+
         LocalDate fechaPublicacion = LocalDate.of(1967, 5, 30);
         LocalDateTime fechaRegistro = LocalDateTime.of(2026, 1, 10, 12, 0);
 
@@ -80,10 +80,10 @@ class LibroMapperTest {
         when(categoriaMapper.toCategoria(categoriaData)).thenReturn(categoria);
         when(autorMapper.toAutor(autorData)).thenReturn(autor);
 
-        // Act
+
         Libro resultado = mapper.toLibro(libroData);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("libro-1", resultado.getIdLibro()),
                 () -> assertEquals("9780307474728", resultado.getIsbn()),
@@ -113,15 +113,15 @@ class LibroMapperTest {
 
     @Test
     void toLibro_cuandoRelacionesSonNull_debeCrearListasVacias() {
-        // Arrange
+
         LibroData libroData = new LibroData();
         libroData.setCategorias(null);
         libroData.setAutores(null);
 
-        // Act
+
         Libro resultado = mapper.toLibro(libroData);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals(List.of(), resultado.getCategorias()),
                 () -> assertEquals(List.of(), resultado.getAutores())
@@ -130,7 +130,7 @@ class LibroMapperTest {
 
     @Test
     void toLibroData_debeMapearLosCamposEscalares() {
-        // Arrange
+
         LocalDate fechaPublicacion = LocalDate.of(1967, 5, 30);
         LocalDateTime fechaRegistro = LocalDateTime.of(2026, 1, 10, 12, 0);
 
@@ -146,10 +146,10 @@ class LibroMapperTest {
         when(libro.getPortadaUrl()).thenReturn("https://ejemplo.com/portada.jpg");
         when(libro.getFechaRegistro()).thenReturn(fechaRegistro);
 
-        // Act
+
         LibroData resultado = mapper.toLibroData(libro);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("libro-1", resultado.getIdLibro()),
                 () -> assertEquals("9780307474728", resultado.getIsbn()),
@@ -172,7 +172,7 @@ class LibroMapperTest {
 
     @Test
     void toLibroData_cuandoLibroEsNull_debeLanzarNullPointerException() {
-        // Act y Assert
+
         assertThrows(
                 NullPointerException.class,
                 () -> mapper.toLibroData(null)

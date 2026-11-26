@@ -34,7 +34,7 @@ class UsuarioRolJdbcAdapterTest {
 
     @Test
     void buscarRol_cuandoEncuentraRoles_debeRetornarElPrimero() {
-        // Arrange
+
         String idUsuario = "usuario-1";
 
         when(jdbcTemplate.query(
@@ -43,10 +43,10 @@ class UsuarioRolJdbcAdapterTest {
                 eq(idUsuario)
         )).thenReturn(List.of("ADMINISTRADOR", "USUARIO"));
 
-        // Act
+
         String resultado = adapter.buscarRol(idUsuario);
 
-        // Assert
+
         assertEquals("ADMINISTRADOR", resultado);
         verify(jdbcTemplate).query(
                 eq(SQL),
@@ -57,7 +57,7 @@ class UsuarioRolJdbcAdapterTest {
 
     @Test
     void buscarRol_cuandoNoEncuentraRoles_debeRetornarNull() {
-        // Arrange
+
         String idUsuario = "usuario-inexistente";
 
         when(jdbcTemplate.query(
@@ -66,16 +66,16 @@ class UsuarioRolJdbcAdapterTest {
                 eq(idUsuario)
         )).thenReturn(List.of());
 
-        // Act
+
         String resultado = adapter.buscarRol(idUsuario);
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void buscarRol_cuandoFallaElAccesoADatos_debeRetornarNull() {
-        // Arrange
+
         String idUsuario = "usuario-1";
 
         when(jdbcTemplate.query(
@@ -84,16 +84,16 @@ class UsuarioRolJdbcAdapterTest {
                 eq(idUsuario)
         )).thenThrow(new DataAccessResourceFailureException("Base de datos no disponible"));
 
-        // Act
+
         String resultado = adapter.buscarRol(idUsuario);
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void buscarRol_debeLeerLaColumnaRolDelResultado() throws Exception {
-        // Arrange
+
         String idUsuario = "usuario-1";
         ResultSet resultSet = mock(ResultSet.class);
 
@@ -108,10 +108,10 @@ class UsuarioRolJdbcAdapterTest {
             return List.of(rowMapper.mapRow(resultSet, 0));
         });
 
-        // Act
+
         String resultado = adapter.buscarRol(idUsuario);
 
-        // Assert
+
         assertEquals("USUARIO", resultado);
         verify(resultSet).getString("rol");
     }

@@ -47,11 +47,11 @@ class EjemplarUseCaseTest {
         libro = crearLibroValido();
     }
 
-    // GUARDAR EJEMPLAR
+
 
     @Test
     void guardarEjemplar_DatosValidosSinId_GeneraIdYGuarda() {
-        // Arrange
+
         ejemplar.setIdEjemplar(null);
 
         when(libroGateway.buscarLibroPorId(ejemplar.getIdLibro()))
@@ -64,10 +64,10 @@ class EjemplarUseCaseTest {
         when(ejemplarGateway.guardarEjemplar(ejemplar))
                 .thenReturn(ejemplar);
 
-        // Act
+
         Ejemplar resultado = ejemplarUseCase.guardarEjemplar(ejemplar);
 
-        // Assert
+
         assertSame(ejemplar, resultado);
         assertNotNull(resultado.getIdEjemplar());
         assertDoesNotThrow(() -> UUID.fromString(resultado.getIdEjemplar()));
@@ -78,7 +78,7 @@ class EjemplarUseCaseTest {
 
     @Test
     void guardarEjemplar_FechaAdquisicionNula_UsaFechaActual() {
-        // Arrange
+
         ejemplar.setFechaAdquisicion(null);
 
         when(libroGateway.buscarLibroPorId(ejemplar.getIdLibro()))
@@ -91,17 +91,17 @@ class EjemplarUseCaseTest {
         when(ejemplarGateway.guardarEjemplar(ejemplar))
                 .thenReturn(ejemplar);
 
-        // Act
+
         Ejemplar resultado = ejemplarUseCase.guardarEjemplar(ejemplar);
 
-        // Assert
+
         assertEquals(LocalDate.now(), resultado.getFechaAdquisicion());
         verify(ejemplarGateway).guardarEjemplar(ejemplar);
     }
 
     @Test
     void guardarEjemplar_IdExistente_LoConserva() {
-        // Arrange
+
         ejemplar.setIdEjemplar("EJ-1");
 
         when(libroGateway.buscarLibroPorId(ejemplar.getIdLibro()))
@@ -114,42 +114,42 @@ class EjemplarUseCaseTest {
         when(ejemplarGateway.guardarEjemplar(ejemplar))
                 .thenReturn(ejemplar);
 
-        // Act
+
         Ejemplar resultado = ejemplarUseCase.guardarEjemplar(ejemplar);
 
-        // Assert
+
         assertEquals("EJ-1", resultado.getIdEjemplar());
         verify(ejemplarGateway).guardarEjemplar(ejemplar);
     }
 
     @Test
     void guardarEjemplar_EjemplarNulo_LanzaExcepcion() {
-        // Arrange
+
         Ejemplar ejemplarNulo = null;
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> ejemplarUseCase.guardarEjemplar(ejemplarNulo)
         );
 
-        // Assert
+
         assertEquals("El ejemplar es obligatorio", excepcion.getMessage());
         verifyNoInteractions(ejemplarGateway, libroGateway);
     }
 
     @Test
     void guardarEjemplar_IdLibroNulo_LanzaExcepcion() {
-        // Arrange
+
         ejemplar.setIdLibro(null);
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> ejemplarUseCase.guardarEjemplar(ejemplar)
         );
 
-        // Assert
+
         assertEquals(
                 "El libro del ejemplar es obligatorio",
                 excepcion.getMessage()
@@ -159,16 +159,16 @@ class EjemplarUseCaseTest {
 
     @Test
     void guardarEjemplar_CodigoInventarioEnBlanco_LanzaExcepcion() {
-        // Arrange
+
         ejemplar.setCodigoInventario(" ");
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> ejemplarUseCase.guardarEjemplar(ejemplar)
         );
 
-        // Assert
+
         assertEquals(
                 "El codigo de inventario es obligatorio",
                 excepcion.getMessage()
@@ -178,17 +178,17 @@ class EjemplarUseCaseTest {
 
     @Test
     void guardarEjemplar_LibroNoExiste_LanzaExcepcion() {
-        // Arrange
+
         when(libroGateway.buscarLibroPorId(ejemplar.getIdLibro()))
                 .thenReturn(null);
 
-        // Act
+
         LibroNoEncontradoException excepcion = assertThrows(
                 LibroNoEncontradoException.class,
                 () -> ejemplarUseCase.guardarEjemplar(ejemplar)
         );
 
-        // Assert
+
         assertEquals(
                 "Libro no encontrado con id: " + ejemplar.getIdLibro(),
                 excepcion.getMessage()
@@ -201,7 +201,7 @@ class EjemplarUseCaseTest {
 
     @Test
     void guardarEjemplar_CodigoInventarioDuplicado_LanzaExcepcion() {
-        // Arrange
+
         Ejemplar existente = crearEjemplarValido();
         existente.setIdEjemplar("EJ-OTRO");
 
@@ -212,13 +212,13 @@ class EjemplarUseCaseTest {
                 ejemplar.getCodigoInventario()
         )).thenReturn(existente);
 
-        // Act
+
         RecursoDuplicadoException excepcion = assertThrows(
                 RecursoDuplicadoException.class,
                 () -> ejemplarUseCase.guardarEjemplar(ejemplar)
         );
 
-        // Assert
+
         assertEquals(
                 "Ya existe un ejemplar con el codigo de inventario: "
                         + ejemplar.getCodigoInventario(),
@@ -228,11 +228,11 @@ class EjemplarUseCaseTest {
                 .guardarEjemplar(any(Ejemplar.class));
     }
 
-    // ACTUALIZAR EJEMPLAR
+
 
     @Test
     void actualizarEjemplar_DatosValidos_ConservaCamposFaltantesYGuarda() {
-        // Arrange
+
         String idEjemplar = "EJ-1";
 
         Ejemplar existente = crearEjemplarValido();
@@ -260,11 +260,11 @@ class EjemplarUseCaseTest {
         when(ejemplarGateway.guardarEjemplar(actualizado))
                 .thenReturn(actualizado);
 
-        // Act
+
         Ejemplar resultado =
                 ejemplarUseCase.actualizarEjemplar(idEjemplar, actualizado);
 
-        // Assert
+
         assertSame(actualizado, resultado);
         assertEquals(idEjemplar, resultado.getIdEjemplar());
         assertEquals(existente.getIdLibro(), resultado.getIdLibro());
@@ -289,19 +289,19 @@ class EjemplarUseCaseTest {
 
     @Test
     void actualizarEjemplar_EjemplarNoExiste_LanzaExcepcion() {
-        // Arrange
+
         String idEjemplar = "ID-INEXISTENTE";
 
         when(ejemplarGateway.buscarEjemplarPorId(idEjemplar))
                 .thenReturn(null);
 
-        // Act
+
         EjemplarNoEncontradoException excepcion = assertThrows(
                 EjemplarNoEncontradoException.class,
                 () -> ejemplarUseCase.actualizarEjemplar(idEjemplar, ejemplar)
         );
 
-        // Assert
+
         assertEquals(
                 "Ejemplar no encontrado con id: " + idEjemplar,
                 excepcion.getMessage()
@@ -312,7 +312,7 @@ class EjemplarUseCaseTest {
 
     @Test
     void actualizarEjemplar_CodigoInventarioYaUsadoPorOtroEjemplar_LanzaExcepcion() {
-        // Arrange
+
         String idEjemplar = "EJ-1";
 
         Ejemplar existente = crearEjemplarValido();
@@ -331,13 +331,13 @@ class EjemplarUseCaseTest {
                 ejemplar.getCodigoInventario()
         )).thenReturn(otroEjemplar);
 
-        // Act
+
         RecursoDuplicadoException excepcion = assertThrows(
                 RecursoDuplicadoException.class,
                 () -> ejemplarUseCase.actualizarEjemplar(idEjemplar, ejemplar)
         );
 
-        // Assert
+
         assertEquals(
                 "Ya existe un ejemplar con el codigo de inventario: "
                         + ejemplar.getCodigoInventario(),
@@ -347,19 +347,19 @@ class EjemplarUseCaseTest {
                 .guardarEjemplar(any(Ejemplar.class));
     }
 
-    // BUSCAR EJEMPLAR POR ID
+
 
     @Test
     void buscarEjemplarPorId_EjemplarExiste_RetornaEjemplar() {
-        // Arrange
+
         when(ejemplarGateway.buscarEjemplarPorId(ejemplar.getIdEjemplar()))
                 .thenReturn(ejemplar);
 
-        // Act
+
         Ejemplar resultado =
                 ejemplarUseCase.buscarEjemplarPorId(ejemplar.getIdEjemplar());
 
-        // Assert
+
         assertSame(ejemplar, resultado);
         verify(ejemplarGateway)
                 .buscarEjemplarPorId(ejemplar.getIdEjemplar());
@@ -367,39 +367,39 @@ class EjemplarUseCaseTest {
 
     @Test
     void buscarEjemplarPorId_EjemplarNoExiste_LanzaExcepcion() {
-        // Arrange
+
         String idEjemplar = "ID-INEXISTENTE";
 
         when(ejemplarGateway.buscarEjemplarPorId(idEjemplar))
                 .thenReturn(null);
 
-        // Act
+
         EjemplarNoEncontradoException excepcion = assertThrows(
                 EjemplarNoEncontradoException.class,
                 () -> ejemplarUseCase.buscarEjemplarPorId(idEjemplar)
         );
 
-        // Assert
+
         assertEquals(
                 "Ejemplar no encontrado con id: " + idEjemplar,
                 excepcion.getMessage()
         );
     }
 
-    // LISTAR EJEMPLARES
+
 
     @Test
     void listarEjemplares_ConsultaGateway_RetornaLista() {
-        // Arrange
+
         List<Ejemplar> ejemplaresEsperados = List.of(ejemplar);
 
         when(ejemplarGateway.listarEjemplares())
                 .thenReturn(ejemplaresEsperados);
 
-        // Act
+
         List<Ejemplar> resultado = ejemplarUseCase.listarEjemplares();
 
-        // Assert
+
         assertSame(ejemplaresEsperados, resultado);
         assertEquals(1, resultado.size());
         assertSame(ejemplar, resultado.get(0));
@@ -408,23 +408,23 @@ class EjemplarUseCaseTest {
 
     @Test
     void listarEjemplares_SinResultados_RetornaListaVacia() {
-        // Arrange
+
         when(ejemplarGateway.listarEjemplares())
                 .thenReturn(List.of());
 
-        // Act
+
         List<Ejemplar> resultado = ejemplarUseCase.listarEjemplares();
 
-        // Assert
+
         assertNotNull(resultado);
         assertTrue(resultado.isEmpty());
     }
 
-    // LISTAR EJEMPLARES POR LIBRO
+
 
     @Test
     void listarEjemplaresPorLibro_LibroExiste_RetornaEjemplares() {
-        // Arrange
+
         String idLibro = "LIB-1";
         List<Ejemplar> ejemplaresEsperados = List.of(ejemplar);
 
@@ -434,11 +434,11 @@ class EjemplarUseCaseTest {
         when(ejemplarGateway.listarEjemplaresPorLibro(idLibro))
                 .thenReturn(ejemplaresEsperados);
 
-        // Act
+
         List<Ejemplar> resultado =
                 ejemplarUseCase.listarEjemplaresPorLibro(idLibro);
 
-        // Assert
+
         assertSame(ejemplaresEsperados, resultado);
         assertEquals(1, resultado.size());
         verify(libroGateway).buscarLibroPorId(idLibro);
@@ -447,19 +447,19 @@ class EjemplarUseCaseTest {
 
     @Test
     void listarEjemplaresPorLibro_LibroNoExiste_LanzaExcepcion() {
-        // Arrange
+
         String idLibro = "LIB-INEXISTENTE";
 
         when(libroGateway.buscarLibroPorId(idLibro))
                 .thenReturn(null);
 
-        // Act
+
         LibroNoEncontradoException excepcion = assertThrows(
                 LibroNoEncontradoException.class,
                 () -> ejemplarUseCase.listarEjemplaresPorLibro(idLibro)
         );
 
-        // Assert
+
         assertEquals(
                 "Libro no encontrado con id: " + idLibro,
                 excepcion.getMessage()
@@ -468,43 +468,43 @@ class EjemplarUseCaseTest {
                 .listarEjemplaresPorLibro(anyString());
     }
 
-    // LISTAR EJEMPLARES DISPONIBLES
+
 
     @Test
     void listarEjemplaresDisponibles_ConsultaGateway_RetornaLista() {
-        // Arrange
+
         List<Ejemplar> disponiblesEsperados = List.of(ejemplar);
 
         when(ejemplarGateway.listarEjemplaresDisponibles())
                 .thenReturn(disponiblesEsperados);
 
-        // Act
+
         List<Ejemplar> resultado =
                 ejemplarUseCase.listarEjemplaresDisponibles();
 
-        // Assert
+
         assertSame(disponiblesEsperados, resultado);
         assertEquals(1, resultado.size());
         verify(ejemplarGateway).listarEjemplaresDisponibles();
     }
 
-    // CONSULTAR DISPONIBILIDAD
+
 
     @Test
     void consultarDisponibilidad_LibroNoExiste_LanzaExcepcion() {
-        // Arrange
+
         String idLibro = "LIB-INEXISTENTE";
 
         when(libroGateway.buscarLibroPorId(idLibro))
                 .thenReturn(null);
 
-        // Act
+
         LibroNoEncontradoException excepcion = assertThrows(
                 LibroNoEncontradoException.class,
                 () -> ejemplarUseCase.consultarDisponibilidad(idLibro)
         );
 
-        // Assert
+
         assertEquals(
                 "Libro no encontrado con id: " + idLibro,
                 excepcion.getMessage()
@@ -513,39 +513,39 @@ class EjemplarUseCaseTest {
                 .listarEjemplaresPorLibro(anyString());
     }
 
-    // ELIMINAR EJEMPLAR
+
 
     @Test
     void eliminarEjemplar_EjemplarExiste_EliminaEjemplar() {
-        // Arrange
+
         String idEjemplar = ejemplar.getIdEjemplar();
 
         when(ejemplarGateway.buscarEjemplarPorId(idEjemplar))
                 .thenReturn(ejemplar);
 
-        // Act
+
         ejemplarUseCase.eliminarEjemplar(idEjemplar);
 
-        // Assert
+
         verify(ejemplarGateway).buscarEjemplarPorId(idEjemplar);
         verify(ejemplarGateway).eliminarEjemplar(idEjemplar);
     }
 
     @Test
     void eliminarEjemplar_EjemplarNoExiste_LanzaExcepcionYSinEliminar() {
-        // Arrange
+
         String idEjemplar = "ID-INEXISTENTE";
 
         when(ejemplarGateway.buscarEjemplarPorId(idEjemplar))
                 .thenReturn(null);
 
-        // Act
+
         EjemplarNoEncontradoException excepcion = assertThrows(
                 EjemplarNoEncontradoException.class,
                 () -> ejemplarUseCase.eliminarEjemplar(idEjemplar)
         );
 
-        // Assert
+
         assertEquals(
                 "Ejemplar no encontrado con id: " + idEjemplar,
                 excepcion.getMessage()

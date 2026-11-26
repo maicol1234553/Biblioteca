@@ -21,16 +21,16 @@ class DevolucionMapperTest {
 
     @Test
     void toDevolucion_cuandoDataEsNull_debeRetornarNull() {
-        // Act
+
         Devolucion resultado = mapper.toDevolucion(null);
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void toDevolucion_debeMapearLosCamposYElIdDelPrestamo() {
-        // Arrange
+
         LocalDateTime fecha = LocalDateTime.of(2026, 11, 26, 10, 30);
 
         PrestamoData prestamo = mock(PrestamoData.class);
@@ -43,10 +43,10 @@ class DevolucionMapperTest {
         when(data.getObservaciones()).thenReturn("Devuelto en buen estado");
         when(data.getEstadoEjemplar()).thenReturn("BUENO");
 
-        // Act
+
         Devolucion resultado = mapper.toDevolucion(data);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("devolucion-1", resultado.getIdDevolucion()),
                 () -> assertEquals("prestamo-1", resultado.getIdPrestamo()),
@@ -61,20 +61,20 @@ class DevolucionMapperTest {
 
     @Test
     void toDevolucion_cuandoPrestamoEsNull_debeDejarIdPrestamoEnNull() {
-        // Arrange
+
         DevolucionData data = mock(DevolucionData.class);
         when(data.getPrestamo()).thenReturn(null);
 
-        // Act
+
         Devolucion resultado = mapper.toDevolucion(data);
 
-        // Assert
+
         assertNull(resultado.getIdPrestamo());
     }
 
     @Test
     void toDevolucionData_debeMapearLosCamposYAsignarElPrestamo() {
-        // Arrange
+
         LocalDateTime fecha = LocalDateTime.of(2026, 11, 26, 10, 30);
 
         Devolucion devolucion = mock(Devolucion.class);
@@ -85,10 +85,10 @@ class DevolucionMapperTest {
 
         PrestamoData prestamo = mock(PrestamoData.class);
 
-        // Act
+
         DevolucionData resultado = mapper.toDevolucionData(devolucion, prestamo);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("devolucion-1", resultado.getIdDevolucion()),
                 () -> assertSame(prestamo, resultado.getPrestamo()),
@@ -103,7 +103,7 @@ class DevolucionMapperTest {
 
     @Test
     void toDevolucionData_cuandoDevolucionEsNull_debeLanzarNullPointerException() {
-        // Act y Assert
+
         assertThrows(
                 NullPointerException.class,
                 () -> mapper.toDevolucionData(null, null)

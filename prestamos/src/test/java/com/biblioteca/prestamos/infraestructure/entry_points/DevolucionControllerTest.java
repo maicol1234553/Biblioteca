@@ -32,18 +32,18 @@ class DevolucionControllerTest {
 
     @Test
     void listarDevoluciones_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Devolucion devolucion = mock(Devolucion.class);
 
         when(devolucionUseCase.listarDevoluciones(solicitante))
                 .thenReturn(List.of(devolucion));
 
-        // Act
+
         ResponseEntity<List<DevolucionResponse>> respuesta =
                 devolucionController.listarDevoluciones(solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -52,7 +52,7 @@ class DevolucionControllerTest {
 
     @Test
     void buscarDevolucion_debeRetornarDevolucionYEstadoOk() {
-        // Arrange
+
         String id = "devolucion-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Devolucion devolucion = mock(Devolucion.class);
@@ -60,11 +60,11 @@ class DevolucionControllerTest {
         when(devolucionUseCase.buscarDevolucion(id, solicitante))
                 .thenReturn(devolucion);
 
-        // Act
+
         ResponseEntity<DevolucionResponse> respuesta =
                 devolucionController.buscarDevolucion(id, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(devolucionUseCase).buscarDevolucion(id, solicitante);
@@ -72,7 +72,7 @@ class DevolucionControllerTest {
 
     @Test
     void listarDevolucionesPorPrestamo_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Devolucion devolucion = mock(Devolucion.class);
@@ -80,11 +80,11 @@ class DevolucionControllerTest {
         when(devolucionUseCase.listarDevolucionesPorPrestamo(idPrestamo, solicitante))
                 .thenReturn(List.of(devolucion));
 
-        // Act
+
         ResponseEntity<List<DevolucionResponse>> respuesta =
                 devolucionController.listarDevolucionesPorPrestamo(idPrestamo, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -94,15 +94,15 @@ class DevolucionControllerTest {
 
     @Test
     void eliminarDevolucion_debeRetornarMensajeYEstadoOk() {
-        // Arrange
+
         String id = "devolucion-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
 
-        // Act
+
         ResponseEntity<MensajeResponse> respuesta =
                 devolucionController.eliminarDevolucion(id, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(

@@ -41,7 +41,7 @@ class PrestamoDataGatewayImplTest {
 
     @Test
     void guardarPrestamo_debeMapearGuardarYRetornarPrestamo() {
-        // Arrange
+
         Prestamo prestamo = mock(Prestamo.class);
         PrestamoData prestamoData = mock(PrestamoData.class);
         PrestamoData prestamoDataGuardado = mock(PrestamoData.class);
@@ -51,10 +51,10 @@ class PrestamoDataGatewayImplTest {
         when(prestamoDataJpaRepository.save(prestamoData)).thenReturn(prestamoDataGuardado);
         when(prestamoMapper.toPrestamo(prestamoDataGuardado)).thenReturn(prestamoConvertido);
 
-        // Act
+
         Prestamo resultado = prestamoDataGateway.guardarPrestamo(prestamo);
 
-        // Assert
+
         assertSame(prestamoConvertido, resultado);
         verify(prestamoMapper).toPrestamoData(prestamo);
         verify(prestamoDataJpaRepository).save(prestamoData);
@@ -63,7 +63,7 @@ class PrestamoDataGatewayImplTest {
 
     @Test
     void actualizarPrestamo_debeGuardarYRetornarPrestamoActualizado() {
-        // Arrange
+
         Prestamo prestamo = mock(Prestamo.class);
         PrestamoData prestamoData = mock(PrestamoData.class);
         PrestamoData prestamoDataActualizado = mock(PrestamoData.class);
@@ -75,10 +75,10 @@ class PrestamoDataGatewayImplTest {
         when(prestamoMapper.toPrestamo(prestamoDataActualizado))
                 .thenReturn(prestamoActualizado);
 
-        // Act
+
         Prestamo resultado = prestamoDataGateway.actualizarPrestamo(prestamo);
 
-        // Assert
+
         assertSame(prestamoActualizado, resultado);
         verify(prestamoMapper).toPrestamoData(prestamo);
         verify(prestamoDataJpaRepository).save(prestamoData);
@@ -87,7 +87,7 @@ class PrestamoDataGatewayImplTest {
 
     @Test
     void buscarPrestamoPorId_cuandoExiste_debeRetornarPrestamoMapeado() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         PrestamoData prestamoData = mock(PrestamoData.class);
         Prestamo prestamo = mock(Prestamo.class);
@@ -96,10 +96,10 @@ class PrestamoDataGatewayImplTest {
                 .thenReturn(Optional.of(prestamoData));
         when(prestamoMapper.toPrestamo(prestamoData)).thenReturn(prestamo);
 
-        // Act
+
         Prestamo resultado = prestamoDataGateway.buscarPrestamoPorId(idPrestamo);
 
-        // Assert
+
         assertSame(prestamo, resultado);
         verify(prestamoDataJpaRepository).findById(idPrestamo);
         verify(prestamoMapper).toPrestamo(prestamoData);
@@ -107,16 +107,16 @@ class PrestamoDataGatewayImplTest {
 
     @Test
     void buscarPrestamoPorId_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String idPrestamo = "prestamo-inexistente";
 
         when(prestamoDataJpaRepository.findById(idPrestamo))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Prestamo resultado = prestamoDataGateway.buscarPrestamoPorId(idPrestamo);
 
-        // Assert
+
         assertNull(resultado);
         verify(prestamoDataJpaRepository).findById(idPrestamo);
         verifyNoInteractions(prestamoMapper);
@@ -124,7 +124,7 @@ class PrestamoDataGatewayImplTest {
 
     @Test
     void listarPrestamos_debeMapearYRetornarLaLista() {
-        // Arrange
+
         PrestamoData prestamoData = mock(PrestamoData.class);
         Prestamo prestamo = mock(Prestamo.class);
 
@@ -132,10 +132,10 @@ class PrestamoDataGatewayImplTest {
                 .thenReturn(List.of(prestamoData));
         when(prestamoMapper.toPrestamo(prestamoData)).thenReturn(prestamo);
 
-        // Act
+
         List<Prestamo> resultado = prestamoDataGateway.listarPrestamos();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(prestamo, resultado.get(0));
         verify(prestamoDataJpaRepository).findAllByOrderByFechaPrestamoDesc();
@@ -144,7 +144,7 @@ class PrestamoDataGatewayImplTest {
 
     @Test
     void listarPrestamosActivosPorUsuario_debeFiltrarPorEstadosActivos() {
-        // Arrange
+
         String idUsuario = "usuario-1";
         List<String> estadosActivos = List.of(
                 EstadoPrestamo.ACTIVO.name(),
@@ -158,11 +158,11 @@ class PrestamoDataGatewayImplTest {
                 .thenReturn(List.of(prestamoData));
         when(prestamoMapper.toPrestamo(prestamoData)).thenReturn(prestamo);
 
-        // Act
+
         List<Prestamo> resultado =
                 prestamoDataGateway.listarPrestamosActivosPorUsuario(idUsuario);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(prestamo, resultado.get(0));
         verify(prestamoDataJpaRepository)
@@ -172,7 +172,7 @@ class PrestamoDataGatewayImplTest {
 
     @Test
     void listarHistorialPorUsuario_debeBuscarYMapearPrestamos() {
-        // Arrange
+
         String idUsuario = "usuario-1";
         PrestamoData prestamoData = mock(PrestamoData.class);
         Prestamo prestamo = mock(Prestamo.class);
@@ -181,11 +181,11 @@ class PrestamoDataGatewayImplTest {
                 .thenReturn(List.of(prestamoData));
         when(prestamoMapper.toPrestamo(prestamoData)).thenReturn(prestamo);
 
-        // Act
+
         List<Prestamo> resultado =
                 prestamoDataGateway.listarHistorialPorUsuario(idUsuario);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(prestamo, resultado.get(0));
         verify(prestamoDataJpaRepository)
@@ -195,7 +195,7 @@ class PrestamoDataGatewayImplTest {
 
     @Test
     void contarPrestamosActivosPorUsuario_debeRetornarCantidad() {
-        // Arrange
+
         String idUsuario = "usuario-1";
         List<String> estadosActivos = List.of(
                 EstadoPrestamo.ACTIVO.name(),
@@ -205,10 +205,10 @@ class PrestamoDataGatewayImplTest {
         when(prestamoDataJpaRepository.countByIdUsuarioAndEstadoIn(idUsuario, estadosActivos))
                 .thenReturn(2L);
 
-        // Act
+
         long resultado = prestamoDataGateway.contarPrestamosActivosPorUsuario(idUsuario);
 
-        // Assert
+
         assertEquals(2L, resultado);
         verify(prestamoDataJpaRepository)
                 .countByIdUsuarioAndEstadoIn(idUsuario, estadosActivos);
@@ -217,7 +217,7 @@ class PrestamoDataGatewayImplTest {
 
     @Test
     void existePrestamoActivoPorEjemplar_cuandoExiste_debeRetornarTrue() {
-        // Arrange
+
         String idEjemplar = "ejemplar-1";
         List<String> estadosActivos = List.of(
                 EstadoPrestamo.ACTIVO.name(),
@@ -228,11 +228,11 @@ class PrestamoDataGatewayImplTest {
                 .existsByIdEjemplarAndEstadoIn(idEjemplar, estadosActivos))
                 .thenReturn(true);
 
-        // Act
+
         boolean resultado =
                 prestamoDataGateway.existePrestamoActivoPorEjemplar(idEjemplar);
 
-        // Assert
+
         assertTrue(resultado);
         verify(prestamoDataJpaRepository)
                 .existsByIdEjemplarAndEstadoIn(idEjemplar, estadosActivos);
@@ -241,7 +241,7 @@ class PrestamoDataGatewayImplTest {
 
     @Test
     void existePrestamoActivoPorEjemplar_cuandoNoExiste_debeRetornarFalse() {
-        // Arrange
+
         String idEjemplar = "ejemplar-1";
         List<String> estadosActivos = List.of(
                 EstadoPrestamo.ACTIVO.name(),
@@ -252,11 +252,11 @@ class PrestamoDataGatewayImplTest {
                 .existsByIdEjemplarAndEstadoIn(idEjemplar, estadosActivos))
                 .thenReturn(false);
 
-        // Act
+
         boolean resultado =
                 prestamoDataGateway.existePrestamoActivoPorEjemplar(idEjemplar);
 
-        // Assert
+
         assertFalse(resultado);
         verify(prestamoDataJpaRepository)
                 .existsByIdEjemplarAndEstadoIn(idEjemplar, estadosActivos);
@@ -265,7 +265,7 @@ class PrestamoDataGatewayImplTest {
 
     @Test
     void listarPrestamosVencidos_debeBuscarPorEstadoYFechaYMapearResultados() {
-        // Arrange
+
         LocalDateTime fecha = LocalDateTime.of(2026, 11, 25, 12, 0);
         PrestamoData prestamoData = mock(PrestamoData.class);
         Prestamo prestamo = mock(Prestamo.class);
@@ -276,10 +276,10 @@ class PrestamoDataGatewayImplTest {
                 .thenReturn(List.of(prestamoData));
         when(prestamoMapper.toPrestamo(prestamoData)).thenReturn(prestamo);
 
-        // Act
+
         List<Prestamo> resultado = prestamoDataGateway.listarPrestamosVencidos(fecha);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(prestamo, resultado.get(0));
         verify(prestamoDataJpaRepository)
@@ -290,13 +290,13 @@ class PrestamoDataGatewayImplTest {
 
     @Test
     void eliminarPrestamo_cuandoSeEliminaCorrectamente_debeEjecutarDeleteYFlush() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
 
-        // Act
+
         prestamoDataGateway.eliminarPrestamo(idPrestamo);
 
-        // Assert
+
         verify(prestamoDataJpaRepository).deleteById(idPrestamo);
         verify(prestamoDataJpaRepository).flush();
         verifyNoInteractions(prestamoMapper);
@@ -304,19 +304,19 @@ class PrestamoDataGatewayImplTest {
 
     @Test
     void eliminarPrestamo_cuandoTieneInformacionAsociada_debeLanzarRecursoEnUsoException() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
 
         doThrow(new DataIntegrityViolationException("Conflicto de integridad"))
                 .when(prestamoDataJpaRepository).flush();
 
-        // Act
+
         RecursoEnUsoException excepcion = assertThrows(
                 RecursoEnUsoException.class,
                 () -> prestamoDataGateway.eliminarPrestamo(idPrestamo)
         );
 
-        // Assert
+
         assertEquals(
                 "No se puede eliminar el prestamo porque tiene devoluciones, multas o renovaciones asociadas",
                 excepcion.getMessage()

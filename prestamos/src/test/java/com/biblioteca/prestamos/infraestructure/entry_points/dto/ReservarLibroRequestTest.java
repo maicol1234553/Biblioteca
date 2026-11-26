@@ -30,12 +30,12 @@ class ReservarLibroRequestTest {
 
     @Test
     void validar_cuandoIdUsuarioEsUuidValido_noDebeTenerViolaciones() {
-        // Arrange
+
         ReservarLibroRequest request = new ReservarLibroRequest(
                 "123e4567-e89b-12d3-a456-426614174000"
         );
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).isEmpty());
     }
 
@@ -45,10 +45,10 @@ class ReservarLibroRequestTest {
     void validar_cuandoIdUsuarioEsNullOVacio_debeIndicarQueEsObligatorio(
             String idUsuario
     ) {
-        // Arrange
+
         ReservarLibroRequest request = new ReservarLibroRequest(idUsuario);
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).stream().anyMatch(violacion ->
                 violacion.getPropertyPath().toString().equals("idUsuario")
                         && violacion.getMessage().equals(
@@ -59,11 +59,11 @@ class ReservarLibroRequestTest {
 
     @Test
     void validar_cuandoIdUsuarioNoEsUuid_debeIndicarFormatoInvalido() {
-        // Arrange
+
         ReservarLibroRequest request =
                 new ReservarLibroRequest("usuario-invalido");
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).stream().anyMatch(violacion ->
                 violacion.getPropertyPath().toString().equals("idUsuario")
                         && violacion.getMessage().equals(

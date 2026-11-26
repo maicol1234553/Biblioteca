@@ -101,12 +101,12 @@ public class RecordatorioUseCase {
         return buscarRecordatorioInterno(idRecordatorio);
     }
 
-    /**
-     * Procesa los recordatorios cuya fecha programada ya llego. Marca cada
-     * recordatorio como PROCESADO aunque falle el envio, para evitar enviar
-     * dos veces el mismo recordatorio. La notificacion queda FALLIDA y sera
-     * reintentada por el proceso de reintentos.
-     */
+
+
+
+
+
+
     public List<Recordatorio> procesarRecordatoriosPendientes() {
         LocalDateTime ahora = LocalDateTime.now(clock);
         List<Recordatorio> pendientes = recordatorioGateway.listarPendientesHasta(ahora);

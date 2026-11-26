@@ -15,10 +15,10 @@ class RolTest {
     @NullSource
     @ValueSource(strings = {"", " ", "   ", "\t"})
     void desde_cuandoValorEsNullOVacio_debeRetornarUsuario(String valor) {
-        // Act
+
         Rol resultado = Rol.desde(valor);
 
-        // Assert
+
         assertEquals(Rol.USUARIO, resultado);
     }
 
@@ -37,32 +37,32 @@ class RolTest {
             String valor,
             Rol esperado
     ) {
-        // Act
+
         Rol resultado = Rol.desde(valor);
 
-        // Assert
+
         assertEquals(esperado, resultado);
     }
 
     @Test
     void desde_cuandoValorTieneEspaciosAlrededor_debeNormalizarlo() {
-        // Act
+
         Rol resultado = Rol.desde("  admin  ");
 
-        // Assert
+
         assertEquals(Rol.ADMINISTRADOR, resultado);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"INVITADO", "ROOT", "ADMINISTRADORX", "123"})
     void desde_cuandoValorNoEsValido_debeLanzarExcepcion(String valor) {
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> Rol.desde(valor)
         );
 
-        // Assert
+
         assertEquals(
                 "El rol debe ser ADMINISTRADOR o USUARIO",
                 excepcion.getMessage()

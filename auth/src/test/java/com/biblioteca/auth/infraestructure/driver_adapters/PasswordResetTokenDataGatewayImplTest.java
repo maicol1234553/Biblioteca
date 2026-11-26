@@ -30,7 +30,7 @@ class PasswordResetTokenDataGatewayImplTest {
 
     @Test
     void guardarToken_debeConvertirGuardarYRetornarToken() {
-        // Arrange
+
         PasswordResetToken token = org.mockito.Mockito.mock(PasswordResetToken.class);
         PasswordResetTokenData tokenData =
                 org.mockito.Mockito.mock(PasswordResetTokenData.class);
@@ -45,11 +45,11 @@ class PasswordResetTokenDataGatewayImplTest {
         when(passwordResetTokenMapper.toToken(tokenDataGuardado))
                 .thenReturn(tokenConvertido);
 
-        // Act
+
         PasswordResetToken resultado =
                 passwordResetTokenDataGateway.guardarToken(token);
 
-        // Assert
+
         assertSame(tokenConvertido, resultado);
         verify(passwordResetTokenMapper).toTokenData(token);
         verify(passwordResetTokenDataJpaRepository).save(tokenData);
@@ -58,7 +58,7 @@ class PasswordResetTokenDataGatewayImplTest {
 
     @Test
     void buscarPorTokenHash_cuandoExiste_debeRetornarTokenConvertido() {
-        // Arrange
+
         String tokenHash = "hash-del-token";
         PasswordResetTokenData tokenData =
                 org.mockito.Mockito.mock(PasswordResetTokenData.class);
@@ -69,11 +69,11 @@ class PasswordResetTokenDataGatewayImplTest {
                 .thenReturn(Optional.of(tokenData));
         when(passwordResetTokenMapper.toToken(tokenData)).thenReturn(token);
 
-        // Act
+
         PasswordResetToken resultado =
                 passwordResetTokenDataGateway.buscarPorTokenHash(tokenHash);
 
-        // Assert
+
         assertSame(token, resultado);
         verify(passwordResetTokenDataJpaRepository).findByTokenHash(tokenHash);
         verify(passwordResetTokenMapper).toToken(tokenData);
@@ -81,17 +81,17 @@ class PasswordResetTokenDataGatewayImplTest {
 
     @Test
     void buscarPorTokenHash_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String tokenHash = "hash-inexistente";
 
         when(passwordResetTokenDataJpaRepository.findByTokenHash(tokenHash))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         PasswordResetToken resultado =
                 passwordResetTokenDataGateway.buscarPorTokenHash(tokenHash);
 
-        // Assert
+
         assertNull(resultado);
         verify(passwordResetTokenDataJpaRepository).findByTokenHash(tokenHash);
         verifyNoInteractions(passwordResetTokenMapper);
@@ -99,7 +99,7 @@ class PasswordResetTokenDataGatewayImplTest {
 
     @Test
     void actualizarToken_debeGuardarYRetornarTokenActualizado() {
-        // Arrange
+
         PasswordResetToken token = org.mockito.Mockito.mock(PasswordResetToken.class);
         PasswordResetTokenData tokenData =
                 org.mockito.Mockito.mock(PasswordResetTokenData.class);
@@ -114,11 +114,11 @@ class PasswordResetTokenDataGatewayImplTest {
         when(passwordResetTokenMapper.toToken(tokenDataGuardado))
                 .thenReturn(tokenActualizado);
 
-        // Act
+
         PasswordResetToken resultado =
                 passwordResetTokenDataGateway.actualizarToken(token);
 
-        // Assert
+
         assertSame(tokenActualizado, resultado);
         verify(passwordResetTokenMapper).toTokenData(token);
         verify(passwordResetTokenDataJpaRepository).save(tokenData);

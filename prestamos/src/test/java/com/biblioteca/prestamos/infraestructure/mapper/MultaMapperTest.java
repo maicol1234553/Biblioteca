@@ -22,16 +22,16 @@ class MultaMapperTest {
 
     @Test
     void toMulta_cuandoDataEsNull_debeRetornarNull() {
-        // Act
+
         Multa resultado = mapper.toMulta(null);
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void toMulta_debeMapearLosCamposYElIdDelPrestamo() {
-        // Arrange
+
         BigDecimal valor = new BigDecimal("25000.00");
         LocalDateTime fechaGeneracion =
                 LocalDateTime.of(2026, 11, 26, 10, 30);
@@ -47,10 +47,10 @@ class MultaMapperTest {
         when(data.getEstado()).thenReturn("PENDIENTE");
         when(data.getFechaGeneracion()).thenReturn(fechaGeneracion);
 
-        // Act
+
         Multa resultado = mapper.toMulta(data);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("multa-1", resultado.getIdMulta()),
                 () -> assertEquals("prestamo-1", resultado.getIdPrestamo()),
@@ -69,20 +69,20 @@ class MultaMapperTest {
 
     @Test
     void toMulta_cuandoPrestamoEsNull_debeDejarIdPrestamoEnNull() {
-        // Arrange
+
         MultaData data = mock(MultaData.class);
         when(data.getPrestamo()).thenReturn(null);
 
-        // Act
+
         Multa resultado = mapper.toMulta(data);
 
-        // Assert
+
         assertNull(resultado.getIdPrestamo());
     }
 
     @Test
     void toMultaData_debeMapearLosCamposYAsignarElPrestamo() {
-        // Arrange
+
         BigDecimal valor = new BigDecimal("25000.00");
         LocalDateTime fechaGeneracion =
                 LocalDateTime.of(2026, 11, 26, 10, 30);
@@ -96,10 +96,10 @@ class MultaMapperTest {
 
         PrestamoData prestamo = mock(PrestamoData.class);
 
-        // Act
+
         MultaData resultado = mapper.toMultaData(multa, prestamo);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("multa-1", resultado.getIdMulta()),
                 () -> assertSame(prestamo, resultado.getPrestamo()),
@@ -118,7 +118,7 @@ class MultaMapperTest {
 
     @Test
     void toMultaData_cuandoMultaEsNull_debeLanzarNullPointerException() {
-        // Act y Assert
+
         assertThrows(
                 NullPointerException.class,
                 () -> mapper.toMultaData(null, null)

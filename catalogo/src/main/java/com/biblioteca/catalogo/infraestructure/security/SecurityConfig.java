@@ -37,9 +37,9 @@ public class SecurityConfig {
                 .addFilterBefore(rolHeaderFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/health", "/actuator/info").permitAll()
-                        // Las consultas del catalogo son publicas.
+
                         .requestMatchers(HttpMethod.GET, "/api/biblioteca/**").permitAll()
-                        // Registrar, editar y eliminar requiere rol ADMINISTRADOR.
+
                         .requestMatchers("/api/biblioteca/**").hasRole("ADMINISTRADOR")
                         .anyRequest().authenticated())
                 .exceptionHandling(exceptions -> exceptions

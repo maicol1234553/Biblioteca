@@ -15,7 +15,7 @@ class UsuarioMapperTest {
 
     @Test
     void toUsuario_cuandoRecibeDatos_debeMapearTodosLosCampos() {
-        // Arrange
+
         UsuarioData usuarioData = new UsuarioData(
                 "usuario-1",
                 "Ana Pérez",
@@ -26,10 +26,10 @@ class UsuarioMapperTest {
                 "3001234567"
         );
 
-        // Act
+
         Usuario resultado = mapper.toUsuario(usuarioData);
 
-        // Assert
+
         assertNotNull(resultado);
         assertAll(
                 () -> assertEquals("usuario-1", resultado.getIdUsuario()),
@@ -44,19 +44,19 @@ class UsuarioMapperTest {
 
     @Test
     void toUsuario_cuandoRecibeNull_debeRetornarNull() {
-        // Arrange
+
         UsuarioData usuarioData = null;
 
-        // Act
+
         Usuario resultado = mapper.toUsuario(usuarioData);
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void toUsuarioData_cuandoRecibeUsuario_debeMapearTodosLosCampos() {
-        // Arrange
+
         Usuario usuario = new Usuario(
                 "usuario-2",
                 "Carlos Ruiz",
@@ -67,10 +67,10 @@ class UsuarioMapperTest {
                 "3119876543"
         );
 
-        // Act
+
         UsuarioData resultado = mapper.toUsuarioData(usuario);
 
-        // Assert
+
         assertNotNull(resultado);
         assertAll(
                 () -> assertEquals("usuario-2", resultado.getIdUsuario()),

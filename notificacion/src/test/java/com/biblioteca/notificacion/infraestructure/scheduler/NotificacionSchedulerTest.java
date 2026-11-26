@@ -30,31 +30,31 @@ class NotificacionSchedulerTest {
 
     @Test
     void procesarPendientes_cuandoHayResultados_debeInvocarAmbosUseCases() {
-        // Arrange
+
         when(notificacionUseCase.reintentarFallidas())
                 .thenReturn(Collections.nCopies(2, null));
         when(recordatorioUseCase.procesarRecordatoriosPendientes())
                 .thenReturn(Collections.nCopies(3, null));
 
-        // Act
+
         scheduler.procesarPendientes();
 
-        // Assert
+
         verify(notificacionUseCase).reintentarFallidas();
         verify(recordatorioUseCase).procesarRecordatoriosPendientes();
     }
 
     @Test
     void procesarPendientes_cuandoNoHayPendientes_debeInvocarAmbosUseCases() {
-        // Arrange
+
         when(notificacionUseCase.reintentarFallidas()).thenReturn(List.of());
         when(recordatorioUseCase.procesarRecordatoriosPendientes())
                 .thenReturn(List.of());
 
-        // Act
+
         scheduler.procesarPendientes();
 
-        // Assert
+
         verify(notificacionUseCase).reintentarFallidas();
         verify(recordatorioUseCase).procesarRecordatoriosPendientes();
     }
@@ -62,11 +62,11 @@ class NotificacionSchedulerTest {
     @Test
     void procesarPendientes_cuandoFallaReintento_debeCapturarLaExcepcion()
             throws Exception {
-        // Arrange
+
         when(notificacionUseCase.reintentarFallidas())
                 .thenThrow(new IllegalStateException("Error al reintentar"));
 
-        // Act y Assert
+
         assertDoesNotThrow(() -> scheduler.procesarPendientes());
 
         verify(notificacionUseCase).reintentarFallidas();
@@ -76,12 +76,12 @@ class NotificacionSchedulerTest {
     @Test
     void procesarPendientes_cuandoFallaRecordatorio_debeCapturarLaExcepcion()
             throws Exception {
-        // Arrange
+
         when(notificacionUseCase.reintentarFallidas()).thenReturn(List.of());
         when(recordatorioUseCase.procesarRecordatoriosPendientes())
                 .thenThrow(new IllegalStateException("Error al procesar"));
 
-        // Act y Assert
+
         assertDoesNotThrow(() -> scheduler.procesarPendientes());
 
         verify(notificacionUseCase).reintentarFallidas();

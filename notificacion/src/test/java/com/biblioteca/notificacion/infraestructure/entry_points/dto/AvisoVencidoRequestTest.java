@@ -33,7 +33,7 @@ class AvisoVencidoRequestTest {
 
     @Test
     void validar_cuandoTodosLosDatosSonCorrectos_noDebeTenerViolaciones() {
-        // Arrange
+
         AvisoVencidoRequest request = new AvisoVencidoRequest(
                 UUID_USUARIO,
                 UUID_PRESTAMO,
@@ -41,13 +41,13 @@ class AvisoVencidoRequestTest {
                 "El préstamo está vencido"
         );
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).isEmpty());
     }
 
     @Test
     void validar_cuandoIdUsuarioEstaVacio_debeIndicarQueEsObligatorio() {
-        // Arrange
+
         AvisoVencidoRequest request = new AvisoVencidoRequest(
                 " ",
                 UUID_PRESTAMO,
@@ -55,10 +55,10 @@ class AvisoVencidoRequestTest {
                 "Aviso"
         );
 
-        // Act
+
         var violaciones = validator.validate(request);
 
-        // Assert
+
         assertTrue(violaciones.stream().anyMatch(violacion ->
                 violacion.getPropertyPath().toString().equals("idUsuario")
                         && violacion.getMessage().equals(
@@ -69,7 +69,7 @@ class AvisoVencidoRequestTest {
 
     @Test
     void validar_cuandoIdUsuarioNoEsUuid_debeIndicarFormatoInvalido() {
-        // Arrange
+
         AvisoVencidoRequest request = new AvisoVencidoRequest(
                 "usuario-invalido",
                 UUID_PRESTAMO,
@@ -77,10 +77,10 @@ class AvisoVencidoRequestTest {
                 "Aviso"
         );
 
-        // Act
+
         var violaciones = validator.validate(request);
 
-        // Assert
+
         assertTrue(violaciones.stream().anyMatch(violacion ->
                 violacion.getPropertyPath().toString().equals("idUsuario")
                         && violacion.getMessage().equals(
@@ -91,7 +91,7 @@ class AvisoVencidoRequestTest {
 
     @Test
     void validar_cuandoIdPrestamoEstaVacio_debeIndicarQueEsObligatorio() {
-        // Arrange
+
         AvisoVencidoRequest request = new AvisoVencidoRequest(
                 UUID_USUARIO,
                 "",
@@ -99,10 +99,10 @@ class AvisoVencidoRequestTest {
                 "Aviso"
         );
 
-        // Act
+
         var violaciones = validator.validate(request);
 
-        // Assert
+
         assertTrue(violaciones.stream().anyMatch(violacion ->
                 violacion.getPropertyPath().toString().equals("idPrestamo")
                         && violacion.getMessage().equals(
@@ -113,7 +113,7 @@ class AvisoVencidoRequestTest {
 
     @Test
     void validar_cuandoIdPrestamoNoEsUuid_debeIndicarFormatoInvalido() {
-        // Arrange
+
         AvisoVencidoRequest request = new AvisoVencidoRequest(
                 UUID_USUARIO,
                 "prestamo-invalido",
@@ -121,10 +121,10 @@ class AvisoVencidoRequestTest {
                 "Aviso"
         );
 
-        // Act
+
         var violaciones = validator.validate(request);
 
-        // Assert
+
         assertTrue(violaciones.stream().anyMatch(violacion ->
                 violacion.getPropertyPath().toString().equals("idPrestamo")
                         && violacion.getMessage().equals(
@@ -135,7 +135,7 @@ class AvisoVencidoRequestTest {
 
     @Test
     void validar_cuandoDestinatarioNoEsCorreo_debeIndicarFormatoInvalido() {
-        // Arrange
+
         AvisoVencidoRequest request = new AvisoVencidoRequest(
                 UUID_USUARIO,
                 UUID_PRESTAMO,
@@ -143,10 +143,10 @@ class AvisoVencidoRequestTest {
                 "Aviso"
         );
 
-        // Act
+
         var violaciones = validator.validate(request);
 
-        // Assert
+
         assertTrue(violaciones.stream().anyMatch(violacion ->
                 violacion.getPropertyPath().toString().equals("destinatario")
                         && violacion.getMessage().equals(
@@ -157,7 +157,7 @@ class AvisoVencidoRequestTest {
 
     @Test
     void validar_cuandoDestinatarioYMensajeSonNull_noDebeTenerViolaciones() {
-        // Arrange
+
         AvisoVencidoRequest request = new AvisoVencidoRequest(
                 UUID_USUARIO,
                 UUID_PRESTAMO,
@@ -165,7 +165,7 @@ class AvisoVencidoRequestTest {
                 null
         );
 
-        // Act y Assert
+
         assertFalse(validator.validate(request).stream()
                 .anyMatch(violacion ->
                         violacion.getPropertyPath().toString().equals("destinatario")

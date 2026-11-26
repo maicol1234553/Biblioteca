@@ -42,7 +42,7 @@ class EjemplarDataGatewayImplTest {
 
     @Test
     void guardarEjemplar_debeBuscarLibroMapearGuardarYRetornarEjemplar() {
-        // Arrange
+
         Ejemplar ejemplar = mock(Ejemplar.class);
         LibroData libroData = mock(LibroData.class);
         EjemplarData ejemplarData = mock(EjemplarData.class);
@@ -59,10 +59,10 @@ class EjemplarDataGatewayImplTest {
         when(ejemplarMapper.toEjemplar(ejemplarDataGuardado))
                 .thenReturn(ejemplarConvertido);
 
-        // Act
+
         Ejemplar resultado = ejemplarDataGateway.guardarEjemplar(ejemplar);
 
-        // Assert
+
         assertSame(ejemplarConvertido, resultado);
         verify(libroDataJpaRepository).findById("libro-1");
         verify(ejemplarMapper).toEjemplarData(ejemplar, libroData);
@@ -72,7 +72,7 @@ class EjemplarDataGatewayImplTest {
 
     @Test
     void actualizarEjemplar_debeBuscarLibroMapearGuardarYRetornarEjemplarActualizado() {
-        // Arrange
+
         Ejemplar ejemplar = mock(Ejemplar.class);
         LibroData libroData = mock(LibroData.class);
         EjemplarData ejemplarData = mock(EjemplarData.class);
@@ -89,10 +89,10 @@ class EjemplarDataGatewayImplTest {
         when(ejemplarMapper.toEjemplar(ejemplarDataGuardado))
                 .thenReturn(ejemplarActualizado);
 
-        // Act
+
         Ejemplar resultado = ejemplarDataGateway.actualizarEjemplar(ejemplar);
 
-        // Assert
+
         assertSame(ejemplarActualizado, resultado);
         verify(libroDataJpaRepository).findById("libro-1");
         verify(ejemplarMapper).toEjemplarData(ejemplar, libroData);
@@ -102,20 +102,20 @@ class EjemplarDataGatewayImplTest {
 
     @Test
     void guardarEjemplar_cuandoElLibroNoExiste_debeLanzarExcepcion() {
-        // Arrange
+
         Ejemplar ejemplar = mock(Ejemplar.class);
 
         when(ejemplar.getIdLibro()).thenReturn("libro-inexistente");
         when(libroDataJpaRepository.findById("libro-inexistente"))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         LibroNoEncontradoException excepcion = assertThrows(
                 LibroNoEncontradoException.class,
                 () -> ejemplarDataGateway.guardarEjemplar(ejemplar)
         );
 
-        // Assert
+
         assertEquals(
                 "Libro no encontrado con id: libro-inexistente",
                 excepcion.getMessage()
@@ -126,7 +126,7 @@ class EjemplarDataGatewayImplTest {
 
     @Test
     void buscarEjemplarPorId_cuandoExiste_debeRetornarEjemplarMapeado() {
-        // Arrange
+
         String idEjemplar = "ejemplar-1";
         EjemplarData ejemplarData = mock(EjemplarData.class);
         Ejemplar ejemplar = mock(Ejemplar.class);
@@ -135,10 +135,10 @@ class EjemplarDataGatewayImplTest {
                 .thenReturn(Optional.of(ejemplarData));
         when(ejemplarMapper.toEjemplar(ejemplarData)).thenReturn(ejemplar);
 
-        // Act
+
         Ejemplar resultado = ejemplarDataGateway.buscarEjemplarPorId(idEjemplar);
 
-        // Assert
+
         assertSame(ejemplar, resultado);
         verify(ejemplarDataJpaRepository).findById(idEjemplar);
         verify(ejemplarMapper).toEjemplar(ejemplarData);
@@ -146,16 +146,16 @@ class EjemplarDataGatewayImplTest {
 
     @Test
     void buscarEjemplarPorId_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String idEjemplar = "ejemplar-inexistente";
 
         when(ejemplarDataJpaRepository.findById(idEjemplar))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Ejemplar resultado = ejemplarDataGateway.buscarEjemplarPorId(idEjemplar);
 
-        // Assert
+
         assertNull(resultado);
         verify(ejemplarDataJpaRepository).findById(idEjemplar);
         verifyNoInteractions(ejemplarMapper);
@@ -163,7 +163,7 @@ class EjemplarDataGatewayImplTest {
 
     @Test
     void buscarEjemplarPorCodigoInventario_cuandoExiste_debeRetornarEjemplarMapeado() {
-        // Arrange
+
         String codigo = "INV-001";
         EjemplarData ejemplarData = mock(EjemplarData.class);
         Ejemplar ejemplar = mock(Ejemplar.class);
@@ -172,11 +172,11 @@ class EjemplarDataGatewayImplTest {
                 .thenReturn(Optional.of(ejemplarData));
         when(ejemplarMapper.toEjemplar(ejemplarData)).thenReturn(ejemplar);
 
-        // Act
+
         Ejemplar resultado =
                 ejemplarDataGateway.buscarEjemplarPorCodigoInventario(codigo);
 
-        // Assert
+
         assertSame(ejemplar, resultado);
         verify(ejemplarDataJpaRepository).findByCodigoInventario(codigo);
         verify(ejemplarMapper).toEjemplar(ejemplarData);
@@ -184,17 +184,17 @@ class EjemplarDataGatewayImplTest {
 
     @Test
     void buscarEjemplarPorCodigoInventario_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String codigo = "INV-999";
 
         when(ejemplarDataJpaRepository.findByCodigoInventario(codigo))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Ejemplar resultado =
                 ejemplarDataGateway.buscarEjemplarPorCodigoInventario(codigo);
 
-        // Assert
+
         assertNull(resultado);
         verify(ejemplarDataJpaRepository).findByCodigoInventario(codigo);
         verifyNoInteractions(ejemplarMapper);
@@ -202,7 +202,7 @@ class EjemplarDataGatewayImplTest {
 
     @Test
     void listarEjemplares_debeMapearYRetornarLaLista() {
-        // Arrange
+
         EjemplarData ejemplarData = mock(EjemplarData.class);
         Ejemplar ejemplar = mock(Ejemplar.class);
 
@@ -210,10 +210,10 @@ class EjemplarDataGatewayImplTest {
                 .thenReturn(List.of(ejemplarData));
         when(ejemplarMapper.toEjemplar(ejemplarData)).thenReturn(ejemplar);
 
-        // Act
+
         List<Ejemplar> resultado = ejemplarDataGateway.listarEjemplares();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(ejemplar, resultado.get(0));
         verify(ejemplarDataJpaRepository).findAll();
@@ -222,7 +222,7 @@ class EjemplarDataGatewayImplTest {
 
     @Test
     void listarEjemplaresPorLibro_debeBuscarPorLibroYMapearResultados() {
-        // Arrange
+
         String idLibro = "libro-1";
         EjemplarData ejemplarData = mock(EjemplarData.class);
         Ejemplar ejemplar = mock(Ejemplar.class);
@@ -232,11 +232,11 @@ class EjemplarDataGatewayImplTest {
                 .thenReturn(List.of(ejemplarData));
         when(ejemplarMapper.toEjemplar(ejemplarData)).thenReturn(ejemplar);
 
-        // Act
+
         List<Ejemplar> resultado =
                 ejemplarDataGateway.listarEjemplaresPorLibro(idLibro);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(ejemplar, resultado.get(0));
         verify(ejemplarDataJpaRepository)
@@ -246,7 +246,7 @@ class EjemplarDataGatewayImplTest {
 
     @Test
     void listarEjemplaresDisponibles_debeBuscarPorEstadoDisponibleYMapearResultados() {
-        // Arrange
+
         EjemplarData ejemplarData = mock(EjemplarData.class);
         Ejemplar ejemplar = mock(Ejemplar.class);
 
@@ -255,11 +255,11 @@ class EjemplarDataGatewayImplTest {
                 .thenReturn(List.of(ejemplarData));
         when(ejemplarMapper.toEjemplar(ejemplarData)).thenReturn(ejemplar);
 
-        // Act
+
         List<Ejemplar> resultado =
                 ejemplarDataGateway.listarEjemplaresDisponibles();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(ejemplar, resultado.get(0));
         verify(ejemplarDataJpaRepository).findByEstadoOrderByCodigoInventarioAsc(
@@ -269,13 +269,13 @@ class EjemplarDataGatewayImplTest {
 
     @Test
     void eliminarEjemplar_cuandoSeEliminaCorrectamente_debeEjecutarDeleteYFlush() {
-        // Arrange
+
         String idEjemplar = "ejemplar-1";
 
-        // Act
+
         ejemplarDataGateway.eliminarEjemplar(idEjemplar);
 
-        // Assert
+
         verify(ejemplarDataJpaRepository).deleteById(idEjemplar);
         verify(ejemplarDataJpaRepository).flush();
         verifyNoInteractions(ejemplarMapper);
@@ -283,19 +283,19 @@ class EjemplarDataGatewayImplTest {
 
     @Test
     void eliminarEjemplar_cuandoTienePrestamosAsociados_debeLanzarRecursoEnUsoException() {
-        // Arrange
+
         String idEjemplar = "ejemplar-1";
 
         doThrow(new DataIntegrityViolationException("Conflicto de integridad"))
                 .when(ejemplarDataJpaRepository).deleteById(idEjemplar);
 
-        // Act
+
         RecursoEnUsoException excepcion = assertThrows(
                 RecursoEnUsoException.class,
                 () -> ejemplarDataGateway.eliminarEjemplar(idEjemplar)
         );
 
-        // Assert
+
         assertEquals(
                 "No se puede eliminar el ejemplar porque tiene prestamos asociados",
                 excepcion.getMessage()

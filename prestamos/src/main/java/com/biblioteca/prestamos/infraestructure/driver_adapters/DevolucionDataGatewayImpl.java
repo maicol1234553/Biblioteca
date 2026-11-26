@@ -70,10 +70,10 @@ public class DevolucionDataGatewayImpl implements DevolucionGateway {
         }
 
         try {
-            // El prestamo mantiene la relacion inversa (mappedBy). Si no se limpia
-            // antes de borrar, Hibernate intenta guardar un prestamo que referencia
-            // una devolucion ya eliminada y el flush falla con
-            // TransientPropertyValueException.
+
+
+
+
             PrestamoData prestamo = devolucion.getPrestamo();
 
             if (prestamo != null) {

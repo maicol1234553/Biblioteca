@@ -39,7 +39,17 @@ public class UsuarioUseCase {
         }
 
         cifrarPassword(usuario);
-        return usuarioGateway.guardarUsuario(usuario);
+        Usuario guardado = usuarioGateway.guardarUsuario(usuario);
+
+        notificationGateway.enviarCorreo(
+                guardado.getIdUsuario(),
+                guardado.getCorreo(),
+                "Bienvenido a la Biblioteca",
+                "Tu cuenta fue creada correctamente.",
+                "GENERICA"
+        );
+
+        return guardado;
     }
 
     public String loginUsuario(String correo, String password) {
@@ -78,7 +88,7 @@ public class UsuarioUseCase {
         usuario.setPassword(encrypterGateway.encrypt(passwordNueva));
         usuarioGateway.actualizarUsuario(usuario);
 
-        // Notificación por correo: contraseña cambiada
+
         notificationGateway.enviarCorreo(
                 usuario.getIdUsuario(),
                 usuario.getCorreo(),
@@ -111,7 +121,7 @@ public class UsuarioUseCase {
 
         passwordResetTokenGateway.guardarToken(registro);
 
-        // Enviar por correo (canal único)
+
         notificationGateway.enviarCorreo(
                 usuario.getIdUsuario(),
                 usuario.getCorreo(),
@@ -152,7 +162,7 @@ public class UsuarioUseCase {
         registro.setUsado(true);
         passwordResetTokenGateway.actualizarToken(registro);
 
-        // Notificación por correo: contraseña restablecida
+
         notificationGateway.enviarCorreo(
                 usuario.getIdUsuario(),
                 usuario.getCorreo(),

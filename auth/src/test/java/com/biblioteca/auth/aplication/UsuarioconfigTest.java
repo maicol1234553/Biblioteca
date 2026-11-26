@@ -14,7 +14,7 @@ class UsuarioconfigTest {
 
     @Test
     void usuarioUseCase_debeCrearUnaInstanciaConLasDependencias() {
-        // Arrange
+
         Usuarioconfig config = new Usuarioconfig();
 
         UsuarioGateway usuarioGateway = mock(UsuarioGateway.class);
@@ -23,7 +23,7 @@ class UsuarioconfigTest {
                 mock(PasswordResetTokenGateway.class);
         NotificationGateway notificationGateway = mock(NotificationGateway.class);
 
-        // Act
+
         UsuarioUseCase resultado = config.usuarioUseCase(
                 usuarioGateway,
                 encrypterGateway,
@@ -31,7 +31,7 @@ class UsuarioconfigTest {
                 notificationGateway
         );
 
-        // Assert
+
         assertNotNull(resultado);
     }
 }

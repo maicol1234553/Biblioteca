@@ -40,7 +40,7 @@ class NotificacionDataGatewayImplTest {
 
     @Test
     void guardarNotificacion_debeMapearGuardarYRetornarNotificacion() {
-        // Arrange
+
         Notificacion notificacion = mock(Notificacion.class);
         NotificacionData notificacionData = mock(NotificacionData.class);
         NotificacionData notificacionDataGuardada = mock(NotificacionData.class);
@@ -52,11 +52,11 @@ class NotificacionDataGatewayImplTest {
         when(notificacionMapper.toNotificacion(notificacionDataGuardada))
                 .thenReturn(notificacionConvertida);
 
-        // Act
+
         Notificacion resultado =
                 notificacionDataGateway.guardarNotificacion(notificacion);
 
-        // Assert
+
         assertSame(notificacionConvertida, resultado);
         verify(notificacionMapper).toNotificacionData(notificacion);
         verify(notificacionDataJpaRepository).save(notificacionData);
@@ -65,7 +65,7 @@ class NotificacionDataGatewayImplTest {
 
     @Test
     void actualizarNotificacion_debeGuardarYRetornarNotificacionActualizada() {
-        // Arrange
+
         Notificacion notificacion = mock(Notificacion.class);
         NotificacionData notificacionData = mock(NotificacionData.class);
         NotificacionData notificacionDataActualizada = mock(NotificacionData.class);
@@ -77,11 +77,11 @@ class NotificacionDataGatewayImplTest {
         when(notificacionMapper.toNotificacion(notificacionDataActualizada))
                 .thenReturn(notificacionActualizada);
 
-        // Act
+
         Notificacion resultado =
                 notificacionDataGateway.actualizarNotificacion(notificacion);
 
-        // Assert
+
         assertSame(notificacionActualizada, resultado);
         verify(notificacionMapper).toNotificacionData(notificacion);
         verify(notificacionDataJpaRepository).save(notificacionData);
@@ -90,7 +90,7 @@ class NotificacionDataGatewayImplTest {
 
     @Test
     void buscarNotificacionPorId_cuandoExiste_debeRetornarNotificacionMapeada() {
-        // Arrange
+
         String idNotificacion = "notificacion-1";
         NotificacionData notificacionData = mock(NotificacionData.class);
         Notificacion notificacion = mock(Notificacion.class);
@@ -99,11 +99,11 @@ class NotificacionDataGatewayImplTest {
                 .thenReturn(Optional.of(notificacionData));
         when(notificacionMapper.toNotificacion(notificacionData)).thenReturn(notificacion);
 
-        // Act
+
         Notificacion resultado =
                 notificacionDataGateway.buscarNotificacionPorId(idNotificacion);
 
-        // Assert
+
         assertSame(notificacion, resultado);
         verify(notificacionDataJpaRepository).findById(idNotificacion);
         verify(notificacionMapper).toNotificacion(notificacionData);
@@ -111,17 +111,17 @@ class NotificacionDataGatewayImplTest {
 
     @Test
     void buscarNotificacionPorId_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String idNotificacion = "notificacion-inexistente";
 
         when(notificacionDataJpaRepository.findById(idNotificacion))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Notificacion resultado =
                 notificacionDataGateway.buscarNotificacionPorId(idNotificacion);
 
-        // Assert
+
         assertNull(resultado);
         verify(notificacionDataJpaRepository).findById(idNotificacion);
         verifyNoInteractions(notificacionMapper);
@@ -129,7 +129,7 @@ class NotificacionDataGatewayImplTest {
 
     @Test
     void listarNotificaciones_debeMapearYRetornarLaLista() {
-        // Arrange
+
         NotificacionData notificacionData = mock(NotificacionData.class);
         Notificacion notificacion = mock(Notificacion.class);
 
@@ -137,10 +137,10 @@ class NotificacionDataGatewayImplTest {
                 .thenReturn(List.of(notificacionData));
         when(notificacionMapper.toNotificacion(notificacionData)).thenReturn(notificacion);
 
-        // Act
+
         List<Notificacion> resultado = notificacionDataGateway.listarNotificaciones();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(notificacion, resultado.get(0));
         verify(notificacionDataJpaRepository).findAllByOrderByFechaCreacionDesc();
@@ -149,7 +149,7 @@ class NotificacionDataGatewayImplTest {
 
     @Test
     void listarPorUsuario_debeConsultarYMapearLasNotificaciones() {
-        // Arrange
+
         String idUsuario = "usuario-1";
         NotificacionData notificacionData = mock(NotificacionData.class);
         Notificacion notificacion = mock(Notificacion.class);
@@ -158,10 +158,10 @@ class NotificacionDataGatewayImplTest {
                 .thenReturn(List.of(notificacionData));
         when(notificacionMapper.toNotificacion(notificacionData)).thenReturn(notificacion);
 
-        // Act
+
         List<Notificacion> resultado = notificacionDataGateway.listarPorUsuario(idUsuario);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(notificacion, resultado.get(0));
         verify(notificacionDataJpaRepository)
@@ -171,7 +171,7 @@ class NotificacionDataGatewayImplTest {
 
     @Test
     void listarPorEstado_debeConsultarYMapearLasNotificaciones() {
-        // Arrange
+
         String estado = "FALLIDA";
         NotificacionData notificacionData = mock(NotificacionData.class);
         Notificacion notificacion = mock(Notificacion.class);
@@ -180,10 +180,10 @@ class NotificacionDataGatewayImplTest {
                 .thenReturn(List.of(notificacionData));
         when(notificacionMapper.toNotificacion(notificacionData)).thenReturn(notificacion);
 
-        // Act
+
         List<Notificacion> resultado = notificacionDataGateway.listarPorEstado(estado);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(notificacion, resultado.get(0));
         verify(notificacionDataJpaRepository).findByEstadoOrderByFechaCreacionDesc(estado);
@@ -192,7 +192,7 @@ class NotificacionDataGatewayImplTest {
 
     @Test
     void listarPorEstados_debeConsultarYMapearLasNotificaciones() {
-        // Arrange
+
         Collection<String> estados = List.of("PENDIENTE", "FALLIDA");
         NotificacionData notificacionData = mock(NotificacionData.class);
         Notificacion notificacion = mock(Notificacion.class);
@@ -201,10 +201,10 @@ class NotificacionDataGatewayImplTest {
                 .thenReturn(List.of(notificacionData));
         when(notificacionMapper.toNotificacion(notificacionData)).thenReturn(notificacion);
 
-        // Act
+
         List<Notificacion> resultado = notificacionDataGateway.listarPorEstados(estados);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(notificacion, resultado.get(0));
         verify(notificacionDataJpaRepository)
@@ -214,13 +214,13 @@ class NotificacionDataGatewayImplTest {
 
     @Test
     void eliminarNotificacion_cuandoSeEliminaCorrectamente_debeEjecutarDeleteYFlush() {
-        // Arrange
+
         String idNotificacion = "notificacion-1";
 
-        // Act
+
         notificacionDataGateway.eliminarNotificacion(idNotificacion);
 
-        // Assert
+
         verify(notificacionDataJpaRepository).deleteById(idNotificacion);
         verify(notificacionDataJpaRepository).flush();
         verifyNoInteractions(notificacionMapper);
@@ -228,19 +228,19 @@ class NotificacionDataGatewayImplTest {
 
     @Test
     void eliminarNotificacion_cuandoTieneHistorialAsociado_debeLanzarRecursoEnUsoException() {
-        // Arrange
+
         String idNotificacion = "notificacion-1";
 
         doThrow(new DataIntegrityViolationException("Conflicto de integridad"))
                 .when(notificacionDataJpaRepository).flush();
 
-        // Act
+
         RecursoEnUsoException excepcion = assertThrows(
                 RecursoEnUsoException.class,
                 () -> notificacionDataGateway.eliminarNotificacion(idNotificacion)
         );
 
-        // Assert
+
         assertEquals(
                 "No se puede eliminar la notificacion porque tiene historial asociado",
                 excepcion.getMessage()

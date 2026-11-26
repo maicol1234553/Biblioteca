@@ -17,13 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Consulta informacion bibliografica en Open Library y, si no hay
- * resultados o el servicio falla, usa Google Books como respaldo.
- *
- * Ambas APIs son publicas; Google Books puede limitar la cantidad de
- * peticiones sin API key, suficiente para el flujo academico del proyecto.
- */
+
+
+
+
+
+
+
 @Component
 public class OpenLibraryGatewayImpl implements LibroExternoGateway {
 
@@ -40,9 +40,9 @@ public class OpenLibraryGatewayImpl implements LibroExternoGateway {
         );
     }
 
-    /**
-     * Constructor para pruebas: permite inyectar clientes HTTP simulados.
-     */
+
+
+
     OpenLibraryGatewayImpl(RestClient openLibrary, RestClient googleBooks) {
         this.openLibrary = openLibrary;
         this.googleBooks = googleBooks;

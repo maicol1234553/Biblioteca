@@ -35,11 +35,11 @@ class SolicitarPrestamoRequestTest {
 
     @Test
     void validar_cuandoLosIdsSonUuidValidos_noDebeTenerViolaciones() {
-        // Arrange
+
         SolicitarPrestamoRequest request =
                 new SolicitarPrestamoRequest(UUID_USUARIO, UUID_EJEMPLAR);
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).isEmpty());
     }
 
@@ -49,11 +49,11 @@ class SolicitarPrestamoRequestTest {
     void validar_cuandoIdUsuarioEsNullOVacio_debeIndicarQueEsObligatorio(
             String idUsuario
     ) {
-        // Arrange
+
         SolicitarPrestamoRequest request =
                 new SolicitarPrestamoRequest(idUsuario, UUID_EJEMPLAR);
 
-        // Act y Assert
+
         assertTrue(tieneViolacion(
                 request,
                 "idUsuario",
@@ -63,11 +63,11 @@ class SolicitarPrestamoRequestTest {
 
     @Test
     void validar_cuandoIdUsuarioNoEsUuid_debeIndicarFormatoInvalido() {
-        // Arrange
+
         SolicitarPrestamoRequest request =
                 new SolicitarPrestamoRequest("usuario-invalido", UUID_EJEMPLAR);
 
-        // Act y Assert
+
         assertTrue(tieneViolacion(
                 request,
                 "idUsuario",
@@ -81,11 +81,11 @@ class SolicitarPrestamoRequestTest {
     void validar_cuandoIdEjemplarEsNullOVacio_debeIndicarQueEsObligatorio(
             String idEjemplar
     ) {
-        // Arrange
+
         SolicitarPrestamoRequest request =
                 new SolicitarPrestamoRequest(UUID_USUARIO, idEjemplar);
 
-        // Act y Assert
+
         assertTrue(tieneViolacion(
                 request,
                 "idEjemplar",
@@ -95,11 +95,11 @@ class SolicitarPrestamoRequestTest {
 
     @Test
     void validar_cuandoIdEjemplarNoEsUuid_debeIndicarFormatoInvalido() {
-        // Arrange
+
         SolicitarPrestamoRequest request =
                 new SolicitarPrestamoRequest(UUID_USUARIO, "ejemplar-invalido");
 
-        // Act y Assert
+
         assertTrue(tieneViolacion(
                 request,
                 "idEjemplar",

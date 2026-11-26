@@ -7,10 +7,10 @@ public final class PlantillaRenderer {
     private PlantillaRenderer() {
     }
 
-    /**
-     * Reemplaza variables con el formato {{clave}}. Los valores deben llegar
-     * ya escapados cuando se insertan en contenido HTML.
-     */
+
+
+
+
     public static String render(String plantilla, Map<String, String> variables) {
         if (plantilla == null) {
             return "";

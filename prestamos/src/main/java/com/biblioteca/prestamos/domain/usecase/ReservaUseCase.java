@@ -136,9 +136,9 @@ public class ReservaUseCase {
         return procesarReservasExpiradas();
     }
 
-    /**
-     * Proceso invocado por el job programado para expirar reservas vencidas.
-     */
+
+
+
     public List<Reserva> procesarReservasExpiradas() {
         LocalDateTime ahora = LocalDateTime.now(clock);
         List<Reserva> expiradas = reservaGateway.listarReservasPendientesExpiradas(ahora);

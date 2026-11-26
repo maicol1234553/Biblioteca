@@ -1,12 +1,3 @@
-# Blueprint de Render para el Sistema de Biblioteca.
-# Crea 4 Web Services (Docker, plan free) que comparten la misma base Neon.
-#
-# Rutas explicitas: cada servicio usa SOLO su carpeta como contexto y su
-# propio Dockerfile. No hay proyecto Maven padre; cada modulo es independiente.
-#
-# Los secretos viven en el Environment Group "biblioteca-config" y se piden
-# una sola vez al aplicar el Blueprint (sync: false).
-
 envVarGroups:
   - name: biblioteca-config
     envVars:
@@ -16,15 +7,14 @@ envVarGroups:
         sync: false
       - key: CATALOGO_ADMIN_USUARIO_ID
         value: 8e03853d-7058-40a4-9692-2b5fbf82d47e
-      # Correo: configura al menos una de estas dos API keys. Render Free
-      # bloquea los puertos SMTP, por lo que SMTP no funciona en plan free.
       - key: SENDGRID_API_KEY
         sync: false
       - key: BREVO_API_KEY
         sync: false
       - key: MAIL_FROM
         sync: false
-      # SMTP solo se usa si no hay SENDGRID_API_KEY ni BREVO_API_KEY.
+      - key: INTERNAL_API_KEY
+        sync: false
       - key: MAIL_HOST
         sync: false
       - key: MAIL_PORT
@@ -37,7 +27,6 @@ envVarGroups:
         value: "true"
       - key: MAIL_SMTP_STARTTLS
         value: "true"
-
 services:
   - type: web
     name: biblioteca-auth-maicol
@@ -51,15 +40,12 @@ services:
       - fromGroup: biblioteca-config
       - key: MODULE
         value: auth
-      # URL publica del servicio de notificacion (se configura tras el primer
-      # despliegue). Ejemplo: https://biblioteca-notificacion-maicol.onrender.com
       - key: NOTIFICACION_URL
         sync: false
       - key: JAVA_OPTS
         value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
       - key: SPRING_JPA_SHOW_SQL
         value: "false"
-
   - type: web
     name: biblioteca-catalogo-maicol
     runtime: docker
@@ -76,7 +62,6 @@ services:
         value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
       - key: SPRING_JPA_SHOW_SQL
         value: "false"
-
   - type: web
     name: biblioteca-notificacion-maicol
     runtime: docker
@@ -89,16 +74,12 @@ services:
       - fromGroup: biblioteca-config
       - key: MODULE
         value: notificacion
-      # URL publica del servicio auth para resolver correos por idUsuario.
       - key: AUTH_URL
         sync: false
-      # AUTH_URL se configura DESPUES del primer despliegue con la URL real
-      # del servicio auth en Render (no se inventa aqui).
       - key: JAVA_OPTS
         value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
       - key: SPRING_JPA_SHOW_SQL
         value: "false"
-
   - type: web
     name: biblioteca-prestamos-maicol
     runtime: docker
@@ -111,8 +92,12 @@ services:
       - fromGroup: biblioteca-config
       - key: MODULE
         value: prestamos
-      # AUTH_URL, CATALOGO_URL y NOTIFICACION_URL se configuran DESPUES del
-      # primer despliegue con las URLs reales de Render (no se inventan aqui).
+      - key: AUTH_URL
+        sync: false
+      - key: CATALOGO_URL
+        sync: false
+      - key: NOTIFICACION_URL
+        sync: false
       - key: JAVA_OPTS
         value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
       - key: SPRING_JPA_SHOW_SQL

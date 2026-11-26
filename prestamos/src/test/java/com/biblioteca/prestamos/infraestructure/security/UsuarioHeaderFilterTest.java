@@ -42,15 +42,15 @@ class UsuarioHeaderFilterTest {
     @Test
     void doFilter_cuandoFaltaElHeader_debeContinuarSinConsultarAuth()
             throws Exception {
-        // Arrange
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain chain = mock(FilterChain.class);
 
-        // Act
+
         filter.doFilter(request, response, chain);
 
-        // Assert
+
         verifyNoInteractions(authGateway);
         verify(chain).doFilter(request, response);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
@@ -59,17 +59,17 @@ class UsuarioHeaderFilterTest {
     @Test
     void doFilter_cuandoHeaderEstaEnBlanco_debeContinuarSinConsultarAuth()
             throws Exception {
-        // Arrange
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(UsuarioHeaderFilter.HEADER_USUARIO, "   ");
 
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain chain = mock(FilterChain.class);
 
-        // Act
+
         filter.doFilter(request, response, chain);
 
-        // Assert
+
         verifyNoInteractions(authGateway);
         verify(chain).doFilter(request, response);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
@@ -86,7 +86,7 @@ class UsuarioHeaderFilterTest {
             String rol,
             String autoridadEsperada
     ) throws Exception {
-        // Arrange
+
         UsuarioExterno usuario = mock(UsuarioExterno.class);
         when(usuario.rol()).thenReturn(rol);
         when(authGateway.buscarUsuario("usuario-1")).thenReturn(usuario);
@@ -97,10 +97,10 @@ class UsuarioHeaderFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain chain = mock(FilterChain.class);
 
-        // Act
+
         filter.doFilter(request, response, chain);
 
-        // Assert
+
         Authentication autenticacion =
                 SecurityContextHolder.getContext().getAuthentication();
 
@@ -117,7 +117,7 @@ class UsuarioHeaderFilterTest {
     @Test
     void doFilter_cuandoAuthNoEncuentraUsuario_debeResponder401()
             throws Exception {
-        // Arrange
+
         when(authGateway.buscarUsuario("usuario-1")).thenReturn(null);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -126,10 +126,10 @@ class UsuarioHeaderFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain chain = mock(FilterChain.class);
 
-        // Act
+
         filter.doFilter(request, response, chain);
 
-        // Assert
+
         assertEquals(401, response.getStatus());
         assertEquals(
                 "{\"mensaje\":\"Usuario no autorizado\"}",
@@ -142,7 +142,7 @@ class UsuarioHeaderFilterTest {
 
     @Test
     void doFilter_cuandoRolNoEsValido_debeResponder401() throws Exception {
-        // Arrange
+
         UsuarioExterno usuario = mock(UsuarioExterno.class);
         when(usuario.rol()).thenReturn("INVITADO");
         when(authGateway.buscarUsuario("usuario-1")).thenReturn(usuario);
@@ -153,10 +153,10 @@ class UsuarioHeaderFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain chain = mock(FilterChain.class);
 
-        // Act
+
         filter.doFilter(request, response, chain);
 
-        // Assert
+
         assertEquals(401, response.getStatus());
         assertEquals(
                 "{\"mensaje\":\"El usuario no tiene un rol valido\"}",
@@ -169,7 +169,7 @@ class UsuarioHeaderFilterTest {
 
     @Test
     void doFilter_cuandoRolEsNull_debeAsignarRolUsuario() throws Exception {
-        // Arrange
+
         UsuarioExterno usuario = mock(UsuarioExterno.class);
         when(usuario.rol()).thenReturn(null);
         when(authGateway.buscarUsuario("usuario-1")).thenReturn(usuario);
@@ -180,10 +180,10 @@ class UsuarioHeaderFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain chain = mock(FilterChain.class);
 
-        // Act
+
         filter.doFilter(request, response, chain);
 
-        // Assert
+
         Authentication autenticacion =
                 SecurityContextHolder.getContext().getAuthentication();
 
@@ -195,7 +195,7 @@ class UsuarioHeaderFilterTest {
 
     @Test
     void doFilter_cuandoAuthNoEstaDisponible_debeResponder503() throws Exception {
-        // Arrange
+
         when(authGateway.buscarUsuario("usuario-1"))
                 .thenThrow(new ServicioExternoNoDisponibleException(
                         "Auth no disponible"
@@ -207,10 +207,10 @@ class UsuarioHeaderFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain chain = mock(FilterChain.class);
 
-        // Act
+
         filter.doFilter(request, response, chain);
 
-        // Assert
+
         assertEquals(503, response.getStatus());
         assertEquals(
                 "{\"mensaje\":\"No se pudo validar el usuario con el microservicio Auth\"}",

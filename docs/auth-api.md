@@ -55,6 +55,7 @@ Body:
 ```
 
 - `idUsuario` es opcional; si se omite se genera un UUID.
+- Al registrar correctamente, auth envia un correo de bienvenida a traves de notificacion.
 - `rol`: `ADMINISTRADOR` | `USUARIO` | `ADMIN` | `USER`; si es nulo se usa `USUARIO`.
 - `edad`: 18–122. `nTelefono`: exactamente 10 dígitos. `password`: mínimo 8 caracteres.
 - La contraseña se cifra con **BCrypt** (`$2a$...`, longitud 60).

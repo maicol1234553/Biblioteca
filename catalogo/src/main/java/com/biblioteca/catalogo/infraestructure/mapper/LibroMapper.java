@@ -52,10 +52,10 @@ public class LibroMapper {
         );
     }
 
-    /**
-     * Mapea solo los campos escalares. Las relaciones (editorial, categorias y
-     * autores) las resuelve el gateway contra la base de datos.
-     */
+
+
+
+
     public LibroData toLibroData(Libro libro) {
         LibroData libroData = new LibroData();
 

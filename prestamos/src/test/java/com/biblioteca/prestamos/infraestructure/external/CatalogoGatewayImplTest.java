@@ -42,7 +42,7 @@ class CatalogoGatewayImplTest {
 
     @BeforeEach
     void setUp() {
-        // Arrange común
+
         RestClient.Builder builder = RestClient.builder()
                 .baseUrl("http://catalogo.test");
 
@@ -62,7 +62,7 @@ class CatalogoGatewayImplTest {
 
     @Test
     void buscarEjemplar_cuandoCatalogoDevuelveEjemplar_debeMapearSusDatos() {
-        // Arrange
+
         servidor.expect(request ->
                         assertEquals(
                                 "/api/biblioteca/ejemplares/ejemplar-1",
@@ -80,11 +80,11 @@ class CatalogoGatewayImplTest {
                         }
                         """, MediaType.APPLICATION_JSON));
 
-        // Act
+
         EjemplarExterno resultado =
                 catalogoGateway.buscarEjemplar("ejemplar-1");
 
-        // Assert
+
         assertEquals("ejemplar-1", resultado.idEjemplar());
         assertEquals("libro-1", resultado.idLibro());
         assertEquals("Cien años de soledad", resultado.tituloLibro());
@@ -95,7 +95,7 @@ class CatalogoGatewayImplTest {
 
     @Test
     void buscarEjemplar_cuandoCatalogoRetorna404_debeRetornarNull() {
-        // Arrange
+
         servidor.expect(request ->
                         assertEquals(
                                 "/api/biblioteca/ejemplares/ejemplar-inexistente",
@@ -104,17 +104,17 @@ class CatalogoGatewayImplTest {
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND));
 
-        // Act
+
         EjemplarExterno resultado =
                 catalogoGateway.buscarEjemplar("ejemplar-inexistente");
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void buscarEjemplar_cuandoElJsonNoTieneId_debeRetornarNull() {
-        // Arrange
+
         servidor.expect(request ->
                         assertEquals(
                                 "/api/biblioteca/ejemplares/ejemplar-1",
@@ -128,17 +128,17 @@ class CatalogoGatewayImplTest {
                         }
                         """, MediaType.APPLICATION_JSON));
 
-        // Act
+
         EjemplarExterno resultado =
                 catalogoGateway.buscarEjemplar("ejemplar-1");
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void buscarEjemplar_cuandoCatalogoRetornaErrorDeServidor_debeLanzarExcepcion() {
-        // Arrange
+
         servidor.expect(request ->
                         assertEquals(
                                 "/api/biblioteca/ejemplares/ejemplar-1",
@@ -147,13 +147,13 @@ class CatalogoGatewayImplTest {
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR));
 
-        // Act
+
         ServicioExternoNoDisponibleException excepcion = assertThrows(
                 ServicioExternoNoDisponibleException.class,
                 () -> catalogoGateway.buscarEjemplar("ejemplar-1")
         );
 
-        // Assert
+
         assertEquals(
                 "Catalogo respondio con error al consultar el ejemplar",
                 excepcion.getMessage()
@@ -162,7 +162,7 @@ class CatalogoGatewayImplTest {
 
     @Test
     void buscarEjemplar_cuandoFallaLaConexion_debeLanzarExcepcion() {
-        // Arrange
+
         servidor.expect(request ->
                         assertEquals(
                                 "/api/biblioteca/ejemplares/ejemplar-1",
@@ -171,13 +171,13 @@ class CatalogoGatewayImplTest {
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withException(new IOException("Conexión rechazada")));
 
-        // Act
+
         ServicioExternoNoDisponibleException excepcion = assertThrows(
                 ServicioExternoNoDisponibleException.class,
                 () -> catalogoGateway.buscarEjemplar("ejemplar-1")
         );
 
-        // Assert
+
         assertEquals(
                 "No se pudo consultar el microservicio Catalogo",
                 excepcion.getMessage()
@@ -186,7 +186,7 @@ class CatalogoGatewayImplTest {
 
     @Test
     void consultarDisponibilidadLibro_cuandoCatalogoDevuelveDatos_debeMapearlos() {
-        // Arrange
+
         servidor.expect(request ->
                         assertEquals(
                                 "/api/biblioteca/libros/libro-1/disponibilidad",
@@ -203,11 +203,11 @@ class CatalogoGatewayImplTest {
                         }
                         """, MediaType.APPLICATION_JSON));
 
-        // Act
+
         DisponibilidadLibroExterna resultado =
                 catalogoGateway.consultarDisponibilidadLibro("libro-1");
 
-        // Assert
+
         assertEquals("libro-1", resultado.idLibro());
         assertEquals("Cien años de soledad", resultado.titulo());
         assertEquals(5, resultado.totalEjemplares());
@@ -217,7 +217,7 @@ class CatalogoGatewayImplTest {
 
     @Test
     void consultarDisponibilidadLibro_cuandoCatalogoRetorna404_debeRetornarNull() {
-        // Arrange
+
         servidor.expect(request ->
                         assertEquals(
                                 "/api/biblioteca/libros/libro-inexistente/disponibilidad",
@@ -226,17 +226,17 @@ class CatalogoGatewayImplTest {
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND));
 
-        // Act
+
         DisponibilidadLibroExterna resultado =
                 catalogoGateway.consultarDisponibilidadLibro("libro-inexistente");
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void consultarDisponibilidadLibro_cuandoFaltanCantidades_debeUsarCeroComoValorPredeterminado() {
-        // Arrange
+
         servidor.expect(request ->
                         assertEquals(
                                 "/api/biblioteca/libros/libro-1/disponibilidad",
@@ -250,11 +250,11 @@ class CatalogoGatewayImplTest {
                         }
                         """, MediaType.APPLICATION_JSON));
 
-        // Act
+
         DisponibilidadLibroExterna resultado =
                 catalogoGateway.consultarDisponibilidadLibro("libro-1");
 
-        // Assert
+
         assertEquals(0, resultado.totalEjemplares());
         assertEquals(0, resultado.disponibles());
         assertEquals(false, resultado.disponible());
@@ -262,7 +262,7 @@ class CatalogoGatewayImplTest {
 
     @Test
     void actualizarEstadoEjemplar_cuandoAdminEstaConfigurado_debeEnviarSolicitudPut() {
-        // Arrange
+
         when(properties.servicios().catalogoAdminUsuarioId())
                 .thenReturn("  admin-1  ");
 
@@ -280,20 +280,20 @@ class CatalogoGatewayImplTest {
                         """))
                 .andRespond(withSuccess());
 
-        // Act
+
         catalogoGateway.actualizarEstadoEjemplar("ejemplar-1", "PRESTADO");
 
-        // Assert
-        // servidor.verify() en @AfterEach confirma que se realizó la solicitud esperada.
+
+
     }
 
     @Test
     void actualizarEstadoEjemplar_cuandoAdminNoEstaConfigurado_debeLanzarExcepcion() {
-        // Arrange
+
         when(properties.servicios().catalogoAdminUsuarioId())
                 .thenReturn("   ");
 
-        // Act
+
         ServicioExternoNoDisponibleException excepcion = assertThrows(
                 ServicioExternoNoDisponibleException.class,
                 () -> catalogoGateway.actualizarEstadoEjemplar(
@@ -302,7 +302,7 @@ class CatalogoGatewayImplTest {
                 )
         );
 
-        // Assert
+
         assertEquals(
                 "Configure prestamos.servicios.catalogo-admin-usuario-id con un usuario "
                         + "ADMINISTRADOR para actualizar el estado de los ejemplares",
@@ -312,7 +312,7 @@ class CatalogoGatewayImplTest {
 
     @Test
     void actualizarEstadoEjemplar_cuandoCatalogoFalla_debeLanzarExcepcion() {
-        // Arrange
+
         when(properties.servicios().catalogoAdminUsuarioId())
                 .thenReturn("admin-1");
 
@@ -324,7 +324,7 @@ class CatalogoGatewayImplTest {
                 .andExpect(method(HttpMethod.PUT))
                 .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR));
 
-        // Act
+
         ServicioExternoNoDisponibleException excepcion = assertThrows(
                 ServicioExternoNoDisponibleException.class,
                 () -> catalogoGateway.actualizarEstadoEjemplar(
@@ -333,7 +333,7 @@ class CatalogoGatewayImplTest {
                 )
         );
 
-        // Assert
+
         assertEquals(
                 "No se pudo actualizar el estado del ejemplar en Catalogo",
                 excepcion.getMessage()

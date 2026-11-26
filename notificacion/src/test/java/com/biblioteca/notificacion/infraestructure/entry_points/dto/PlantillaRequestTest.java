@@ -27,7 +27,7 @@ class PlantillaRequestTest {
 
     @Test
     void validar_cuandoDatosSonValidos_noDebeTenerViolaciones() {
-        // Arrange
+
         PlantillaRequest request = crearRequest(
                 "Aviso de préstamo",
                 "Préstamo confirmado",
@@ -36,7 +36,7 @@ class PlantillaRequestTest {
                 "ACTIVA"
         );
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).isEmpty());
     }
 
@@ -127,7 +127,7 @@ class PlantillaRequestTest {
 
     @Test
     void validar_cuandoTipoYEstadoSonNull_noDebeTenerViolaciones() {
-        // Arrange
+
         PlantillaRequest request = crearRequest(
                 "Nombre",
                 "Asunto",
@@ -136,7 +136,7 @@ class PlantillaRequestTest {
                 null
         );
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).isEmpty());
     }
 

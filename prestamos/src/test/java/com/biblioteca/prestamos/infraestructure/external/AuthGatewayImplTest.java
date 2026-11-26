@@ -29,7 +29,7 @@ class AuthGatewayImplTest {
 
     @BeforeEach
     void setUp() {
-        // Arrange común
+
         RestClient.Builder builder = RestClient.builder()
                 .baseUrl("http://auth.test");
 
@@ -44,7 +44,7 @@ class AuthGatewayImplTest {
 
     @Test
     void buscarUsuario_cuandoAuthDevuelveUsuario_debeMapearSusDatos() {
-        // Arrange
+
         esperarConsultaDeUsuario("usuario-1");
 
         servidor.expect(request ->
@@ -61,10 +61,10 @@ class AuthGatewayImplTest {
                         }
                         """, MediaType.APPLICATION_JSON));
 
-        // Act
+
         UsuarioExterno resultado = authGateway.buscarUsuario("usuario-1");
 
-        // Assert
+
         assertEquals("usuario-1", resultado.idUsuario());
         assertEquals("Carlos Pérez", resultado.nombre());
         assertEquals("USUARIO", resultado.rol());
@@ -72,7 +72,7 @@ class AuthGatewayImplTest {
 
     @Test
     void buscarUsuario_cuandoAuthRetorna404_debeRetornarNull() {
-        // Arrange
+
         esperarConsultaDeUsuario("usuario-inexistente");
 
         servidor.expect(request ->
@@ -83,17 +83,17 @@ class AuthGatewayImplTest {
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND));
 
-        // Act
+
         UsuarioExterno resultado =
                 authGateway.buscarUsuario("usuario-inexistente");
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void buscarUsuario_cuandoElCuerpoEstaVacio_debeRetornarNull() {
-        // Arrange
+
         esperarConsultaDeUsuario("usuario-1");
 
         servidor.expect(request ->
@@ -104,16 +104,16 @@ class AuthGatewayImplTest {
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess("", MediaType.TEXT_PLAIN));
 
-        // Act
+
         UsuarioExterno resultado = authGateway.buscarUsuario("usuario-1");
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void buscarUsuario_cuandoElCuerpoNoEmpiezaConObjetoJson_debeRetornarNull() {
-        // Arrange
+
         esperarConsultaDeUsuario("usuario-1");
 
         servidor.expect(request ->
@@ -124,16 +124,16 @@ class AuthGatewayImplTest {
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess("No es un objeto JSON", MediaType.TEXT_PLAIN));
 
-        // Act
+
         UsuarioExterno resultado = authGateway.buscarUsuario("usuario-1");
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void buscarUsuario_cuandoElJsonNoTieneId_debeRetornarNull() {
-        // Arrange
+
         esperarConsultaDeUsuario("usuario-1");
 
         servidor.expect(request ->
@@ -149,16 +149,16 @@ class AuthGatewayImplTest {
                         }
                         """, MediaType.APPLICATION_JSON));
 
-        // Act
+
         UsuarioExterno resultado = authGateway.buscarUsuario("usuario-1");
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void buscarUsuario_cuandoAuthRetornaErrorDistintoDe404_debeLanzarExcepcion() {
-        // Arrange
+
         esperarConsultaDeUsuario("usuario-1");
 
         servidor.expect(request ->
@@ -169,13 +169,13 @@ class AuthGatewayImplTest {
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR));
 
-        // Act
+
         ServicioExternoNoDisponibleException excepcion = assertThrows(
                 ServicioExternoNoDisponibleException.class,
                 () -> authGateway.buscarUsuario("usuario-1")
         );
 
-        // Assert
+
         assertEquals(
                 "Auth respondio con error al validar el usuario",
                 excepcion.getMessage()
@@ -184,7 +184,7 @@ class AuthGatewayImplTest {
 
     @Test
     void buscarUsuario_cuandoAuthDevuelveJsonInvalido_debeLanzarExcepcion() {
-        // Arrange
+
         esperarConsultaDeUsuario("usuario-1");
 
         servidor.expect(request ->
@@ -195,13 +195,13 @@ class AuthGatewayImplTest {
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess("{json-invalido", MediaType.APPLICATION_JSON));
 
-        // Act
+
         ServicioExternoNoDisponibleException excepcion = assertThrows(
                 ServicioExternoNoDisponibleException.class,
                 () -> authGateway.buscarUsuario("usuario-1")
         );
 
-        // Assert
+
         assertEquals(
                 "Auth devolvio una respuesta invalida",
                 excepcion.getMessage()
@@ -210,7 +210,7 @@ class AuthGatewayImplTest {
 
     @Test
     void buscarUsuario_cuandoFallaLaConexion_debeLanzarExcepcion() {
-        // Arrange
+
         esperarConsultaDeUsuario("usuario-1");
 
         servidor.expect(request ->
@@ -221,13 +221,13 @@ class AuthGatewayImplTest {
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withException(new IOException("Conexión rechazada")));
 
-        // Act
+
         ServicioExternoNoDisponibleException excepcion = assertThrows(
                 ServicioExternoNoDisponibleException.class,
                 () -> authGateway.buscarUsuario("usuario-1")
         );
 
-        // Assert
+
         assertEquals(
                 "No se pudo consultar el microservicio Auth",
                 excepcion.getMessage()
@@ -235,7 +235,7 @@ class AuthGatewayImplTest {
     }
 
     private void esperarConsultaDeUsuario(String idUsuario) {
-        // Registra que se espera una solicitud a la ruta del usuario.
-        // Cada prueba define su respuesta HTTP en la expectativa del servidor.
+
+
     }
 }

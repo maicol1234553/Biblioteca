@@ -2,8 +2,6 @@ param(
     [switch]$Detener
 )
 
-# Carga .env para que los procesos hijos (java -jar) hereden los secretos
-# (DATABASE_URL, BREVO_API_KEY, MAIL_FROM, etc.).
 $envFile = Join-Path $PSScriptRoot '.env'
 if (Test-Path $envFile) {
     foreach ($linea in Get-Content $envFile) {

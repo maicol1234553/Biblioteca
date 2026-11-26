@@ -35,41 +35,41 @@ class AutorControllerTest {
         autor.setNombre("Gabriel García Márquez");
     }
 
-    // LISTAR AUTORES
+
 
     @Test
     void listarAutores_ConsultaUseCase_RetornaListaYEstado200() {
-        // Arrange
+
         List<Autor> autoresEsperados = List.of(autor);
 
         when(autorUseCase.listarAutores())
                 .thenReturn(autoresEsperados);
 
-        // Act
+
         ResponseEntity<List<Autor>> respuesta =
                 autorController.listarAutores();
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertSame(autoresEsperados, respuesta.getBody());
         verify(autorUseCase).listarAutores();
     }
 
-    // BUSCAR AUTOR POR ID
+
 
     @Test
     void buscarAutorPorId_AutorExiste_RetornaAutorYEstado200() {
-        // Arrange
+
         String id = "AUT-1";
 
         when(autorUseCase.buscarAutorPorId(id))
                 .thenReturn(autor);
 
-        // Act
+
         ResponseEntity<Autor> respuesta =
                 autorController.buscarAutorPorId(id);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertSame(autor, respuesta.getBody());
         verify(autorUseCase).buscarAutorPorId(id);
@@ -77,7 +77,7 @@ class AutorControllerTest {
 
     @Test
     void buscarAutorPorId_AutorNoExiste_PropagaExcepcion() {
-        // Arrange
+
         String id = "AUT-INEXISTENTE";
 
         when(autorUseCase.buscarAutorPorId(id))
@@ -85,13 +85,13 @@ class AutorControllerTest {
                         "Autor no encontrado con id: " + id
                 ));
 
-        // Act
+
         AutorNoEncontradoException excepcion = assertThrows(
                 AutorNoEncontradoException.class,
                 () -> autorController.buscarAutorPorId(id)
         );
 
-        // Assert
+
         assertEquals(
                 "Autor no encontrado con id: " + id,
                 excepcion.getMessage()
@@ -99,56 +99,56 @@ class AutorControllerTest {
         verify(autorUseCase).buscarAutorPorId(id);
     }
 
-    // GUARDAR AUTOR
+
 
     @Test
     void guardarAutor_AutorValido_RetornaAutorYEstado201() {
-        // Arrange
+
         when(autorUseCase.guardarAutor(autor))
                 .thenReturn(autor);
 
-        // Act
+
         ResponseEntity<Autor> respuesta =
                 autorController.guardarAutor(autor);
 
-        // Assert
+
         assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
         assertSame(autor, respuesta.getBody());
         verify(autorUseCase).guardarAutor(autor);
     }
 
-    // ACTUALIZAR AUTOR
+
 
     @Test
     void actualizarAutor_AutorValido_RetornaAutorYEstado200() {
-        // Arrange
+
         String id = "AUT-1";
 
         when(autorUseCase.actualizarAutor(id, autor))
                 .thenReturn(autor);
 
-        // Act
+
         ResponseEntity<Autor> respuesta =
                 autorController.actualizarAutor(id, autor);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertSame(autor, respuesta.getBody());
         verify(autorUseCase).actualizarAutor(id, autor);
     }
 
-    // ELIMINAR AUTOR
+
 
     @Test
     void eliminarAutor_AutorExiste_RetornaMensajeYEstado200() {
-        // Arrange
+
         String id = "AUT-1";
 
-        // Act
+
         ResponseEntity<String> respuesta =
                 autorController.eliminarAutor(id);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertEquals("Autor eliminado con exito", respuesta.getBody());
         verify(autorUseCase).eliminarAutor(id);

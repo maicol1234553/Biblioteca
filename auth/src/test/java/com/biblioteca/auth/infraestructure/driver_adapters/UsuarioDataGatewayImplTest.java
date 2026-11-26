@@ -36,7 +36,7 @@ class UsuarioDataGatewayImplTest {
 
     @Test
     void guardarUsuario_debeMapearGuardarYRetornarUsuario() {
-        // Arrange
+
         Usuario usuario = mock(Usuario.class);
         UsuarioData usuarioData = mock(UsuarioData.class);
         UsuarioData usuarioDataGuardado = mock(UsuarioData.class);
@@ -46,10 +46,10 @@ class UsuarioDataGatewayImplTest {
         when(usuarioDataJpaRepository.save(usuarioData)).thenReturn(usuarioDataGuardado);
         when(usuarioMapper.toUsuario(usuarioDataGuardado)).thenReturn(usuarioConvertido);
 
-        // Act
+
         Usuario resultado = usuarioDataGateway.guardarUsuario(usuario);
 
-        // Assert
+
         assertSame(usuarioConvertido, resultado);
         verify(usuarioMapper).toUsuarioData(usuario);
         verify(usuarioDataJpaRepository).save(usuarioData);
@@ -58,7 +58,7 @@ class UsuarioDataGatewayImplTest {
 
     @Test
     void buscarUsuarioPorId_cuandoExiste_debeRetornarUsuarioMapeado() {
-        // Arrange
+
         String usuarioId = "usuario-1";
         UsuarioData usuarioData = mock(UsuarioData.class);
         Usuario usuario = mock(Usuario.class);
@@ -67,10 +67,10 @@ class UsuarioDataGatewayImplTest {
                 .thenReturn(Optional.of(usuarioData));
         when(usuarioMapper.toUsuario(usuarioData)).thenReturn(usuario);
 
-        // Act
+
         Usuario resultado = usuarioDataGateway.buscarUsuarioPorId(usuarioId);
 
-        // Assert
+
         assertSame(usuario, resultado);
         verify(usuarioDataJpaRepository).findById(usuarioId);
         verify(usuarioMapper).toUsuario(usuarioData);
@@ -78,16 +78,16 @@ class UsuarioDataGatewayImplTest {
 
     @Test
     void buscarUsuarioPorId_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String usuarioId = "inexistente";
 
         when(usuarioDataJpaRepository.findById(usuarioId))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Usuario resultado = usuarioDataGateway.buscarUsuarioPorId(usuarioId);
 
-        // Assert
+
         assertNull(resultado);
         verify(usuarioDataJpaRepository).findById(usuarioId);
         verifyNoInteractions(usuarioMapper);
@@ -95,7 +95,7 @@ class UsuarioDataGatewayImplTest {
 
     @Test
     void buscarUsuarioPorCorreo_cuandoExiste_debeRetornarUsuarioMapeado() {
-        // Arrange
+
         String correo = "usuario@biblioteca.com";
         UsuarioData usuarioData = mock(UsuarioData.class);
         Usuario usuario = mock(Usuario.class);
@@ -104,10 +104,10 @@ class UsuarioDataGatewayImplTest {
                 .thenReturn(Optional.of(usuarioData));
         when(usuarioMapper.toUsuario(usuarioData)).thenReturn(usuario);
 
-        // Act
+
         Usuario resultado = usuarioDataGateway.buscarUsuarioPorCorreo(correo);
 
-        // Assert
+
         assertSame(usuario, resultado);
         verify(usuarioDataJpaRepository).findByCorreo(correo);
         verify(usuarioMapper).toUsuario(usuarioData);
@@ -115,16 +115,16 @@ class UsuarioDataGatewayImplTest {
 
     @Test
     void buscarUsuarioPorCorreo_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String correo = "inexistente@biblioteca.com";
 
         when(usuarioDataJpaRepository.findByCorreo(correo))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Usuario resultado = usuarioDataGateway.buscarUsuarioPorCorreo(correo);
 
-        // Assert
+
         assertNull(resultado);
         verify(usuarioDataJpaRepository).findByCorreo(correo);
         verifyNoInteractions(usuarioMapper);
@@ -132,7 +132,7 @@ class UsuarioDataGatewayImplTest {
 
     @Test
     void actualizarUsuario_debeGuardarYRetornarUsuarioActualizado() {
-        // Arrange
+
         Usuario usuario = mock(Usuario.class);
         UsuarioData usuarioData = mock(UsuarioData.class);
         UsuarioData usuarioDataActualizado = mock(UsuarioData.class);
@@ -142,10 +142,10 @@ class UsuarioDataGatewayImplTest {
         when(usuarioDataJpaRepository.save(usuarioData)).thenReturn(usuarioDataActualizado);
         when(usuarioMapper.toUsuario(usuarioDataActualizado)).thenReturn(usuarioActualizado);
 
-        // Act
+
         Usuario resultado = usuarioDataGateway.actualizarUsuario(usuario);
 
-        // Assert
+
         assertSame(usuarioActualizado, resultado);
         verify(usuarioMapper).toUsuarioData(usuario);
         verify(usuarioDataJpaRepository).save(usuarioData);
@@ -154,20 +154,20 @@ class UsuarioDataGatewayImplTest {
 
     @Test
     void eliminarUsuario_debeSolicitarLaEliminacionPorId() {
-        // Arrange
+
         String usuarioId = "usuario-1";
 
-        // Act
+
         usuarioDataGateway.eliminarUsuario(usuarioId);
 
-        // Assert
+
         verify(usuarioDataJpaRepository).deleteById(usuarioId);
         verifyNoInteractions(usuarioMapper);
     }
 
     @Test
     void obtenerEstadisticas_debeCalcularConteoRolesYRedondearPromedio() {
-        // Arrange
+
         List<Object[]> conteoPorRol = List.of(
                 new Object[]{"ADMINISTRADOR", 2L},
                 new Object[]{"USUARIO", 3L}
@@ -184,10 +184,10 @@ class UsuarioDataGatewayImplTest {
         EstadisticasUsuario esperadas =
                 new EstadisticasUsuario(5, usuariosPorRol, 31.24);
 
-        // Act
+
         EstadisticasUsuario resultado = usuarioDataGateway.obtenerEstadisticas();
 
-        // Assert
+
         assertEquals(esperadas, resultado);
         verify(usuarioDataJpaRepository).contarUsuariosPorRol();
         verify(usuarioDataJpaRepository).promedioEdad();
@@ -197,7 +197,7 @@ class UsuarioDataGatewayImplTest {
 
     @Test
     void obtenerEstadisticas_cuandoPromedioEsNull_debeUsarCero() {
-        // Arrange
+
         when(usuarioDataJpaRepository.contarUsuariosPorRol()).thenReturn(List.of());
         when(usuarioDataJpaRepository.promedioEdad()).thenReturn(null);
         when(usuarioDataJpaRepository.count()).thenReturn(0L);
@@ -205,10 +205,10 @@ class UsuarioDataGatewayImplTest {
         EstadisticasUsuario esperadas =
                 new EstadisticasUsuario(0, Map.of(), 0.0);
 
-        // Act
+
         EstadisticasUsuario resultado = usuarioDataGateway.obtenerEstadisticas();
 
-        // Assert
+
         assertEquals(esperadas, resultado);
         verify(usuarioDataJpaRepository).contarUsuariosPorRol();
         verify(usuarioDataJpaRepository).promedioEdad();

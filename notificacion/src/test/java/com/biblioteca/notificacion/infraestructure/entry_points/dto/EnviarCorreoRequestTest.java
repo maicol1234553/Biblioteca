@@ -31,7 +31,7 @@ class EnviarCorreoRequestTest {
 
     @Test
     void validar_cuandoDatosSonValidos_noDebeTenerViolaciones() {
-        // Arrange
+
         EnviarCorreoRequest request = crearRequest(
                 UUID_VALIDO,
                 "persona@correo.com",
@@ -40,7 +40,7 @@ class EnviarCorreoRequestTest {
                 "PRESTAMO"
         );
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).isEmpty());
     }
 
@@ -97,7 +97,7 @@ class EnviarCorreoRequestTest {
 
     @Test
     void validar_cuandoDestinatarioSupera320Caracteres_debeIndicarLimite() {
-        // La dirección tiene más de 320 caracteres.
+
         String destinatario = "a".repeat(310) + "@example.com";
 
         EnviarCorreoRequest request = crearRequest(

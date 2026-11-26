@@ -60,7 +60,7 @@ class PrestamoControllerTest {
 
     @Test
     void solicitarPrestamo_debeRetornarPrestamoCreado() {
-        // Arrange
+
         SolicitarPrestamoRequest request = mock(SolicitarPrestamoRequest.class);
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Prestamo prestamo = mock(Prestamo.class);
@@ -70,11 +70,11 @@ class PrestamoControllerTest {
         when(prestamoUseCase.solicitarPrestamo("usuario-1", "ejemplar-1", solicitante))
                 .thenReturn(prestamo);
 
-        // Act
+
         ResponseEntity<PrestamoResponse> respuesta =
                 prestamoController.solicitarPrestamo(request, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(prestamoUseCase).solicitarPrestamo("usuario-1", "ejemplar-1", solicitante);
@@ -82,7 +82,7 @@ class PrestamoControllerTest {
 
     @Test
     void devolverPrestamo_debeRetornarDevolucionCreada() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         DevolverPrestamoRequest request = mock(DevolverPrestamoRequest.class);
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
@@ -94,11 +94,11 @@ class PrestamoControllerTest {
                 idPrestamo, "DISPONIBLE", "Devuelto en buen estado", solicitante))
                 .thenReturn(devolucion);
 
-        // Act
+
         ResponseEntity<DevolucionResponse> respuesta =
                 prestamoController.devolverPrestamo(idPrestamo, request, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(prestamoUseCase).devolverPrestamo(
@@ -107,7 +107,7 @@ class PrestamoControllerTest {
 
     @Test
     void reservarLibro_debeRetornarReservaCreada() {
-        // Arrange
+
         String libroId = "libro-1";
         ReservarLibroRequest request = mock(ReservarLibroRequest.class);
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
@@ -117,11 +117,11 @@ class PrestamoControllerTest {
         when(reservaUseCase.reservarLibro(libroId, "usuario-1", solicitante))
                 .thenReturn(reserva);
 
-        // Act
+
         ResponseEntity<ReservaResponse> respuesta =
                 prestamoController.reservarLibro(libroId, request, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(reservaUseCase).reservarLibro(libroId, "usuario-1", solicitante);
@@ -129,7 +129,7 @@ class PrestamoControllerTest {
 
     @Test
     void renovarPrestamo_debeRetornarPrestamoRenovado() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Prestamo prestamo = mock(Prestamo.class);
@@ -137,11 +137,11 @@ class PrestamoControllerTest {
         when(renovacionUseCase.renovarPrestamo(idPrestamo, solicitante))
                 .thenReturn(prestamo);
 
-        // Act
+
         ResponseEntity<PrestamoResponse> respuesta =
                 prestamoController.renovarPrestamo(idPrestamo, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(renovacionUseCase).renovarPrestamo(idPrestamo, solicitante);
@@ -149,7 +149,7 @@ class PrestamoControllerTest {
 
     @Test
     void consultarMisPrestamos_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         String usuarioId = "usuario-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Prestamo prestamo = mock(Prestamo.class);
@@ -157,11 +157,11 @@ class PrestamoControllerTest {
         when(prestamoUseCase.consultarMisPrestamos(usuarioId, solicitante))
                 .thenReturn(List.of(prestamo));
 
-        // Act
+
         ResponseEntity<List<PrestamoResponse>> respuesta =
                 prestamoController.consultarMisPrestamos(usuarioId, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -170,7 +170,7 @@ class PrestamoControllerTest {
 
     @Test
     void consultarHistorial_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         String usuarioId = "usuario-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Prestamo prestamo = mock(Prestamo.class);
@@ -178,11 +178,11 @@ class PrestamoControllerTest {
         when(prestamoUseCase.consultarHistorial(usuarioId, solicitante))
                 .thenReturn(List.of(prestamo));
 
-        // Act
+
         ResponseEntity<List<PrestamoResponse>> respuesta =
                 prestamoController.consultarHistorial(usuarioId, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -191,7 +191,7 @@ class PrestamoControllerTest {
 
     @Test
     void consultarMultasPendientes_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         String usuarioId = "usuario-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Multa multa = mock(Multa.class);
@@ -199,11 +199,11 @@ class PrestamoControllerTest {
         when(multaUseCase.consultarMultasPendientesPorUsuario(usuarioId, solicitante))
                 .thenReturn(List.of(multa));
 
-        // Act
+
         ResponseEntity<List<MultaResponse>> respuesta =
                 prestamoController.consultarMultasPendientes(usuarioId, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -212,18 +212,18 @@ class PrestamoControllerTest {
 
     @Test
     void consultarPrestamosVencidos_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Prestamo prestamo = mock(Prestamo.class);
 
         when(prestamoUseCase.consultarPrestamosVencidos(solicitante))
                 .thenReturn(List.of(prestamo));
 
-        // Act
+
         ResponseEntity<List<PrestamoResponse>> respuesta =
                 prestamoController.consultarPrestamosVencidos(solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -232,18 +232,18 @@ class PrestamoControllerTest {
 
     @Test
     void listarPrestamos_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Prestamo prestamo = mock(Prestamo.class);
 
         when(prestamoUseCase.listarPrestamos(solicitante))
                 .thenReturn(List.of(prestamo));
 
-        // Act
+
         ResponseEntity<List<PrestamoResponse>> respuesta =
                 prestamoController.listarPrestamos(solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -252,7 +252,7 @@ class PrestamoControllerTest {
 
     @Test
     void buscarPrestamo_debeRetornarPrestamoYEstadoOk() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Prestamo prestamo = mock(Prestamo.class);
@@ -260,11 +260,11 @@ class PrestamoControllerTest {
         when(prestamoUseCase.buscarPrestamoPorId(idPrestamo, solicitante))
                 .thenReturn(prestamo);
 
-        // Act
+
         ResponseEntity<PrestamoResponse> respuesta =
                 prestamoController.buscarPrestamo(idPrestamo, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(prestamoUseCase).buscarPrestamoPorId(idPrestamo, solicitante);
@@ -272,7 +272,7 @@ class PrestamoControllerTest {
 
     @Test
     void consultarDevolucion_debeRetornarDevolucionYEstadoOk() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Devolucion devolucion = mock(Devolucion.class);
@@ -280,11 +280,11 @@ class PrestamoControllerTest {
         when(devolucionUseCase.buscarDevolucionPorPrestamo(idPrestamo, solicitante))
                 .thenReturn(devolucion);
 
-        // Act
+
         ResponseEntity<DevolucionResponse> respuesta =
                 prestamoController.consultarDevolucion(idPrestamo, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(devolucionUseCase).buscarDevolucionPorPrestamo(idPrestamo, solicitante);
@@ -292,7 +292,7 @@ class PrestamoControllerTest {
 
     @Test
     void consultarMultasDelPrestamo_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Multa multa = mock(Multa.class);
@@ -300,11 +300,11 @@ class PrestamoControllerTest {
         when(multaUseCase.listarMultasPorPrestamo(idPrestamo, solicitante))
                 .thenReturn(List.of(multa));
 
-        // Act
+
         ResponseEntity<List<MultaResponse>> respuesta =
                 prestamoController.consultarMultasDelPrestamo(idPrestamo, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -313,7 +313,7 @@ class PrestamoControllerTest {
 
     @Test
     void consultarRenovacionesDelPrestamo_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Renovacion renovacion = mock(Renovacion.class);
@@ -321,11 +321,11 @@ class PrestamoControllerTest {
         when(renovacionUseCase.listarRenovacionesPorPrestamo(idPrestamo, solicitante))
                 .thenReturn(List.of(renovacion));
 
-        // Act
+
         ResponseEntity<List<RenovacionResponse>> respuesta =
                 prestamoController.consultarRenovacionesDelPrestamo(idPrestamo, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -334,7 +334,7 @@ class PrestamoControllerTest {
 
     @Test
     void actualizarVencimiento_debeRetornarPrestamoActualizado() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         ActualizarVencimientoRequest request = mock(ActualizarVencimientoRequest.class);
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
@@ -343,11 +343,11 @@ class PrestamoControllerTest {
         when(prestamoUseCase.actualizarVencimiento(idPrestamo, null, solicitante))
                 .thenReturn(prestamo);
 
-        // Act
+
         ResponseEntity<PrestamoResponse> respuesta =
                 prestamoController.actualizarVencimiento(idPrestamo, request, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(prestamoUseCase).actualizarVencimiento(idPrestamo, null, solicitante);
@@ -355,7 +355,7 @@ class PrestamoControllerTest {
 
     @Test
     void cancelarPrestamo_debeRetornarPrestamoCancelado() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Prestamo prestamo = mock(Prestamo.class);
@@ -363,11 +363,11 @@ class PrestamoControllerTest {
         when(prestamoUseCase.cancelarPrestamo(idPrestamo, solicitante))
                 .thenReturn(prestamo);
 
-        // Act
+
         ResponseEntity<PrestamoResponse> respuesta =
                 prestamoController.cancelarPrestamo(idPrestamo, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(prestamoUseCase).cancelarPrestamo(idPrestamo, solicitante);
@@ -375,15 +375,15 @@ class PrestamoControllerTest {
 
     @Test
     void eliminarPrestamo_debeRetornarMensajeYEstadoOk() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
 
-        // Act
+
         ResponseEntity<MensajeResponse> respuesta =
                 prestamoController.eliminarPrestamo(idPrestamo, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals("Prestamo eliminado con exito", respuesta.getBody().mensaje());

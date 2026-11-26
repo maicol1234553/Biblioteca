@@ -19,16 +19,16 @@ class NotificacionMapperTest {
 
     @Test
     void toNotificacion_cuandoDataEsNull_debeRetornarNull() {
-        // Act
+
         Notificacion resultado = mapper.toNotificacion(null);
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void toNotificacion_debeCopiarTodosLosCampos() {
-        // Arrange
+
         LocalDateTime fechaCreacion =
                 LocalDateTime.of(2026, 11, 26, 9, 0);
         LocalDateTime fechaEnvio =
@@ -45,10 +45,10 @@ class NotificacionMapperTest {
         when(data.getFechaEnvio()).thenReturn(fechaEnvio);
         when(data.getEstado()).thenReturn("ENVIADA");
 
-        // Act
+
         Notificacion resultado = mapper.toNotificacion(data);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("notificacion-1", resultado.getIdNotificacion()),
                 () -> assertEquals("usuario-1", resultado.getIdUsuario()),
@@ -67,7 +67,7 @@ class NotificacionMapperTest {
 
     @Test
     void toNotificacionData_debeCopiarTodosLosCampos() {
-        // Arrange
+
         LocalDateTime fechaCreacion =
                 LocalDateTime.of(2026, 11, 26, 9, 0);
         LocalDateTime fechaEnvio =
@@ -84,10 +84,10 @@ class NotificacionMapperTest {
         when(notificacion.getFechaEnvio()).thenReturn(fechaEnvio);
         when(notificacion.getEstado()).thenReturn("ENVIADA");
 
-        // Act
+
         NotificacionData resultado = mapper.toNotificacionData(notificacion);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("notificacion-1", resultado.getIdNotificacion()),
                 () -> assertEquals("usuario-1", resultado.getIdUsuario()),
@@ -106,7 +106,7 @@ class NotificacionMapperTest {
 
     @Test
     void toNotificacionData_cuandoNotificacionEsNull_debeLanzarNullPointerException() {
-        // Act y Assert
+
         assertThrows(
                 NullPointerException.class,
                 () -> mapper.toNotificacionData(null)

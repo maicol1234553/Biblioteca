@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-# Build
 FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /build
 
@@ -9,7 +7,6 @@ RUN mvn -B -q -Dmaven.test.skip=true dependency:go-offline
 COPY src ./src
 RUN mvn -B -q -Dmaven.test.skip=true package
 
-# Runtime
 FROM eclipse-temurin:21-jre-alpine
 RUN addgroup -S app && adduser -S app -G app
 WORKDIR /app

@@ -19,16 +19,16 @@ class RecordatorioMapperTest {
 
     @Test
     void toRecordatorio_cuandoDataEsNull_debeRetornarNull() {
-        // Act
+
         Recordatorio resultado = mapper.toRecordatorio(null);
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void toRecordatorio_debeCopiarTodosLosCampos() {
-        // Arrange
+
         LocalDateTime fechaProgramada =
                 LocalDateTime.of(2026, 12, 10, 9, 30);
 
@@ -40,10 +40,10 @@ class RecordatorioMapperTest {
         when(data.getTipo()).thenReturn("VENCIMIENTO");
         when(data.getEstado()).thenReturn("PENDIENTE");
 
-        // Act
+
         Recordatorio resultado = mapper.toRecordatorio(data);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("recordatorio-1", resultado.getIdRecordatorio()),
                 () -> assertEquals("usuario-1", resultado.getIdUsuario()),
@@ -56,7 +56,7 @@ class RecordatorioMapperTest {
 
     @Test
     void toRecordatorioData_debeCopiarTodosLosCampos() {
-        // Arrange
+
         LocalDateTime fechaProgramada =
                 LocalDateTime.of(2026, 12, 10, 9, 30);
 
@@ -68,10 +68,10 @@ class RecordatorioMapperTest {
         when(recordatorio.getTipo()).thenReturn("VENCIMIENTO");
         when(recordatorio.getEstado()).thenReturn("PENDIENTE");
 
-        // Act
+
         RecordatorioData resultado = mapper.toRecordatorioData(recordatorio);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("recordatorio-1", resultado.getIdRecordatorio()),
                 () -> assertEquals("usuario-1", resultado.getIdUsuario()),
@@ -84,7 +84,7 @@ class RecordatorioMapperTest {
 
     @Test
     void toRecordatorioData_cuandoRecordatorioEsNull_debeLanzarNullPointerException() {
-        // Act y Assert
+
         assertThrows(
                 NullPointerException.class,
                 () -> mapper.toRecordatorioData(null)

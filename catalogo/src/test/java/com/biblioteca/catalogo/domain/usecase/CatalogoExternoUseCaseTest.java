@@ -67,38 +67,38 @@ class CatalogoExternoUseCaseTest {
         categoria.setDescripcion("Libros de ficción");
     }
 
-    // BUSCAR LIBROS EXTERNOS POR CONSULTA
+
 
     @Test
     void buscar_ConsultaValida_RecortaEspaciosYRetornaResultados() {
-        // Arrange
+
         String consulta = "  Gabriel García Márquez  ";
         List<LibroExterno> resultadosEsperados = List.of(libroExterno);
 
         when(libroExternoGateway.buscar("Gabriel García Márquez"))
                 .thenReturn(resultadosEsperados);
 
-        // Act
+
         List<LibroExterno> resultado =
                 catalogoExternoUseCase.buscar(consulta);
 
-        // Assert
+
         assertSame(resultadosEsperados, resultado);
         verify(libroExternoGateway).buscar("Gabriel García Márquez");
     }
 
     @Test
     void buscar_ConsultaNula_LanzaExcepcion() {
-        // Arrange
+
         String consulta = null;
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> catalogoExternoUseCase.buscar(consulta)
         );
 
-        // Assert
+
         assertEquals(
                 "El termino de busqueda es obligatorio",
                 excepcion.getMessage()
@@ -108,16 +108,16 @@ class CatalogoExternoUseCaseTest {
 
     @Test
     void buscar_ConsultaEnBlanco_LanzaExcepcion() {
-        // Arrange
+
         String consulta = "   ";
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> catalogoExternoUseCase.buscar(consulta)
         );
 
-        // Assert
+
         assertEquals(
                 "El termino de busqueda es obligatorio",
                 excepcion.getMessage()
@@ -125,88 +125,88 @@ class CatalogoExternoUseCaseTest {
         verifyNoInteractions(libroExternoGateway);
     }
 
-    // BUSCAR LIBRO POR ISBN
+
 
     @Test
     void buscarPorIsbn_IsbnConGuiones_NormalizaYRetornaLibro() {
-        // Arrange
+
         String isbnConGuiones = "978-0-306-40615-7";
         String isbnNormalizado = "9780306406157";
 
         when(libroExternoGateway.buscarPorIsbn(isbnNormalizado))
                 .thenReturn(Optional.of(libroExterno));
 
-        // Act
+
         LibroExterno resultado =
                 catalogoExternoUseCase.buscarPorIsbn(isbnConGuiones);
 
-        // Assert
+
         assertSame(libroExterno, resultado);
         verify(libroExternoGateway).buscarPorIsbn(isbnNormalizado);
     }
 
     @Test
     void buscarPorIsbn_IsbnConEspaciosYGuiones_LimpiaElFormato() {
-        // Arrange
+
         String isbn = "  978-0-306-40615-7  ";
         String isbnNormalizado = "9780306406157";
 
         when(libroExternoGateway.buscarPorIsbn(isbnNormalizado))
                 .thenReturn(Optional.of(libroExterno));
 
-        // Act
+
         LibroExterno resultado =
                 catalogoExternoUseCase.buscarPorIsbn(isbn);
 
-        // Assert
+
         assertSame(libroExterno, resultado);
         verify(libroExternoGateway).buscarPorIsbn(isbnNormalizado);
     }
 
     @Test
     void buscarPorIsbn_IsbnNulo_LanzaExcepcion() {
-        // Arrange
+
         String isbn = null;
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> catalogoExternoUseCase.buscarPorIsbn(isbn)
         );
 
-        // Assert
+
         assertEquals("El ISBN es obligatorio", excepcion.getMessage());
         verifyNoInteractions(libroExternoGateway);
     }
 
     @Test
     void buscarPorIsbn_IsbnEnBlanco_LanzaExcepcion() {
-        // Arrange
+
         String isbn = " ";
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> catalogoExternoUseCase.buscarPorIsbn(isbn)
         );
 
-        // Assert
+
         assertEquals("El ISBN es obligatorio", excepcion.getMessage());
         verifyNoInteractions(libroExternoGateway);
     }
 
     @Test
     void buscarPorIsbn_FormatoInvalido_LanzaExcepcion() {
-        // Arrange
+
         String isbn = "ISBN-invalido";
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> catalogoExternoUseCase.buscarPorIsbn(isbn)
         );
 
-        // Assert
+
         assertEquals(
                 "El ISBN no tiene un formato valido",
                 excepcion.getMessage()
@@ -216,19 +216,19 @@ class CatalogoExternoUseCaseTest {
 
     @Test
     void buscarPorIsbn_NoHayResultadosExternos_LanzaExcepcion() {
-        // Arrange
+
         String isbn = "9780306406157";
 
         when(libroExternoGateway.buscarPorIsbn(isbn))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         LibroNoEncontradoException excepcion = assertThrows(
                 LibroNoEncontradoException.class,
                 () -> catalogoExternoUseCase.buscarPorIsbn(isbn)
         );
 
-        // Assert
+
         assertEquals(
                 "No se encontro informacion externa para el ISBN: " + isbn,
                 excepcion.getMessage()
@@ -236,11 +236,11 @@ class CatalogoExternoUseCaseTest {
         verify(libroExternoGateway).buscarPorIsbn(isbn);
     }
 
-    // IMPORTAR LIBRO POR ISBN
+
 
     @Test
     void importarPorIsbn_DatosExternosValidos_MapeaYGuardaLibro() {
-        // Arrange
+
         String isbnConGuiones = "978-0-306-40615-7";
         String isbnNormalizado = "9780306406157";
 
@@ -277,13 +277,13 @@ class CatalogoExternoUseCaseTest {
         when(libroUseCase.guardarLibro(any(Libro.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Act
+
         Libro resultado = catalogoExternoUseCase.importarPorIsbn(
                 isbnConGuiones,
                 "CATEGORIA-1"
         );
 
-        // Assert
+
         assertNotNull(resultado);
         assertEquals(isbnNormalizado, resultado.getIsbn());
         assertEquals(libroExterno.getTitulo(), resultado.getTitulo());
@@ -309,10 +309,10 @@ class CatalogoExternoUseCaseTest {
 
     @Test
     void importarPorIsbn_IsbnNulo_LanzaExcepcionAntesDeBuscar() {
-        // Arrange
+
         String isbn = null;
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> catalogoExternoUseCase.importarPorIsbn(
@@ -321,7 +321,7 @@ class CatalogoExternoUseCaseTest {
                 )
         );
 
-        // Assert
+
         assertEquals("El ISBN es obligatorio", excepcion.getMessage());
         verifyNoInteractions(
                 libroExternoGateway,
@@ -334,10 +334,10 @@ class CatalogoExternoUseCaseTest {
 
     @Test
     void importarPorIsbn_IsbnInvalido_LanzaExcepcionAntesDeBuscar() {
-        // Arrange
+
         String isbn = "ABC-123";
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> catalogoExternoUseCase.importarPorIsbn(
@@ -346,7 +346,7 @@ class CatalogoExternoUseCaseTest {
                 )
         );
 
-        // Assert
+
         assertEquals(
                 "El ISBN no tiene un formato valido",
                 excepcion.getMessage()
@@ -356,13 +356,13 @@ class CatalogoExternoUseCaseTest {
 
     @Test
     void importarPorIsbn_LibroExternoNoExiste_LanzaExcepcion() {
-        // Arrange
+
         String isbn = "9780306406157";
 
         when(libroExternoGateway.buscarPorIsbn(isbn))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         LibroNoEncontradoException excepcion = assertThrows(
                 LibroNoEncontradoException.class,
                 () -> catalogoExternoUseCase.importarPorIsbn(
@@ -371,7 +371,7 @@ class CatalogoExternoUseCaseTest {
                 )
         );
 
-        // Assert
+
         assertEquals(
                 "No se encontro informacion externa para el ISBN: " + isbn,
                 excepcion.getMessage()
@@ -386,7 +386,7 @@ class CatalogoExternoUseCaseTest {
 
     @Test
     void importarPorIsbn_CategoriaIndicadaNoExiste_LanzaExcepcion() {
-        // Arrange
+
         String isbn = "9780306406157";
 
         when(libroExternoGateway.buscarPorIsbn(isbn))
@@ -398,7 +398,7 @@ class CatalogoExternoUseCaseTest {
         when(categoriaGateway.buscarCategoriaPorId("ID-INEXISTENTE"))
                 .thenReturn(null);
 
-        // Act
+
         CategoriaNoEncontradaException excepcion = assertThrows(
                 CategoriaNoEncontradaException.class,
                 () -> catalogoExternoUseCase.importarPorIsbn(
@@ -407,7 +407,7 @@ class CatalogoExternoUseCaseTest {
                 )
         );
 
-        // Assert
+
         assertEquals(
                 "Categoria no encontrada con id: ID-INEXISTENTE",
                 excepcion.getMessage()
@@ -418,7 +418,7 @@ class CatalogoExternoUseCaseTest {
 
     @Test
     void importarPorIsbn_EditorialNoExiste_CreaYGuardaEditorial() {
-        // Arrange
+
         String isbn = "9780306406157";
 
         libroExterno.setAutores(null);
@@ -441,13 +441,13 @@ class CatalogoExternoUseCaseTest {
         ArgumentCaptor<Editorial> editorialCaptor =
                 ArgumentCaptor.forClass(Editorial.class);
 
-        // Act
+
         Libro resultado = catalogoExternoUseCase.importarPorIsbn(
                 isbn,
                 "CATEGORIA-1"
         );
 
-        // Assert
+
         verify(editorialGateway).guardarEditorial(editorialCaptor.capture());
 
         Editorial editorialGuardada = editorialCaptor.getValue();
@@ -466,7 +466,7 @@ class CatalogoExternoUseCaseTest {
 
     @Test
     void importarPorIsbn_EditorialExternaEnBlanco_UsaSinEditorial() {
-        // Arrange
+
         String isbn = "9780306406157";
         libroExterno.setEditorial(" ");
 
@@ -489,13 +489,13 @@ class CatalogoExternoUseCaseTest {
         when(libroUseCase.guardarLibro(any(Libro.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Act
+
         Libro resultado = catalogoExternoUseCase.importarPorIsbn(
                 isbn,
                 "CATEGORIA-1"
         );
 
-        // Assert
+
         assertEquals(
                 "EDITORIAL-SIN-NOMBRE",
                 resultado.getIdEditorial()
@@ -507,7 +507,7 @@ class CatalogoExternoUseCaseTest {
 
     @Test
     void importarPorIsbn_SinIdCategoriaYGeneralExiste_UsaCategoriaGeneral() {
-        // Arrange
+
         String isbn = "9780306406157";
 
         Categoria general = new Categoria();
@@ -528,10 +528,10 @@ class CatalogoExternoUseCaseTest {
         when(libroUseCase.guardarLibro(any(Libro.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Act
+
         Libro resultado = catalogoExternoUseCase.importarPorIsbn(isbn, null);
 
-        // Assert
+
         assertEquals(1, resultado.getCategorias().size());
         assertSame(general, resultado.getCategorias().get(0));
 
@@ -542,7 +542,7 @@ class CatalogoExternoUseCaseTest {
 
     @Test
     void importarPorIsbn_SinIdCategoriaYGeneralNoExiste_CreaCategoriaGeneral() {
-        // Arrange
+
         String isbn = "9780306406157";
         libroExterno.setAutores(null);
 
@@ -564,10 +564,10 @@ class CatalogoExternoUseCaseTest {
         ArgumentCaptor<Categoria> categoriaCaptor =
                 ArgumentCaptor.forClass(Categoria.class);
 
-        // Act
+
         Libro resultado = catalogoExternoUseCase.importarPorIsbn(isbn, " ");
 
-        // Assert
+
         verify(categoriaGateway).guardarCategoria(categoriaCaptor.capture());
 
         Categoria categoriaGuardada = categoriaCaptor.getValue();
@@ -586,7 +586,7 @@ class CatalogoExternoUseCaseTest {
 
     @Test
     void importarPorIsbn_ListaDeAutoresNula_ImportaLibroSinAutores() {
-        // Arrange
+
         String isbn = "9780306406157";
         libroExterno.setAutores(null);
 
@@ -602,13 +602,13 @@ class CatalogoExternoUseCaseTest {
         when(libroUseCase.guardarLibro(any(Libro.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Act
+
         Libro resultado = catalogoExternoUseCase.importarPorIsbn(
                 isbn,
                 "CATEGORIA-1"
         );
 
-        // Assert
+
         assertNotNull(resultado.getAutores());
         assertTrue(resultado.getAutores().isEmpty());
         verifyNoInteractions(autorGateway);
@@ -616,7 +616,7 @@ class CatalogoExternoUseCaseTest {
 
     @Test
     void importarPorIsbn_AutorNoExiste_CreaYGuardaAutor() {
-        // Arrange
+
         String isbn = "9780306406157";
         libroExterno.setAutores(List.of("  Autor Nuevo  "));
 
@@ -641,13 +641,13 @@ class CatalogoExternoUseCaseTest {
         ArgumentCaptor<Autor> autorCaptor =
                 ArgumentCaptor.forClass(Autor.class);
 
-        // Act
+
         Libro resultado = catalogoExternoUseCase.importarPorIsbn(
                 isbn,
                 "CATEGORIA-1"
         );
 
-        // Assert
+
         verify(autorGateway).guardarAutor(autorCaptor.capture());
 
         Autor autorGuardado = autorCaptor.getValue();
@@ -664,7 +664,7 @@ class CatalogoExternoUseCaseTest {
 
     @Test
     void importarPorIsbn_NombreDeAutorEnBlanco_OmiteEseAutor() {
-        // Arrange
+
         String isbn = "9780306406157";
         libroExterno.setAutores(List.of(" ", "\t"));
 
@@ -680,13 +680,13 @@ class CatalogoExternoUseCaseTest {
         when(libroUseCase.guardarLibro(any(Libro.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Act
+
         Libro resultado = catalogoExternoUseCase.importarPorIsbn(
                 isbn,
                 "CATEGORIA-1"
         );
 
-        // Assert
+
         assertTrue(resultado.getAutores().isEmpty());
         verifyNoInteractions(autorGateway);
     }

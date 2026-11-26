@@ -30,41 +30,41 @@ class PrestamoVencimientoJobTest {
 
     @Test
     void ejecutar_debeProcesarPrestamosYReservas() {
-        // Arrange
+
         when(prestamoUseCase.procesarPrestamosVencidos())
                 .thenReturn(Collections.nCopies(2, null));
         when(reservaUseCase.procesarReservasExpiradas())
                 .thenReturn(Collections.nCopies(3, null));
 
-        // Act
+
         job.ejecutar();
 
-        // Assert
+
         verify(prestamoUseCase).procesarPrestamosVencidos();
         verify(reservaUseCase).procesarReservasExpiradas();
     }
 
     @Test
     void ejecutar_cuandoNoHayElementosPendientes_debeProcesarAmbosCasosDeUso() {
-        // Arrange
+
         when(prestamoUseCase.procesarPrestamosVencidos()).thenReturn(List.of());
         when(reservaUseCase.procesarReservasExpiradas()).thenReturn(List.of());
 
-        // Act
+
         job.ejecutar();
 
-        // Assert
+
         verify(prestamoUseCase).procesarPrestamosVencidos();
         verify(reservaUseCase).procesarReservasExpiradas();
     }
 
     @Test
     void ejecutar_cuandoFallaElProcesamientoDePrestamos_debeCapturarLaExcepcion() {
-        // Arrange
+
         when(prestamoUseCase.procesarPrestamosVencidos())
                 .thenThrow(new IllegalStateException("Error al procesar préstamos"));
 
-        // Act y Assert
+
         assertDoesNotThrow(() -> job.ejecutar());
 
         verify(prestamoUseCase).procesarPrestamosVencidos();
@@ -73,12 +73,12 @@ class PrestamoVencimientoJobTest {
 
     @Test
     void ejecutar_cuandoFallaElProcesamientoDeReservas_debeCapturarLaExcepcion() {
-        // Arrange
+
         when(prestamoUseCase.procesarPrestamosVencidos()).thenReturn(List.of());
         when(reservaUseCase.procesarReservasExpiradas())
                 .thenThrow(new IllegalStateException("Error al procesar reservas"));
 
-        // Act y Assert
+
         assertDoesNotThrow(() -> job.ejecutar());
 
         verify(prestamoUseCase).procesarPrestamosVencidos();

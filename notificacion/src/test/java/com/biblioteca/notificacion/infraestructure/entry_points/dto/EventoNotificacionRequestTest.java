@@ -32,7 +32,7 @@ class EventoNotificacionRequestTest {
 
     @Test
     void validar_cuandoLosDatosSonCorrectos_noDebeTenerViolaciones() {
-        // Arrange
+
         EventoNotificacionRequest request = new EventoNotificacionRequest(
                 "PRESTAMO_VENCIDO",
                 UUID_VALIDO,
@@ -41,7 +41,7 @@ class EventoNotificacionRequestTest {
                 LocalDateTime.of(2026, 11, 26, 10, 0)
         );
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).isEmpty());
     }
 
@@ -115,7 +115,7 @@ class EventoNotificacionRequestTest {
 
     @Test
     void validar_cuandoReferenciaYFechaSonNull_noDebeTenerViolaciones() {
-        // Arrange
+
         EventoNotificacionRequest request = new EventoNotificacionRequest(
                 "PRESTAMO_VENCIDO",
                 UUID_VALIDO,
@@ -124,7 +124,7 @@ class EventoNotificacionRequestTest {
                 null
         );
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).isEmpty());
     }
 

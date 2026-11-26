@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Misma base de datos Neon que auth y catalogo. Se usa la cadena directa
- * (DATABASE_URL_UNPOOLED) porque Hibernate ejecuta DDL al arrancar.
- */
+
+
+
+
 @Configuration
 public class NeonDataSourceConfig {
 
@@ -120,11 +120,11 @@ public class NeonDataSourceConfig {
         return values;
     }
 
-    /**
-     * Busca .env.local en el directorio de trabajo y, ademas, junto a las clases
-     * compiladas (target/classes) y en la raiz del modulo. Asi funciona tanto al
-     * ejecutar el jar desde su carpeta como al arrancar desde el IDE.
-     */
+
+
+
+
+
     private List<Path> envDirectories() {
         Set<Path> directories = new LinkedHashSet<>();
 
@@ -143,13 +143,13 @@ public class NeonDataSourceConfig {
 
             Path current = Files.isDirectory(codeLocation) ? codeLocation : codeLocation.getParent();
 
-            // target/classes -> target -> raiz del modulo
+
             for (int level = 0; current != null && level < 3; level++) {
                 directories.add(current);
                 current = current.getParent();
             }
         } catch (Exception ignored) {
-            // Sin acceso a la ubicacion de las clases: queda el directorio de trabajo.
+
         }
 
         return new ArrayList<>(directories);

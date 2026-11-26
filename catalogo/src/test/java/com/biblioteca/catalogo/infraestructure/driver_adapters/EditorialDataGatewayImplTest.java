@@ -37,7 +37,7 @@ class EditorialDataGatewayImplTest {
 
     @Test
     void guardarEditorial_debeMapearGuardarYRetornarEditorial() {
-        // Arrange
+
         Editorial editorial = mock(Editorial.class);
         EditorialData editorialData = mock(EditorialData.class);
         EditorialData editorialDataGuardada = mock(EditorialData.class);
@@ -47,10 +47,10 @@ class EditorialDataGatewayImplTest {
         when(editorialDataJpaRepository.save(editorialData)).thenReturn(editorialDataGuardada);
         when(editorialMapper.toEditorial(editorialDataGuardada)).thenReturn(editorialConvertida);
 
-        // Act
+
         Editorial resultado = editorialDataGateway.guardarEditorial(editorial);
 
-        // Assert
+
         assertSame(editorialConvertida, resultado);
         verify(editorialMapper).toEditorialData(editorial);
         verify(editorialDataJpaRepository).save(editorialData);
@@ -59,7 +59,7 @@ class EditorialDataGatewayImplTest {
 
     @Test
     void actualizarEditorial_debeGuardarYRetornarEditorialActualizada() {
-        // Arrange
+
         Editorial editorial = mock(Editorial.class);
         EditorialData editorialData = mock(EditorialData.class);
         EditorialData editorialDataActualizada = mock(EditorialData.class);
@@ -70,10 +70,10 @@ class EditorialDataGatewayImplTest {
         when(editorialMapper.toEditorial(editorialDataActualizada))
                 .thenReturn(editorialActualizada);
 
-        // Act
+
         Editorial resultado = editorialDataGateway.actualizarEditorial(editorial);
 
-        // Assert
+
         assertSame(editorialActualizada, resultado);
         verify(editorialMapper).toEditorialData(editorial);
         verify(editorialDataJpaRepository).save(editorialData);
@@ -82,7 +82,7 @@ class EditorialDataGatewayImplTest {
 
     @Test
     void buscarEditorialPorId_cuandoExiste_debeRetornarEditorialMapeada() {
-        // Arrange
+
         String idEditorial = "editorial-1";
         EditorialData editorialData = mock(EditorialData.class);
         Editorial editorial = mock(Editorial.class);
@@ -91,10 +91,10 @@ class EditorialDataGatewayImplTest {
                 .thenReturn(Optional.of(editorialData));
         when(editorialMapper.toEditorial(editorialData)).thenReturn(editorial);
 
-        // Act
+
         Editorial resultado = editorialDataGateway.buscarEditorialPorId(idEditorial);
 
-        // Assert
+
         assertSame(editorial, resultado);
         verify(editorialDataJpaRepository).findById(idEditorial);
         verify(editorialMapper).toEditorial(editorialData);
@@ -102,16 +102,16 @@ class EditorialDataGatewayImplTest {
 
     @Test
     void buscarEditorialPorId_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String idEditorial = "editorial-inexistente";
 
         when(editorialDataJpaRepository.findById(idEditorial))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Editorial resultado = editorialDataGateway.buscarEditorialPorId(idEditorial);
 
-        // Assert
+
         assertNull(resultado);
         verify(editorialDataJpaRepository).findById(idEditorial);
         verifyNoInteractions(editorialMapper);
@@ -119,7 +119,7 @@ class EditorialDataGatewayImplTest {
 
     @Test
     void buscarEditorialPorNombre_cuandoExiste_debeRetornarEditorialMapeada() {
-        // Arrange
+
         String nombre = "Editorial Central";
         EditorialData editorialData = mock(EditorialData.class);
         Editorial editorial = mock(Editorial.class);
@@ -128,10 +128,10 @@ class EditorialDataGatewayImplTest {
                 .thenReturn(Optional.of(editorialData));
         when(editorialMapper.toEditorial(editorialData)).thenReturn(editorial);
 
-        // Act
+
         Editorial resultado = editorialDataGateway.buscarEditorialPorNombre(nombre);
 
-        // Assert
+
         assertSame(editorial, resultado);
         verify(editorialDataJpaRepository).findFirstByNombreIgnoreCase(nombre);
         verify(editorialMapper).toEditorial(editorialData);
@@ -139,16 +139,16 @@ class EditorialDataGatewayImplTest {
 
     @Test
     void buscarEditorialPorNombre_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String nombre = "Editorial inexistente";
 
         when(editorialDataJpaRepository.findFirstByNombreIgnoreCase(nombre))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Editorial resultado = editorialDataGateway.buscarEditorialPorNombre(nombre);
 
-        // Assert
+
         assertNull(resultado);
         verify(editorialDataJpaRepository).findFirstByNombreIgnoreCase(nombre);
         verifyNoInteractions(editorialMapper);
@@ -156,7 +156,7 @@ class EditorialDataGatewayImplTest {
 
     @Test
     void listarEditoriales_debeMapearYRetornarLaLista() {
-        // Arrange
+
         EditorialData editorialData = mock(EditorialData.class);
         Editorial editorial = mock(Editorial.class);
 
@@ -164,10 +164,10 @@ class EditorialDataGatewayImplTest {
                 .thenReturn(List.of(editorialData));
         when(editorialMapper.toEditorial(editorialData)).thenReturn(editorial);
 
-        // Act
+
         List<Editorial> resultado = editorialDataGateway.listarEditoriales();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(editorial, resultado.get(0));
         verify(editorialDataJpaRepository).findAllByOrderByNombreAsc();
@@ -176,13 +176,13 @@ class EditorialDataGatewayImplTest {
 
     @Test
     void eliminarEditorial_cuandoSeEliminaCorrectamente_debeEjecutarDeleteYFlush() {
-        // Arrange
+
         String idEditorial = "editorial-1";
 
-        // Act
+
         editorialDataGateway.eliminarEditorial(idEditorial);
 
-        // Assert
+
         verify(editorialDataJpaRepository).deleteById(idEditorial);
         verify(editorialDataJpaRepository).flush();
         verifyNoInteractions(editorialMapper);
@@ -190,19 +190,19 @@ class EditorialDataGatewayImplTest {
 
     @Test
     void eliminarEditorial_cuandoTieneLibrosAsociados_debeLanzarRecursoEnUsoException() {
-        // Arrange
+
         String idEditorial = "editorial-1";
 
         doThrow(new DataIntegrityViolationException("Conflicto de integridad"))
                 .when(editorialDataJpaRepository).deleteById(idEditorial);
 
-        // Act
+
         RecursoEnUsoException excepcion = assertThrows(
                 RecursoEnUsoException.class,
                 () -> editorialDataGateway.eliminarEditorial(idEditorial)
         );
 
-        // Assert
+
         assertEquals(
                 "No se puede eliminar la editorial porque tiene libros asociados",
                 excepcion.getMessage()

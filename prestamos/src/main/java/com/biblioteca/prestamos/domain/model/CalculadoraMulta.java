@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-/**
- * Calcula los dias de retraso contando cada dia iniciado.
- */
+
+
+
 public final class CalculadoraMulta {
 
     private CalculadoraMulta() {

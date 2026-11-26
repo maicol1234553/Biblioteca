@@ -12,10 +12,10 @@ class DisponibilidadLibroTest {
 
     @Test
     void constructor_debeGuardarTodosLosValores() {
-        // Arrange
+
         List<String> ubicaciones = List.of("Estante A", "Sala 2");
 
-        // Act
+
         DisponibilidadLibro resultado = new DisponibilidadLibro(
                 "libro-1",
                 "Cien años de soledad",
@@ -29,7 +29,7 @@ class DisponibilidadLibroTest {
                 ubicaciones
         );
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("libro-1", resultado.idLibro()),
                 () -> assertEquals("Cien años de soledad", resultado.titulo()),

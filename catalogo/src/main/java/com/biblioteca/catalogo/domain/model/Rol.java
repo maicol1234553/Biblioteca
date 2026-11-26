@@ -2,11 +2,11 @@ package com.biblioteca.catalogo.domain.model;
 
 import java.util.Locale;
 
-/**
- * Roles compartidos con el microservicio auth. El rol se valida contra la
- * tabla usuario de la base de datos comun, no contra un encabezado enviado
- * por el cliente.
- */
+
+
+
+
+
 public enum Rol {
     ADMINISTRADOR,
     USUARIO;

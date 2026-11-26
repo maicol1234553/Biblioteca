@@ -18,14 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Conecta la aplicacion con la base de datos de Neon.
- *
- * Las credenciales se leen de las variables que genera `neon deploy` en `.env.local`
- * (o de variables de entorno reales en produccion). Se usa la cadena directa
- * (DATABASE_URL_UNPOOLED) porque Hibernate ejecuta DDL al arrancar con ddl-auto=update,
- * y PgBouncer (cadena pooled) no conserva estado de sesion.
- */
+
+
+
+
+
+
+
+
 @Configuration
 public class NeonDataSourceConfig {
 
@@ -124,11 +124,11 @@ public class NeonDataSourceConfig {
         return values;
     }
 
-    /**
-     * Busca .env.local en el directorio de trabajo y, ademas, junto a las clases
-     * compiladas (target/classes) y en la raiz del modulo. Asi funciona tanto al
-     * ejecutar el jar desde su carpeta como al arrancar desde el IDE.
-     */
+
+
+
+
+
     private List<Path> envDirectories() {
         Set<Path> directories = new LinkedHashSet<>();
 
@@ -147,13 +147,13 @@ public class NeonDataSourceConfig {
 
             Path current = Files.isDirectory(codeLocation) ? codeLocation : codeLocation.getParent();
 
-            // target/classes -> target -> raiz del modulo
+
             for (int level = 0; current != null && level < 3; level++) {
                 directories.add(current);
                 current = current.getParent();
             }
         } catch (Exception ignored) {
-            // Sin acceso a la ubicacion de las clases: queda el directorio de trabajo.
+
         }
 
         return new ArrayList<>(directories);

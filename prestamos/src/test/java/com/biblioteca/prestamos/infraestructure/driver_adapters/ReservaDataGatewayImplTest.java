@@ -41,7 +41,7 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void guardarReserva_debeMapearGuardarYRetornarReserva() {
-        // Arrange
+
         Reserva reserva = mock(Reserva.class);
         ReservaData reservaData = mock(ReservaData.class);
         ReservaData reservaDataGuardada = mock(ReservaData.class);
@@ -51,10 +51,10 @@ class ReservaDataGatewayImplTest {
         when(reservaDataJpaRepository.save(reservaData)).thenReturn(reservaDataGuardada);
         when(reservaMapper.toReserva(reservaDataGuardada)).thenReturn(reservaConvertida);
 
-        // Act
+
         Reserva resultado = reservaDataGateway.guardarReserva(reserva);
 
-        // Assert
+
         assertSame(reservaConvertida, resultado);
         verify(reservaMapper).toReservaData(reserva);
         verify(reservaDataJpaRepository).save(reservaData);
@@ -63,7 +63,7 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void actualizarReserva_debeGuardarYRetornarReservaActualizada() {
-        // Arrange
+
         Reserva reserva = mock(Reserva.class);
         ReservaData reservaData = mock(ReservaData.class);
         ReservaData reservaDataActualizada = mock(ReservaData.class);
@@ -73,10 +73,10 @@ class ReservaDataGatewayImplTest {
         when(reservaDataJpaRepository.save(reservaData)).thenReturn(reservaDataActualizada);
         when(reservaMapper.toReserva(reservaDataActualizada)).thenReturn(reservaActualizada);
 
-        // Act
+
         Reserva resultado = reservaDataGateway.actualizarReserva(reserva);
 
-        // Assert
+
         assertSame(reservaActualizada, resultado);
         verify(reservaMapper).toReservaData(reserva);
         verify(reservaDataJpaRepository).save(reservaData);
@@ -85,7 +85,7 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void buscarReservaPorId_cuandoExiste_debeRetornarReservaMapeada() {
-        // Arrange
+
         String idReserva = "reserva-1";
         ReservaData reservaData = mock(ReservaData.class);
         Reserva reserva = mock(Reserva.class);
@@ -94,10 +94,10 @@ class ReservaDataGatewayImplTest {
                 .thenReturn(Optional.of(reservaData));
         when(reservaMapper.toReserva(reservaData)).thenReturn(reserva);
 
-        // Act
+
         Reserva resultado = reservaDataGateway.buscarReservaPorId(idReserva);
 
-        // Assert
+
         assertSame(reserva, resultado);
         verify(reservaDataJpaRepository).findById(idReserva);
         verify(reservaMapper).toReserva(reservaData);
@@ -105,16 +105,16 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void buscarReservaPorId_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String idReserva = "reserva-inexistente";
 
         when(reservaDataJpaRepository.findById(idReserva))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Reserva resultado = reservaDataGateway.buscarReservaPorId(idReserva);
 
-        // Assert
+
         assertNull(resultado);
         verify(reservaDataJpaRepository).findById(idReserva);
         verifyNoInteractions(reservaMapper);
@@ -122,7 +122,7 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void listarReservas_debeMapearYRetornarLaLista() {
-        // Arrange
+
         ReservaData reservaData = mock(ReservaData.class);
         Reserva reserva = mock(Reserva.class);
 
@@ -130,10 +130,10 @@ class ReservaDataGatewayImplTest {
                 .thenReturn(List.of(reservaData));
         when(reservaMapper.toReserva(reservaData)).thenReturn(reserva);
 
-        // Act
+
         List<Reserva> resultado = reservaDataGateway.listarReservas();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(reserva, resultado.get(0));
         verify(reservaDataJpaRepository).findAllByOrderByFechaReservaDesc();
@@ -142,7 +142,7 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void listarReservasPorUsuario_debeConsultarYMapearLaLista() {
-        // Arrange
+
         String idUsuario = "usuario-1";
         ReservaData reservaData = mock(ReservaData.class);
         Reserva reserva = mock(Reserva.class);
@@ -151,10 +151,10 @@ class ReservaDataGatewayImplTest {
                 .thenReturn(List.of(reservaData));
         when(reservaMapper.toReserva(reservaData)).thenReturn(reserva);
 
-        // Act
+
         List<Reserva> resultado = reservaDataGateway.listarReservasPorUsuario(idUsuario);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(reserva, resultado.get(0));
         verify(reservaDataJpaRepository).findByIdUsuarioOrderByFechaReservaDesc(idUsuario);
@@ -163,7 +163,7 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void listarReservasPorLibro_debeConsultarYMapearLaLista() {
-        // Arrange
+
         String idLibro = "libro-1";
         ReservaData reservaData = mock(ReservaData.class);
         Reserva reserva = mock(Reserva.class);
@@ -172,10 +172,10 @@ class ReservaDataGatewayImplTest {
                 .thenReturn(List.of(reservaData));
         when(reservaMapper.toReserva(reservaData)).thenReturn(reserva);
 
-        // Act
+
         List<Reserva> resultado = reservaDataGateway.listarReservasPorLibro(idLibro);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(reserva, resultado.get(0));
         verify(reservaDataJpaRepository).findByIdLibroOrderByFechaReservaAsc(idLibro);
@@ -184,7 +184,7 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void listarReservasPendientesPorLibro_debeFiltrarPorEstadoPendiente() {
-        // Arrange
+
         String idLibro = "libro-1";
         ReservaData reservaData = mock(ReservaData.class);
         Reserva reserva = mock(Reserva.class);
@@ -194,11 +194,11 @@ class ReservaDataGatewayImplTest {
                 .thenReturn(List.of(reservaData));
         when(reservaMapper.toReserva(reservaData)).thenReturn(reserva);
 
-        // Act
+
         List<Reserva> resultado =
                 reservaDataGateway.listarReservasPendientesPorLibro(idLibro);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(reserva, resultado.get(0));
         verify(reservaDataJpaRepository).findByIdLibroAndEstadoOrderByFechaReservaAsc(
@@ -208,7 +208,7 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void buscarReservaPendiente_cuandoExiste_debeRetornarReservaMapeada() {
-        // Arrange
+
         String idUsuario = "usuario-1";
         String idLibro = "libro-1";
         ReservaData reservaData = mock(ReservaData.class);
@@ -220,10 +220,10 @@ class ReservaDataGatewayImplTest {
                 .thenReturn(Optional.of(reservaData));
         when(reservaMapper.toReserva(reservaData)).thenReturn(reserva);
 
-        // Act
+
         Reserva resultado = reservaDataGateway.buscarReservaPendiente(idUsuario, idLibro);
 
-        // Assert
+
         assertSame(reserva, resultado);
         verify(reservaDataJpaRepository)
                 .findFirstByIdUsuarioAndIdLibroAndEstadoOrderByFechaReservaAsc(
@@ -233,7 +233,7 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void buscarReservaPendiente_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String idUsuario = "usuario-1";
         String idLibro = "libro-1";
 
@@ -242,10 +242,10 @@ class ReservaDataGatewayImplTest {
                         idUsuario, idLibro, EstadoReserva.PENDIENTE.name()))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Reserva resultado = reservaDataGateway.buscarReservaPendiente(idUsuario, idLibro);
 
-        // Assert
+
         assertNull(resultado);
         verify(reservaDataJpaRepository)
                 .findFirstByIdUsuarioAndIdLibroAndEstadoOrderByFechaReservaAsc(
@@ -255,7 +255,7 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void existeReservaPendiente_cuandoExiste_debeRetornarTrue() {
-        // Arrange
+
         String idUsuario = "usuario-1";
         String idLibro = "libro-1";
 
@@ -263,11 +263,11 @@ class ReservaDataGatewayImplTest {
                 idUsuario, idLibro, EstadoReserva.PENDIENTE.name()))
                 .thenReturn(true);
 
-        // Act
+
         boolean resultado =
                 reservaDataGateway.existeReservaPendiente(idUsuario, idLibro);
 
-        // Assert
+
         assertTrue(resultado);
         verify(reservaDataJpaRepository).existsByIdUsuarioAndIdLibroAndEstado(
                 idUsuario, idLibro, EstadoReserva.PENDIENTE.name());
@@ -276,7 +276,7 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void existeReservaPendiente_cuandoNoExiste_debeRetornarFalse() {
-        // Arrange
+
         String idUsuario = "usuario-1";
         String idLibro = "libro-1";
 
@@ -284,11 +284,11 @@ class ReservaDataGatewayImplTest {
                 idUsuario, idLibro, EstadoReserva.PENDIENTE.name()))
                 .thenReturn(false);
 
-        // Act
+
         boolean resultado =
                 reservaDataGateway.existeReservaPendiente(idUsuario, idLibro);
 
-        // Assert
+
         assertFalse(resultado);
         verify(reservaDataJpaRepository).existsByIdUsuarioAndIdLibroAndEstado(
                 idUsuario, idLibro, EstadoReserva.PENDIENTE.name());
@@ -297,7 +297,7 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void listarReservasPendientesExpiradas_debeFiltrarPorEstadoYFecha() {
-        // Arrange
+
         LocalDateTime fecha = LocalDateTime.of(2026, 11, 25, 12, 0);
         ReservaData reservaData = mock(ReservaData.class);
         Reserva reserva = mock(Reserva.class);
@@ -308,11 +308,11 @@ class ReservaDataGatewayImplTest {
                 .thenReturn(List.of(reservaData));
         when(reservaMapper.toReserva(reservaData)).thenReturn(reserva);
 
-        // Act
+
         List<Reserva> resultado =
                 reservaDataGateway.listarReservasPendientesExpiradas(fecha);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(reserva, resultado.get(0));
         verify(reservaDataJpaRepository)
@@ -323,13 +323,13 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void eliminarReserva_cuandoSeEliminaCorrectamente_debeEjecutarDeleteYFlush() {
-        // Arrange
+
         String idReserva = "reserva-1";
 
-        // Act
+
         reservaDataGateway.eliminarReserva(idReserva);
 
-        // Assert
+
         verify(reservaDataJpaRepository).deleteById(idReserva);
         verify(reservaDataJpaRepository).flush();
         verifyNoInteractions(reservaMapper);
@@ -337,19 +337,19 @@ class ReservaDataGatewayImplTest {
 
     @Test
     void eliminarReserva_cuandoTieneInformacionAsociada_debeLanzarRecursoEnUsoException() {
-        // Arrange
+
         String idReserva = "reserva-1";
 
         doThrow(new DataIntegrityViolationException("Conflicto de integridad"))
                 .when(reservaDataJpaRepository).flush();
 
-        // Act
+
         RecursoEnUsoException excepcion = assertThrows(
                 RecursoEnUsoException.class,
                 () -> reservaDataGateway.eliminarReserva(idReserva)
         );
 
-        // Assert
+
         assertEquals(
                 "No se puede eliminar la reserva porque tiene informacion asociada",
                 excepcion.getMessage()

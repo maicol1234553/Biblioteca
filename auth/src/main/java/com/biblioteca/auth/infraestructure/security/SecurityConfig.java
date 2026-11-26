@@ -10,15 +10,15 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    /**
-     * Rutas publicas del microservicio Auth.
-     *
-     * - /api/biblioteca/usuario/**  -> todos los endpoints de UsuarioController
-     *   (save, login, buscar, update, delete, cambiar-password, recuperar-password,
-     *   restablecer-password, rol, estadisticas).
-     * - /actuator/health, /actuator/health/ y /actuator/health/** -> health y
-     *   subgrupos (liveness/readiness) usados por Render.
-     */
+
+
+
+
+
+
+
+
+
     private static final String[] RUTAS_PUBLICAS = {
             "/api/biblioteca/usuario/**",
             "/actuator/health",

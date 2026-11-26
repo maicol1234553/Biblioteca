@@ -8,8 +8,11 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,16 +27,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Envia correos por SMTP o por API HTTP.
- *
- * Render Free bloquea los puertos SMTP (25/465/587), por lo que en produccion
- * se debe configurar SENDGRID_API_KEY o BREVO_API_KEY. Si no hay ninguna de
- * las dos, se usa SMTP (util para MailHog local o planes pagos).
- */
+
+
+
+
+
+
+
 @Component
 public class CorreoGatewayImpl implements CorreoGateway {
 
+    private static final Logger log = LoggerFactory.getLogger(CorreoGatewayImpl.class);
     private static final String SENDGRID_URL_POR_DEFECTO = "https://api.sendgrid.com/v3/mail/send";
     private static final String BREVO_URL_POR_DEFECTO = "https://api.brevo.com/v3/smtp/email";
 
@@ -47,7 +51,7 @@ public class CorreoGatewayImpl implements CorreoGateway {
 
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(Duration.ofSeconds(10));
-        requestFactory.setReadTimeout(Duration.ofSeconds(10));
+        requestFactory.setReadTimeout(Duration.ofSeconds(90));
 
         this.httpClient = RestClient.builder()
                 .requestFactory(requestFactory)
@@ -64,15 +68,18 @@ public class CorreoGatewayImpl implements CorreoGateway {
         NotificacionProperties.CorreoApi correoApi = properties.correoApi();
 
         if (tieneTexto(correoApi == null ? null : correoApi.sendgridApiKey())) {
+            log.info("Proveedor de correo seleccionado: SENDGRID");
             enviarSendgrid(correoApi.sendgridApiKey(), remitente, destinatario, asuntoSeguro, contenido);
             return;
         }
 
         if (tieneTexto(correoApi == null ? null : correoApi.brevoApiKey())) {
+            log.info("Proveedor de correo seleccionado: BREVO");
             enviarBrevo(correoApi.brevoApiKey(), remitente, destinatario, asuntoSeguro, contenido);
             return;
         }
 
+        log.info("Proveedor de correo seleccionado: SMTP");
         enviarSmtp(remitente, destinatario, asuntoSeguro, contenido);
     }
 
@@ -97,18 +104,24 @@ public class CorreoGatewayImpl implements CorreoGateway {
         )));
 
         try {
-            httpClient.post()
+            ResponseEntity<String> response = httpClient.post()
                     .uri(url)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(body)
                     .retrieve()
-                    .toBodilessEntity();
+                    .toEntity(String.class);
+
+            log.info("SendGrid respondio HTTP {}: {}",
+                    response.getStatusCode().value(), resumen(response.getBody()));
         } catch (RestClientResponseException exception) {
+            log.warn("SendGrid rechazo el correo HTTP {}: {}",
+                    exception.getStatusCode().value(), resumen(exception.getResponseBodyAsString()));
             throw new EnvioCorreoException(
                     "SendGrid rechazo el correo (" + exception.getStatusCode().value()
                             + "): " + exception.getResponseBodyAsString(), exception);
         } catch (RestClientException exception) {
+            log.warn("No se pudo enviar el correo por SendGrid: {}", exception.getMessage());
             throw new EnvioCorreoException("No se pudo enviar el correo por SendGrid", exception);
         }
     }
@@ -129,18 +142,24 @@ public class CorreoGatewayImpl implements CorreoGateway {
         body.put("htmlContent", contenidoHtml);
 
         try {
-            httpClient.post()
+            ResponseEntity<String> response = httpClient.post()
                     .uri(url)
                     .header("api-key", apiKey)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(body)
                     .retrieve()
-                    .toBodilessEntity();
+                    .toEntity(String.class);
+
+            log.info("Brevo respondio HTTP {}: {}",
+                    response.getStatusCode().value(), resumen(response.getBody()));
         } catch (RestClientResponseException exception) {
+            log.warn("Brevo rechazo el correo HTTP {}: {}",
+                    exception.getStatusCode().value(), resumen(exception.getResponseBodyAsString()));
             throw new EnvioCorreoException(
                     "Brevo rechazo el correo (" + exception.getStatusCode().value()
                             + "): " + exception.getResponseBodyAsString(), exception);
         } catch (RestClientException exception) {
+            log.warn("No se pudo enviar el correo por Brevo: {}", exception.getMessage());
             throw new EnvioCorreoException("No se pudo enviar el correo por Brevo", exception);
         }
     }
@@ -158,6 +177,7 @@ public class CorreoGatewayImpl implements CorreoGateway {
             helper.setText(contenidoHtml, true);
 
             mailSender.send(mensaje);
+            log.info("Correo enviado por SMTP a {}", destinatario);
         } catch (MessagingException exception) {
             throw new EnvioCorreoException("No se pudo construir el correo", exception);
         } catch (MailException exception) {
@@ -177,6 +197,14 @@ public class CorreoGatewayImpl implements CorreoGateway {
 
     private boolean tieneTexto(String valor) {
         return valor != null && !valor.isBlank();
+    }
+
+    private String resumen(String valor) {
+        if (valor == null) {
+            return "";
+        }
+        String limpio = valor.replaceAll("\\s+", " ").trim();
+        return limpio.length() <= 500 ? limpio : limpio.substring(0, 500) + "...";
     }
 
     private void validarDestinatario(String destinatario) {

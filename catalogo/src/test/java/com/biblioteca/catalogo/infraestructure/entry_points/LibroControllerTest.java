@@ -46,31 +46,31 @@ class LibroControllerTest {
         libro = crearLibro();
     }
 
-    // LISTAR LIBROS
+
 
     @Test
     void listarLibros_RetornaListaYEstado200() {
-        // Arrange
+
         List<Libro> librosEsperados = List.of(libro);
 
         when(libroUseCase.listarLibros())
                 .thenReturn(librosEsperados);
 
-        // Act
+
         ResponseEntity<List<Libro>> respuesta =
                 libroController.listarLibros();
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertSame(librosEsperados, respuesta.getBody());
         verify(libroUseCase).listarLibros();
     }
 
-    // BUSCAR LIBROS CON FILTROS
+
 
     @Test
     void buscarLibros_FiltrosRecibidos_CreaBusquedaYRetornaResultados() {
-        // Arrange
+
         List<Libro> librosEsperados = List.of(libro);
 
         when(libroUseCase.buscarLibros(any(BusquedaLibro.class)))
@@ -79,7 +79,7 @@ class LibroControllerTest {
         ArgumentCaptor<BusquedaLibro> busquedaCaptor =
                 ArgumentCaptor.forClass(BusquedaLibro.class);
 
-        // Act
+
         ResponseEntity<List<Libro>> respuesta =
                 libroController.buscarLibros(
                         "García Márquez",
@@ -89,7 +89,7 @@ class LibroControllerTest {
                         "es"
                 );
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertSame(librosEsperados, respuesta.getBody());
 
@@ -106,18 +106,18 @@ class LibroControllerTest {
 
     @Test
     void buscarLibros_FiltrosNulos_PasaBusquedaConValoresNulos() {
-        // Arrange
+
         when(libroUseCase.buscarLibros(any(BusquedaLibro.class)))
                 .thenReturn(List.of());
 
         ArgumentCaptor<BusquedaLibro> busquedaCaptor =
                 ArgumentCaptor.forClass(BusquedaLibro.class);
 
-        // Act
+
         ResponseEntity<List<Libro>> respuesta =
                 libroController.buscarLibros(null, null, null, null, null);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertTrue(respuesta.getBody().isEmpty());
@@ -133,21 +133,21 @@ class LibroControllerTest {
         assertNull(busquedaEnviada.idioma());
     }
 
-    // BUSCAR LIBRO POR ID
+
 
     @Test
     void buscarLibroPorId_LibroExiste_RetornaLibroYEstado200() {
-        // Arrange
+
         String id = "LIB-1";
 
         when(libroUseCase.buscarLibroPorId(id))
                 .thenReturn(libro);
 
-        // Act
+
         ResponseEntity<Libro> respuesta =
                 libroController.buscarLibroPorId(id);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertSame(libro, respuesta.getBody());
         verify(libroUseCase).buscarLibroPorId(id);
@@ -155,7 +155,7 @@ class LibroControllerTest {
 
     @Test
     void buscarLibroPorId_LibroNoExiste_PropagaExcepcion() {
-        // Arrange
+
         String id = "LIB-INEXISTENTE";
 
         when(libroUseCase.buscarLibroPorId(id))
@@ -163,13 +163,13 @@ class LibroControllerTest {
                         "Libro no encontrado con id: " + id
                 ));
 
-        // Act
+
         LibroNoEncontradoException excepcion = assertThrows(
                 LibroNoEncontradoException.class,
                 () -> libroController.buscarLibroPorId(id)
         );
 
-        // Assert
+
         assertEquals(
                 "Libro no encontrado con id: " + id,
                 excepcion.getMessage()
@@ -177,11 +177,11 @@ class LibroControllerTest {
         verify(libroUseCase).buscarLibroPorId(id);
     }
 
-    // CONSULTAR DISPONIBILIDAD
+
 
     @Test
     void consultarDisponibilidad_LibroExiste_RetornaDisponibilidadYEstado200() {
-        // Arrange
+
         String id = "LIB-1";
         DisponibilidadLibro disponibilidad =
                 mock(DisponibilidadLibro.class);
@@ -189,21 +189,21 @@ class LibroControllerTest {
         when(ejemplarUseCase.consultarDisponibilidad(id))
                 .thenReturn(disponibilidad);
 
-        // Act
+
         ResponseEntity<DisponibilidadLibro> respuesta =
                 libroController.consultarDisponibilidad(id);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertSame(disponibilidad, respuesta.getBody());
         verify(ejemplarUseCase).consultarDisponibilidad(id);
     }
 
-    // GUARDAR LIBRO
+
 
     @Test
     void guardarLibro_RequestValido_ConvierteLibroYRetornaEstado201() {
-        // Arrange
+
         LibroController.LibroRequest request = crearRequestValido();
 
         when(libroUseCase.guardarLibro(any(Libro.class)))
@@ -212,11 +212,11 @@ class LibroControllerTest {
         ArgumentCaptor<Libro> libroCaptor =
                 ArgumentCaptor.forClass(Libro.class);
 
-        // Act
+
         ResponseEntity<Libro> respuesta =
                 libroController.guardarLibro(request);
 
-        // Assert
+
         assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
         assertSame(libro, respuesta.getBody());
 
@@ -254,7 +254,7 @@ class LibroControllerTest {
 
     @Test
     void guardarLibro_IdsDeAutoresYCategoriasNulos_LosDejaNulos() {
-        // Arrange
+
         LibroController.LibroRequest request =
                 new LibroController.LibroRequest(
                         "9780306406157",
@@ -276,11 +276,11 @@ class LibroControllerTest {
         ArgumentCaptor<Libro> libroCaptor =
                 ArgumentCaptor.forClass(Libro.class);
 
-        // Act
+
         ResponseEntity<Libro> respuesta =
                 libroController.guardarLibro(request);
 
-        // Assert
+
         assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
 
         verify(libroUseCase).guardarLibro(libroCaptor.capture());
@@ -296,7 +296,7 @@ class LibroControllerTest {
 
     @Test
     void guardarLibro_FiltraIdsNulosYEnBlanco() {
-        // Arrange
+
         LibroController.LibroRequest request =
                 new LibroController.LibroRequest(
                         "9780306406157",
@@ -318,11 +318,11 @@ class LibroControllerTest {
         ArgumentCaptor<Libro> libroCaptor =
                 ArgumentCaptor.forClass(Libro.class);
 
-        // Act
+
         ResponseEntity<Libro> respuesta =
                 libroController.guardarLibro(request);
 
-        // Assert
+
         assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
 
         verify(libroUseCase).guardarLibro(libroCaptor.capture());
@@ -344,11 +344,11 @@ class LibroControllerTest {
         );
     }
 
-    // ACTUALIZAR LIBRO
+
 
     @Test
     void actualizarLibro_RequestValido_PasaIdYLibroAlUseCase() {
-        // Arrange
+
         String id = "LIB-1";
         LibroController.LibroRequest request = crearRequestValido();
 
@@ -360,11 +360,11 @@ class LibroControllerTest {
         ArgumentCaptor<Libro> libroCaptor =
                 ArgumentCaptor.forClass(Libro.class);
 
-        // Act
+
         ResponseEntity<Libro> respuesta =
                 libroController.actualizarLibro(id, request);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertSame(libro, respuesta.getBody());
 
@@ -390,18 +390,18 @@ class LibroControllerTest {
         );
     }
 
-    // ELIMINAR LIBRO
+
 
     @Test
     void eliminarLibro_LibroExiste_RetornaMensajeYEstado200() {
-        // Arrange
+
         String id = "LIB-1";
 
-        // Act
+
         ResponseEntity<String> respuesta =
                 libroController.eliminarLibro(id);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertEquals("Libro eliminado con exito", respuesta.getBody());
         verify(libroUseCase).eliminarLibro(id);

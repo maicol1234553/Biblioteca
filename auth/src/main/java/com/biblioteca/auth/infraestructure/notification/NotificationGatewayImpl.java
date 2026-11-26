@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
@@ -13,17 +14,12 @@ import org.springframework.web.client.RestClientResponseException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Envia correos llamando al microservicio de notificacion.
- *
- * El contrato real de /notificaciones/enviar-correo acepta JSON con los campos
- * idUsuario (UUID), destinatario, asunto, mensaje y tipo. Un fallo del servicio
- * de notificacion se registra en el log y no interrumpe la operacion de auth.
- */
 @Service
 public class NotificationGatewayImpl implements NotificationGateway {
 
     private static final Logger log = LoggerFactory.getLogger(NotificationGatewayImpl.class);
+    private static final int MAX_INTENTOS = 3;
+    private static final long ESPERA_BASE_MS = 500L;
 
     private final RestClient notificationRestClient;
 
@@ -31,6 +27,7 @@ public class NotificationGatewayImpl implements NotificationGateway {
         this.notificationRestClient = notificationRestClient;
     }
 
+    @Async("notificacionExecutor")
     @Override
     public void enviarCorreo(String idUsuario,
                              String destinatario,
@@ -49,18 +46,42 @@ public class NotificationGatewayImpl implements NotificationGateway {
         body.put("mensaje", mensaje);
         body.put("tipo", tipo);
 
+        for (int intento = 1; intento <= MAX_INTENTOS; intento++) {
+            try {
+                notificationRestClient.post()
+                        .uri("/notificaciones/enviar-correo")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(body)
+                        .retrieve()
+                        .toBodilessEntity();
+                return;
+            } catch (RestClientResponseException exception) {
+                int estado = exception.getStatusCode().value();
+                boolean reintentable = estado == 429 || estado >= 500;
+                log.warn("Notificacion por correo fallo HTTP {} (intento {}/{}): {}",
+                        estado, intento, MAX_INTENTOS, exception.getResponseBodyAsString());
+                if (!reintentable || intento == MAX_INTENTOS) {
+                    break;
+                }
+            } catch (RestClientException exception) {
+                log.warn("No se pudo contactar al servicio de notificacion (intento {}/{}): {}",
+                        intento, MAX_INTENTOS, exception.getMessage());
+                if (intento == MAX_INTENTOS) {
+                    break;
+                }
+            }
+
+            esperar(intento);
+        }
+
+        log.warn("No se pudo enviar la notificacion por correo para {}", idUsuario);
+    }
+
+    private void esperar(int intento) {
         try {
-            notificationRestClient.post()
-                    .uri("/notificaciones/enviar-correo")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(body)
-                    .retrieve()
-                    .toBodilessEntity();
-        } catch (RestClientResponseException exception) {
-            log.warn("Notificacion por correo fallo ({}): {}",
-                    exception.getStatusCode().value(), exception.getResponseBodyAsString());
-        } catch (RestClientException exception) {
-            log.warn("No se pudo contactar al servicio de notificacion: {}", exception.getMessage());
+            Thread.sleep(ESPERA_BASE_MS * intento);
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
         }
     }
 }

@@ -17,16 +17,16 @@ class AutorMapperTest {
 
     @Test
     void toAutor_cuandoAutorDataEsNull_debeRetornarNull() {
-        // Act
+
         Autor resultado = mapper.toAutor(null);
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void toAutor_debeCopiarTodosLosCampos() {
-        // Arrange
+
         LocalDate fechaNacimiento = LocalDate.of(1927, 3, 6);
         AutorData autorData = new AutorData(
                 "autor-1",
@@ -37,10 +37,10 @@ class AutorMapperTest {
                 "Escritor y periodista colombiano"
         );
 
-        // Act
+
         Autor resultado = mapper.toAutor(autorData);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("autor-1", resultado.getIdAutor()),
                 () -> assertEquals("Gabriel", resultado.getNombre()),
@@ -56,7 +56,7 @@ class AutorMapperTest {
 
     @Test
     void toAutorData_debeCopiarTodosLosCampos() {
-        // Arrange
+
         LocalDate fechaNacimiento = LocalDate.of(1927, 3, 6);
         Autor autor = new Autor(
                 "autor-1",
@@ -67,10 +67,10 @@ class AutorMapperTest {
                 "Escritor y periodista colombiano"
         );
 
-        // Act
+
         AutorData resultado = mapper.toAutorData(autor);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("autor-1", resultado.getIdAutor()),
                 () -> assertEquals("Gabriel", resultado.getNombre()),
@@ -86,7 +86,7 @@ class AutorMapperTest {
 
     @Test
     void toAutorData_cuandoAutorEsNull_debeLanzarNullPointerException() {
-        // Act y Assert
+
         assertThrows(NullPointerException.class, () -> mapper.toAutorData(null));
     }
 }

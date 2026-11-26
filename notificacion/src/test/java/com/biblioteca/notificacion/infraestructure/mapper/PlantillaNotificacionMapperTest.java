@@ -18,16 +18,16 @@ class PlantillaNotificacionMapperTest {
 
     @Test
     void toPlantilla_cuandoDataEsNull_debeRetornarNull() {
-        // Act
+
         PlantillaNotificacion resultado = mapper.toPlantilla(null);
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void toPlantilla_debeCopiarTodosLosCampos() {
-        // Arrange
+
         PlantillaNotificacionData data =
                 mock(PlantillaNotificacionData.class);
 
@@ -38,10 +38,10 @@ class PlantillaNotificacionMapperTest {
         when(data.getTipo()).thenReturn("PRESTAMO");
         when(data.getEstado()).thenReturn("ACTIVA");
 
-        // Act
+
         PlantillaNotificacion resultado = mapper.toPlantilla(data);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("plantilla-1", resultado.getIdPlantilla()),
                 () -> assertEquals("Aviso de préstamo", resultado.getNombre()),
@@ -60,7 +60,7 @@ class PlantillaNotificacionMapperTest {
 
     @Test
     void toPlantillaData_debeCopiarTodosLosCampos() {
-        // Arrange
+
         PlantillaNotificacion plantilla =
                 mock(PlantillaNotificacion.class);
 
@@ -72,11 +72,11 @@ class PlantillaNotificacionMapperTest {
         when(plantilla.getTipo()).thenReturn("PRESTAMO");
         when(plantilla.getEstado()).thenReturn("ACTIVA");
 
-        // Act
+
         PlantillaNotificacionData resultado =
                 mapper.toPlantillaData(plantilla);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("plantilla-1", resultado.getIdPlantilla()),
                 () -> assertEquals("Aviso de préstamo", resultado.getNombre()),
@@ -95,7 +95,7 @@ class PlantillaNotificacionMapperTest {
 
     @Test
     void toPlantillaData_cuandoPlantillaEsNull_debeLanzarNullPointerException() {
-        // Act y Assert
+
         assertThrows(
                 NullPointerException.class,
                 () -> mapper.toPlantillaData(null)

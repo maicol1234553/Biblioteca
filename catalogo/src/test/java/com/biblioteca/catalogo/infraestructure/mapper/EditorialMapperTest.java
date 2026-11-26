@@ -15,16 +15,16 @@ class EditorialMapperTest {
 
     @Test
     void toEditorial_cuandoEditorialDataEsNull_debeRetornarNull() {
-        // Act
+
         Editorial resultado = mapper.toEditorial(null);
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void toEditorial_debeCopiarTodosLosCampos() {
-        // Arrange
+
         EditorialData editorialData = new EditorialData(
                 "editorial-1",
                 "Planeta",
@@ -33,10 +33,10 @@ class EditorialMapperTest {
                 "contacto@planeta.com"
         );
 
-        // Act
+
         Editorial resultado = mapper.toEditorial(editorialData);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("editorial-1", resultado.getIdEditorial()),
                 () -> assertEquals("Planeta", resultado.getNombre()),
@@ -54,7 +54,7 @@ class EditorialMapperTest {
 
     @Test
     void toEditorialData_debeCopiarTodosLosCampos() {
-        // Arrange
+
         Editorial editorial = new Editorial(
                 "editorial-1",
                 "Planeta",
@@ -63,10 +63,10 @@ class EditorialMapperTest {
                 "contacto@planeta.com"
         );
 
-        // Act
+
         EditorialData resultado = mapper.toEditorialData(editorial);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("editorial-1", resultado.getIdEditorial()),
                 () -> assertEquals("Planeta", resultado.getNombre()),
@@ -84,7 +84,7 @@ class EditorialMapperTest {
 
     @Test
     void toEditorialData_cuandoEditorialEsNull_debeLanzarNullPointerException() {
-        // Act y Assert
+
         assertThrows(
                 NullPointerException.class,
                 () -> mapper.toEditorialData(null)

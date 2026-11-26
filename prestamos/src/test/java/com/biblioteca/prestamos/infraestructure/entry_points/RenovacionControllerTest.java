@@ -32,18 +32,18 @@ class RenovacionControllerTest {
 
     @Test
     void listarRenovaciones_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Renovacion renovacion = mock(Renovacion.class);
 
         when(renovacionUseCase.listarRenovaciones(solicitante))
                 .thenReturn(List.of(renovacion));
 
-        // Act
+
         ResponseEntity<List<RenovacionResponse>> respuesta =
                 renovacionController.listarRenovaciones(solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -52,7 +52,7 @@ class RenovacionControllerTest {
 
     @Test
     void buscarRenovacion_debeRetornarRenovacionYEstadoOk() {
-        // Arrange
+
         String id = "renovacion-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Renovacion renovacion = mock(Renovacion.class);
@@ -60,11 +60,11 @@ class RenovacionControllerTest {
         when(renovacionUseCase.buscarRenovacion(id, solicitante))
                 .thenReturn(renovacion);
 
-        // Act
+
         ResponseEntity<RenovacionResponse> respuesta =
                 renovacionController.buscarRenovacion(id, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(renovacionUseCase).buscarRenovacion(id, solicitante);
@@ -72,7 +72,7 @@ class RenovacionControllerTest {
 
     @Test
     void listarRenovacionesPorPrestamo_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Renovacion renovacion = mock(Renovacion.class);
@@ -80,11 +80,11 @@ class RenovacionControllerTest {
         when(renovacionUseCase.listarRenovacionesPorPrestamo(idPrestamo, solicitante))
                 .thenReturn(List.of(renovacion));
 
-        // Act
+
         ResponseEntity<List<RenovacionResponse>> respuesta =
                 renovacionController.listarRenovacionesPorPrestamo(idPrestamo, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -93,15 +93,15 @@ class RenovacionControllerTest {
 
     @Test
     void eliminarRenovacion_debeRetornarMensajeYEstadoOk() {
-        // Arrange
+
         String id = "renovacion-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
 
-        // Act
+
         ResponseEntity<MensajeResponse> respuesta =
                 renovacionController.eliminarRenovacion(id, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(

@@ -29,13 +29,13 @@ class SecurityConfigTest {
 
     @Test
     void rutaDeUsuario_sinAutenticacion_debePermitirAcceso() throws Exception {
-        // Arrange
+
         String ruta = "/api/biblioteca/usuario/prueba";
 
-        // Act
+
         var resultado = mockMvc.perform(get(ruta));
 
-        // Assert
+
         resultado
                 .andExpect(status().isOk())
                 .andExpect(content().string("ruta publica"));
@@ -43,15 +43,15 @@ class SecurityConfigTest {
 
     @Test
     void rutaDeUsuarioPost_sinTokenCsrf_debePermitirAcceso() throws Exception {
-        // Arrange
+
         String ruta = "/api/biblioteca/usuario/prueba";
 
-        // Act
+
         var resultado = mockMvc.perform(post(ruta)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}"));
 
-        // Assert
+
         resultado
                 .andExpect(status().isOk())
                 .andExpect(content().string("post publico"));
@@ -65,13 +65,13 @@ class SecurityConfigTest {
             "/actuator/health/liveness/readiness"
     })
     void rutaDeHealth_sinAutenticacion_debePermitirAcceso(String ruta) throws Exception {
-        // Arrange
-        // La ruta se recibe como parámetro.
 
-        // Act
+
+
+
         var resultado = mockMvc.perform(get(ruta));
 
-        // Assert
+
         resultado
                 .andExpect(status().isOk())
                 .andExpect(content().string("health publico"));
@@ -79,13 +79,13 @@ class SecurityConfigTest {
 
     @Test
     void rutaPrivada_sinAutenticacion_debeDenegarAcceso() throws Exception {
-        // Arrange
+
         String ruta = "/api/biblioteca/libros/prueba";
 
-        // Act
+
         var resultado = mockMvc.perform(get(ruta));
 
-        // Assert
+
         resultado.andExpect(status().isForbidden());
     }
 

@@ -209,10 +209,10 @@ public class PrestamoUseCase {
         return procesarPrestamosVencidos();
     }
 
-    /**
-     * Proceso invocado por el job programado. Marca como VENCIDO y genera o
-     * actualiza la multa pendiente de cada prestamo atrasado.
-     */
+
+
+
+
     public List<Prestamo> procesarPrestamosVencidos() {
         LocalDateTime ahora = LocalDateTime.now(clock);
         List<Prestamo> vencidos = prestamoGateway.listarPrestamosVencidos(ahora);

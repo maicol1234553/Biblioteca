@@ -56,7 +56,7 @@ class LibroDataGatewayImplTest {
 
     @Test
     void guardarLibro_debeConstruirGuardarYRetornarLibro() {
-        // Arrange
+
         Libro libro = mock(Libro.class);
         LibroData libroData = mock(LibroData.class);
         LibroData libroDataGuardado = mock(LibroData.class);
@@ -83,10 +83,10 @@ class LibroDataGatewayImplTest {
         when(libroDataJpaRepository.save(libroData)).thenReturn(libroDataGuardado);
         when(libroMapper.toLibro(libroDataGuardado)).thenReturn(libroConvertido);
 
-        // Act
+
         Libro resultado = libroDataGateway.guardarLibro(libro);
 
-        // Assert
+
         assertSame(libroConvertido, resultado);
         verify(libroData).setEditorial(editorialData);
         verify(libroData).setCategorias(Set.of(categoriaData));
@@ -97,7 +97,7 @@ class LibroDataGatewayImplTest {
 
     @Test
     void actualizarLibro_debeConstruirGuardarYRetornarLibroActualizado() {
-        // Arrange
+
         Libro libro = mock(Libro.class);
         LibroData libroData = mock(LibroData.class);
         LibroData libroDataGuardado = mock(LibroData.class);
@@ -114,10 +114,10 @@ class LibroDataGatewayImplTest {
         when(libroDataJpaRepository.save(libroData)).thenReturn(libroDataGuardado);
         when(libroMapper.toLibro(libroDataGuardado)).thenReturn(libroActualizado);
 
-        // Act
+
         Libro resultado = libroDataGateway.actualizarLibro(libro);
 
-        // Assert
+
         assertSame(libroActualizado, resultado);
         verify(libroData).setEditorial(editorialData);
         verify(libroData).setCategorias(Set.of());
@@ -128,7 +128,7 @@ class LibroDataGatewayImplTest {
 
     @Test
     void guardarLibro_cuandoEditorialNoExiste_debeLanzarExcepcion() {
-        // Arrange
+
         Libro libro = mock(Libro.class);
 
         when(libro.getIdEditorial()).thenReturn("editorial-inexistente");
@@ -136,13 +136,13 @@ class LibroDataGatewayImplTest {
         when(editorialDataJpaRepository.findById("editorial-inexistente"))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         EditorialNoEncontradaException excepcion = assertThrows(
                 EditorialNoEncontradaException.class,
                 () -> libroDataGateway.guardarLibro(libro)
         );
 
-        // Assert
+
         assertEquals(
                 "Editorial no encontrada con id: editorial-inexistente",
                 excepcion.getMessage()
@@ -152,7 +152,7 @@ class LibroDataGatewayImplTest {
 
     @Test
     void guardarLibro_cuandoCategoriaNoExiste_debeLanzarExcepcion() {
-        // Arrange
+
         Libro libro = mock(Libro.class);
         LibroData libroData = mock(LibroData.class);
         EditorialData editorialData = mock(EditorialData.class);
@@ -168,13 +168,13 @@ class LibroDataGatewayImplTest {
         when(categoriaDataJpaRepository.findById("categoria-inexistente"))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         CategoriaNoEncontradaException excepcion = assertThrows(
                 CategoriaNoEncontradaException.class,
                 () -> libroDataGateway.guardarLibro(libro)
         );
 
-        // Assert
+
         assertEquals(
                 "Categoria no encontrada con id: categoria-inexistente",
                 excepcion.getMessage()
@@ -184,7 +184,7 @@ class LibroDataGatewayImplTest {
 
     @Test
     void guardarLibro_cuandoAutorNoExiste_debeLanzarExcepcion() {
-        // Arrange
+
         Libro libro = mock(Libro.class);
         LibroData libroData = mock(LibroData.class);
         EditorialData editorialData = mock(EditorialData.class);
@@ -201,13 +201,13 @@ class LibroDataGatewayImplTest {
         when(autorDataJpaRepository.findById("autor-inexistente"))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         AutorNoEncontradoException excepcion = assertThrows(
                 AutorNoEncontradoException.class,
                 () -> libroDataGateway.guardarLibro(libro)
         );
 
-        // Assert
+
         assertEquals(
                 "Autor no encontrado con id: autor-inexistente",
                 excepcion.getMessage()
@@ -217,7 +217,7 @@ class LibroDataGatewayImplTest {
 
     @Test
     void buscarLibroPorId_cuandoExiste_debeRetornarLibroMapeado() {
-        // Arrange
+
         String idLibro = "libro-1";
         LibroData libroData = mock(LibroData.class);
         Libro libro = mock(Libro.class);
@@ -226,10 +226,10 @@ class LibroDataGatewayImplTest {
                 .thenReturn(Optional.of(libroData));
         when(libroMapper.toLibro(libroData)).thenReturn(libro);
 
-        // Act
+
         Libro resultado = libroDataGateway.buscarLibroPorId(idLibro);
 
-        // Assert
+
         assertSame(libro, resultado);
         verify(libroDataJpaRepository).findById(idLibro);
         verify(libroMapper).toLibro(libroData);
@@ -237,16 +237,16 @@ class LibroDataGatewayImplTest {
 
     @Test
     void buscarLibroPorId_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String idLibro = "libro-inexistente";
 
         when(libroDataJpaRepository.findById(idLibro))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Libro resultado = libroDataGateway.buscarLibroPorId(idLibro);
 
-        // Assert
+
         assertNull(resultado);
         verify(libroDataJpaRepository).findById(idLibro);
         verifyNoInteractions(libroMapper);
@@ -254,20 +254,20 @@ class LibroDataGatewayImplTest {
 
     @Test
     void buscarLibroPorIsbn_cuandoIsbnEsBlanco_debeRetornarNullSinConsultarRepositorio() {
-        // Arrange
+
         String isbn = "   ";
 
-        // Act
+
         Libro resultado = libroDataGateway.buscarLibroPorIsbn(isbn);
 
-        // Assert
+
         assertNull(resultado);
         verifyNoInteractions(libroDataJpaRepository, libroMapper);
     }
 
     @Test
     void buscarLibroPorIsbn_cuandoExiste_debeRetornarLibroMapeado() {
-        // Arrange
+
         String isbn = "9781234567890";
         LibroData libroData = mock(LibroData.class);
         Libro libro = mock(Libro.class);
@@ -276,10 +276,10 @@ class LibroDataGatewayImplTest {
                 .thenReturn(Optional.of(libroData));
         when(libroMapper.toLibro(libroData)).thenReturn(libro);
 
-        // Act
+
         Libro resultado = libroDataGateway.buscarLibroPorIsbn(isbn);
 
-        // Assert
+
         assertSame(libro, resultado);
         verify(libroDataJpaRepository).findByIsbn(isbn);
         verify(libroMapper).toLibro(libroData);
@@ -287,16 +287,16 @@ class LibroDataGatewayImplTest {
 
     @Test
     void buscarLibroPorIsbn_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String isbn = "9781234567890";
 
         when(libroDataJpaRepository.findByIsbn(isbn))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Libro resultado = libroDataGateway.buscarLibroPorIsbn(isbn);
 
-        // Assert
+
         assertNull(resultado);
         verify(libroDataJpaRepository).findByIsbn(isbn);
         verifyNoInteractions(libroMapper);
@@ -304,7 +304,7 @@ class LibroDataGatewayImplTest {
 
     @Test
     void buscarLibros_debeLimpiarFiltrosAntesDeConsultar() {
-        // Arrange
+
         BusquedaLibro busqueda = new BusquedaLibro(
                 "  Borges  ",
                 " autor-1 ",
@@ -319,10 +319,10 @@ class LibroDataGatewayImplTest {
                 .thenReturn(List.of(libroData));
         when(libroMapper.toLibro(libroData)).thenReturn(libro);
 
-        // Act
+
         List<Libro> resultado = libroDataGateway.buscarLibros(busqueda);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(libro, resultado.get(0));
         verify(libroDataJpaRepository).buscar("Borges", "autor-1", null, null, "es");
@@ -331,14 +331,14 @@ class LibroDataGatewayImplTest {
 
     @Test
     void buscarLibros_cuandoBusquedaEsNull_debeConsultarSinFiltros() {
-        // Arrange
+
         when(libroDataJpaRepository.buscar(null, null, null, null, null))
                 .thenReturn(List.of());
 
-        // Act
+
         List<Libro> resultado = libroDataGateway.buscarLibros(null);
 
-        // Assert
+
         assertEquals(List.of(), resultado);
         verify(libroDataJpaRepository).buscar(null, null, null, null, null);
         verifyNoInteractions(libroMapper);
@@ -346,7 +346,7 @@ class LibroDataGatewayImplTest {
 
     @Test
     void listarLibros_debeMapearYRetornarLaLista() {
-        // Arrange
+
         LibroData libroData = mock(LibroData.class);
         Libro libro = mock(Libro.class);
 
@@ -354,10 +354,10 @@ class LibroDataGatewayImplTest {
                 .thenReturn(List.of(libroData));
         when(libroMapper.toLibro(libroData)).thenReturn(libro);
 
-        // Act
+
         List<Libro> resultado = libroDataGateway.listarLibros();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(libro, resultado.get(0));
         verify(libroDataJpaRepository).findAllByOrderByTituloAsc();
@@ -366,13 +366,13 @@ class LibroDataGatewayImplTest {
 
     @Test
     void eliminarLibro_cuandoSeEliminaCorrectamente_debeEjecutarDeleteYFlush() {
-        // Arrange
+
         String idLibro = "libro-1";
 
-        // Act
+
         libroDataGateway.eliminarLibro(idLibro);
 
-        // Assert
+
         verify(libroDataJpaRepository).deleteById(idLibro);
         verify(libroDataJpaRepository).flush();
         verifyNoInteractions(libroMapper);
@@ -380,19 +380,19 @@ class LibroDataGatewayImplTest {
 
     @Test
     void eliminarLibro_cuandoTieneEjemplaresAsociados_debeLanzarRecursoEnUsoException() {
-        // Arrange
+
         String idLibro = "libro-1";
 
         doThrow(new DataIntegrityViolationException("Conflicto de integridad"))
                 .when(libroDataJpaRepository).flush();
 
-        // Act
+
         RecursoEnUsoException excepcion = assertThrows(
                 RecursoEnUsoException.class,
                 () -> libroDataGateway.eliminarLibro(idLibro)
         );
 
-        // Assert
+
         assertEquals(
                 "No se puede eliminar el libro porque tiene ejemplares registrados",
                 excepcion.getMessage()

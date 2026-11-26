@@ -31,15 +31,15 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void noEncontrado_debeRetornar404YMensajeDeLaExcepcion() {
-        // Arrange
+
         DevolucionNoEncontradaException exception =
                 new DevolucionNoEncontradaException("Devolucion no encontrada");
 
-        // Act
+
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> respuesta =
                 handler.noEncontrado(exception);
 
-        // Assert
+
         assertEquals(HttpStatus.NOT_FOUND, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals("Devolucion no encontrada", respuesta.getBody().mensaje());
@@ -48,15 +48,15 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void conflicto_debeRetornar409YMensajeDeLaExcepcion() {
-        // Arrange
+
         EjemplarNoDisponibleException exception =
                 new EjemplarNoDisponibleException("El ejemplar no está disponible");
 
-        // Act
+
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> respuesta =
                 handler.conflicto(exception);
 
-        // Assert
+
         assertEquals(HttpStatus.CONFLICT, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals("El ejemplar no está disponible", respuesta.getBody().mensaje());
@@ -65,15 +65,15 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void noAutorizado_debeRetornar403YMensajeDeLaExcepcion() {
-        // Arrange
+
         UsuarioNoAutorizadoException exception =
                 new UsuarioNoAutorizadoException("El usuario no está autorizado");
 
-        // Act
+
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> respuesta =
                 handler.noAutorizado(exception);
 
-        // Assert
+
         assertEquals(HttpStatus.FORBIDDEN, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals("El usuario no está autorizado", respuesta.getBody().mensaje());
@@ -81,15 +81,15 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void accesoDenegado_debeRetornar403YMensajeDeLaExcepcion() {
-        // Arrange
+
         AccessDeniedException exception =
                 new AccessDeniedException("Acceso denegado");
 
-        // Act
+
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> respuesta =
                 handler.accesoDenegado(exception);
 
-        // Assert
+
         assertEquals(HttpStatus.FORBIDDEN, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals("Acceso denegado", respuesta.getBody().mensaje());
@@ -97,15 +97,15 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void servicioNoDisponible_debeRetornar503YMensajeDeLaExcepcion() {
-        // Arrange
+
         ServicioExternoNoDisponibleException exception =
                 new ServicioExternoNoDisponibleException("El servicio de catálogo no responde");
 
-        // Act
+
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> respuesta =
                 handler.servicioNoDisponible(exception);
 
-        // Assert
+
         assertEquals(HttpStatus.SERVICE_UNAVAILABLE, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals("El servicio de catálogo no responde", respuesta.getBody().mensaje());
@@ -113,7 +113,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void validacion_debeRetornar400YDetallesDeCamposInvalidos() {
-        // Arrange
+
         MethodArgumentNotValidException exception =
                 mock(MethodArgumentNotValidException.class);
         BindingResult bindingResult = mock(BindingResult.class);
@@ -125,11 +125,11 @@ class GlobalExceptionHandlerTest {
                 )
         );
 
-        // Act
+
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> respuesta =
                 handler.validacion(exception);
 
-        // Assert
+
         assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals("La peticion tiene datos invalidos", respuesta.getBody().mensaje());
@@ -141,7 +141,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void restriccion_debeRetornar400YDetalleDeLaRestriccion() {
-        // Arrange
+
         ConstraintViolationException exception =
                 mock(ConstraintViolationException.class);
         ConstraintViolation<?> violation = mock(ConstraintViolation.class);
@@ -152,11 +152,11 @@ class GlobalExceptionHandlerTest {
         when(propertyPath.toString()).thenReturn("idPrestamo");
         when(violation.getMessage()).thenReturn("El identificador es obligatorio");
 
-        // Act
+
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> respuesta =
                 handler.restriccion(exception);
 
-        // Assert
+
         assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals("La peticion tiene datos invalidos", respuesta.getBody().mensaje());
@@ -168,15 +168,15 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void jsonInvalido_debeRetornar400YMensajeDeJsonInvalido() {
-        // Arrange
+
         HttpMessageNotReadableException exception =
                 mock(HttpMessageNotReadableException.class);
 
-        // Act
+
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> respuesta =
                 handler.jsonInvalido(exception);
 
-        // Assert
+
         assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(
@@ -188,17 +188,17 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void parametroInvalido_debeRetornar400YNombreDelParametro() {
-        // Arrange
+
         MethodArgumentTypeMismatchException exception =
                 mock(MethodArgumentTypeMismatchException.class);
 
         when(exception.getName()).thenReturn("idPrestamo");
 
-        // Act
+
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> respuesta =
                 handler.parametroInvalido(exception);
 
-        // Assert
+
         assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals("Parametro invalido: idPrestamo", respuesta.getBody().mensaje());
@@ -206,15 +206,15 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void solicitudInvalida_debeRetornar400YMensajeDeLaExcepcion() {
-        // Arrange
+
         IllegalArgumentException exception =
                 new IllegalArgumentException("La fecha no es válida");
 
-        // Act
+
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> respuesta =
                 handler.solicitudInvalida(exception);
 
-        // Assert
+
         assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals("La fecha no es válida", respuesta.getBody().mensaje());
@@ -222,14 +222,14 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void errorInesperado_debeRetornar500YMensajeGenerico() {
-        // Arrange
+
         Exception exception = new Exception("Detalle interno del error");
 
-        // Act
+
         ResponseEntity<GlobalExceptionHandler.ErrorResponse> respuesta =
                 handler.errorInesperado(exception);
 
-        // Assert
+
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(

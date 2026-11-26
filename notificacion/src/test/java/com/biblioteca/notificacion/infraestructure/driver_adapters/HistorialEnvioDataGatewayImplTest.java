@@ -39,7 +39,7 @@ class HistorialEnvioDataGatewayImplTest {
 
     @Test
     void guardarHistorial_debeBuscarNotificacionMapearGuardarYRetornarHistorial() {
-        // Arrange
+
         HistorialEnvio historial = mock(HistorialEnvio.class);
         NotificacionData notificacionData = mock(NotificacionData.class);
         HistorialEnvioData historialData = mock(HistorialEnvioData.class);
@@ -56,11 +56,11 @@ class HistorialEnvioDataGatewayImplTest {
         when(historialEnvioMapper.toHistorial(historialDataGuardado))
                 .thenReturn(historialConvertido);
 
-        // Act
+
         HistorialEnvio resultado =
                 historialEnvioDataGateway.guardarHistorial(historial);
 
-        // Assert
+
         assertSame(historialConvertido, resultado);
         verify(notificacionDataJpaRepository).findById("notificacion-1");
         verify(historialEnvioMapper).toHistorialData(historial, notificacionData);
@@ -70,20 +70,20 @@ class HistorialEnvioDataGatewayImplTest {
 
     @Test
     void guardarHistorial_cuandoNotificacionNoExiste_debeLanzarExcepcion() {
-        // Arrange
+
         HistorialEnvio historial = mock(HistorialEnvio.class);
 
         when(historial.getIdNotificacion()).thenReturn("notificacion-inexistente");
         when(notificacionDataJpaRepository.findById("notificacion-inexistente"))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         NotificacionNoEncontradaException excepcion = assertThrows(
                 NotificacionNoEncontradaException.class,
                 () -> historialEnvioDataGateway.guardarHistorial(historial)
         );
 
-        // Assert
+
         assertEquals(
                 "Notificacion no encontrada con id: notificacion-inexistente",
                 excepcion.getMessage()
@@ -94,7 +94,7 @@ class HistorialEnvioDataGatewayImplTest {
 
     @Test
     void listarPorNotificacion_debeMapearYRetornarHistoriales() {
-        // Arrange
+
         String idNotificacion = "notificacion-1";
         HistorialEnvioData historialData = mock(HistorialEnvioData.class);
         HistorialEnvio historial = mock(HistorialEnvio.class);
@@ -104,11 +104,11 @@ class HistorialEnvioDataGatewayImplTest {
                 .thenReturn(List.of(historialData));
         when(historialEnvioMapper.toHistorial(historialData)).thenReturn(historial);
 
-        // Act
+
         List<HistorialEnvio> resultado =
                 historialEnvioDataGateway.listarPorNotificacion(idNotificacion);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(historial, resultado.get(0));
         verify(historialEnvioDataJpaRepository)
@@ -118,17 +118,17 @@ class HistorialEnvioDataGatewayImplTest {
 
     @Test
     void contarPorNotificacion_debeRetornarCantidadDeEnvios() {
-        // Arrange
+
         String idNotificacion = "notificacion-1";
         when(historialEnvioDataJpaRepository
                 .countByNotificacion_IdNotificacion(idNotificacion))
                 .thenReturn(3L);
 
-        // Act
+
         long resultado =
                 historialEnvioDataGateway.contarPorNotificacion(idNotificacion);
 
-        // Assert
+
         assertEquals(3L, resultado);
         verify(historialEnvioDataJpaRepository)
                 .countByNotificacion_IdNotificacion(idNotificacion);
@@ -137,13 +137,13 @@ class HistorialEnvioDataGatewayImplTest {
 
     @Test
     void eliminarPorNotificacion_debeSolicitarEliminacionDeLosEnvios() {
-        // Arrange
+
         String idNotificacion = "notificacion-1";
 
-        // Act
+
         historialEnvioDataGateway.eliminarPorNotificacion(idNotificacion);
 
-        // Assert
+
         verify(historialEnvioDataJpaRepository)
                 .deleteByNotificacion_IdNotificacion(idNotificacion);
         verifyNoInteractions(notificacionDataJpaRepository, historialEnvioMapper);

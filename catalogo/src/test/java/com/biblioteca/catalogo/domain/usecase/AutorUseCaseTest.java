@@ -36,11 +36,11 @@ class AutorUseCaseTest {
         autor = crearAutorValido();
     }
 
-    // GUARDAR AUTOR
+
 
     @Test
     void guardarAutor_DatosValidosSinId_GeneraIdYGuarda() {
-        // Arrange
+
         autor.setIdAutor(null);
 
         when(autorGateway.buscarAutorPorNombre(autor.getNombre()))
@@ -49,10 +49,10 @@ class AutorUseCaseTest {
         when(autorGateway.guardarAutor(autor))
                 .thenReturn(autor);
 
-        // Act
+
         Autor resultado = autorUseCase.guardarAutor(autor);
 
-        // Assert
+
         assertSame(autor, resultado);
         assertNotNull(resultado.getIdAutor());
         assertDoesNotThrow(() -> UUID.fromString(resultado.getIdAutor()));
@@ -63,7 +63,7 @@ class AutorUseCaseTest {
 
     @Test
     void guardarAutor_IdEnBlanco_GeneraIdYGuarda() {
-        // Arrange
+
         autor.setIdAutor(" ");
 
         when(autorGateway.buscarAutorPorNombre(autor.getNombre()))
@@ -72,10 +72,10 @@ class AutorUseCaseTest {
         when(autorGateway.guardarAutor(autor))
                 .thenReturn(autor);
 
-        // Act
+
         Autor resultado = autorUseCase.guardarAutor(autor);
 
-        // Assert
+
         assertNotNull(resultado.getIdAutor());
         assertDoesNotThrow(() -> UUID.fromString(resultado.getIdAutor()));
         verify(autorGateway).guardarAutor(autor);
@@ -83,7 +83,7 @@ class AutorUseCaseTest {
 
     @Test
     void guardarAutor_IdExistente_LoConserva() {
-        // Arrange
+
         autor.setIdAutor("AUTOR-1");
 
         when(autorGateway.buscarAutorPorNombre(autor.getNombre()))
@@ -92,30 +92,30 @@ class AutorUseCaseTest {
         when(autorGateway.guardarAutor(autor))
                 .thenReturn(autor);
 
-        // Act
+
         Autor resultado = autorUseCase.guardarAutor(autor);
 
-        // Assert
+
         assertEquals("AUTOR-1", resultado.getIdAutor());
         verify(autorGateway).guardarAutor(autor);
     }
 
     @Test
     void guardarAutor_NombreDuplicado_LanzaExcepcion() {
-        // Arrange
+
         Autor existente = crearAutorValido();
         existente.setIdAutor("AUTOR-2");
 
         when(autorGateway.buscarAutorPorNombre(autor.getNombre()))
                 .thenReturn(existente);
 
-        // Act
+
         RecursoDuplicadoException excepcion = assertThrows(
                 RecursoDuplicadoException.class,
                 () -> autorUseCase.guardarAutor(autor)
         );
 
-        // Assert
+
         assertEquals(
                 "Ya existe un autor con el nombre: " + autor.getNombre(),
                 excepcion.getMessage()
@@ -125,64 +125,64 @@ class AutorUseCaseTest {
 
     @Test
     void guardarAutor_AutorNulo_LanzaExcepcion() {
-        // Arrange
+
         Autor autorNulo = null;
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> autorUseCase.guardarAutor(autorNulo)
         );
 
-        // Assert
+
         assertEquals("El autor es obligatorio", excepcion.getMessage());
         verifyNoInteractions(autorGateway);
     }
 
     @Test
     void guardarAutor_NombreNulo_LanzaExcepcion() {
-        // Arrange
+
         autor.setNombre(null);
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> autorUseCase.guardarAutor(autor)
         );
 
-        // Assert
+
         assertEquals("El nombre del autor es obligatorio", excepcion.getMessage());
         verifyNoInteractions(autorGateway);
     }
 
     @Test
     void guardarAutor_NombreEnBlanco_LanzaExcepcion() {
-        // Arrange
+
         autor.setNombre(" ");
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> autorUseCase.guardarAutor(autor)
         );
 
-        // Assert
+
         assertEquals("El nombre del autor es obligatorio", excepcion.getMessage());
         verifyNoInteractions(autorGateway);
     }
 
     @Test
     void guardarAutor_FechaNacimientoFutura_LanzaExcepcion() {
-        // Arrange
+
         autor.setFechaNacimiento(LocalDate.now().plusDays(1));
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> autorUseCase.guardarAutor(autor)
         );
 
-        // Assert
+
         assertEquals(
                 "La fecha de nacimiento no puede ser futura",
                 excepcion.getMessage()
@@ -192,7 +192,7 @@ class AutorUseCaseTest {
 
     @Test
     void guardarAutor_SinFechaNacimiento_PermiteGuardar() {
-        // Arrange
+
         autor.setFechaNacimiento(null);
 
         when(autorGateway.buscarAutorPorNombre(autor.getNombre()))
@@ -201,17 +201,17 @@ class AutorUseCaseTest {
         when(autorGateway.guardarAutor(autor))
                 .thenReturn(autor);
 
-        // Act
+
         Autor resultado = autorUseCase.guardarAutor(autor);
 
-        // Assert
+
         assertSame(autor, resultado);
         verify(autorGateway).guardarAutor(autor);
     }
 
     @Test
     void guardarAutor_FechaNacimientoHoy_PermiteGuardar() {
-        // Arrange
+
         autor.setFechaNacimiento(LocalDate.now());
 
         when(autorGateway.buscarAutorPorNombre(autor.getNombre()))
@@ -220,19 +220,19 @@ class AutorUseCaseTest {
         when(autorGateway.guardarAutor(autor))
                 .thenReturn(autor);
 
-        // Act
+
         Autor resultado = autorUseCase.guardarAutor(autor);
 
-        // Assert
+
         assertSame(autor, resultado);
         verify(autorGateway).guardarAutor(autor);
     }
 
-    // ACTUALIZAR AUTOR
+
 
     @Test
     void actualizarAutor_DatosValidos_AsignaIdYActualiza() {
-        // Arrange
+
         String idAutor = "AUTOR-1";
         Autor autorExistente = crearAutorValido();
         autorExistente.setIdAutor(idAutor);
@@ -246,10 +246,10 @@ class AutorUseCaseTest {
         when(autorGateway.actualizarAutor(autor))
                 .thenReturn(autor);
 
-        // Act
+
         Autor resultado = autorUseCase.actualizarAutor(idAutor, autor);
 
-        // Assert
+
         assertSame(autor, resultado);
         assertEquals(idAutor, resultado.getIdAutor());
 
@@ -260,19 +260,19 @@ class AutorUseCaseTest {
 
     @Test
     void actualizarAutor_AutorNoExiste_LanzaExcepcion() {
-        // Arrange
+
         String idAutor = "ID-INEXISTENTE";
 
         when(autorGateway.buscarAutorPorId(idAutor))
                 .thenReturn(null);
 
-        // Act
+
         AutorNoEncontradoException excepcion = assertThrows(
                 AutorNoEncontradoException.class,
                 () -> autorUseCase.actualizarAutor(idAutor, autor)
         );
 
-        // Assert
+
         assertEquals(
                 "Autor no encontrado con id: " + idAutor,
                 excepcion.getMessage()
@@ -285,7 +285,7 @@ class AutorUseCaseTest {
 
     @Test
     void actualizarAutor_NombreDeOtroAutor_LanzaExcepcion() {
-        // Arrange
+
         String idAutor = "AUTOR-1";
 
         Autor autorExistente = crearAutorValido();
@@ -300,13 +300,13 @@ class AutorUseCaseTest {
         when(autorGateway.buscarAutorPorNombre(autor.getNombre()))
                 .thenReturn(otroAutor);
 
-        // Act
+
         RecursoDuplicadoException excepcion = assertThrows(
                 RecursoDuplicadoException.class,
                 () -> autorUseCase.actualizarAutor(idAutor, autor)
         );
 
-        // Assert
+
         assertEquals(
                 "Ya existe un autor con el nombre: " + autor.getNombre(),
                 excepcion.getMessage()
@@ -317,7 +317,7 @@ class AutorUseCaseTest {
 
     @Test
     void actualizarAutor_MantieneElMismoNombreDelAutor_PermiteActualizar() {
-        // Arrange
+
         String idAutor = "AUTOR-1";
 
         Autor autorExistente = crearAutorValido();
@@ -334,10 +334,10 @@ class AutorUseCaseTest {
         when(autorGateway.actualizarAutor(autor))
                 .thenReturn(autor);
 
-        // Act
+
         Autor resultado = autorUseCase.actualizarAutor(idAutor, autor);
 
-        // Assert
+
         assertSame(autor, resultado);
         assertEquals(idAutor, resultado.getIdAutor());
         verify(autorGateway).actualizarAutor(autor);
@@ -345,7 +345,7 @@ class AutorUseCaseTest {
 
     @Test
     void actualizarAutor_FechaNacimientoFutura_LanzaExcepcionYSinActualizar() {
-        // Arrange
+
         String idAutor = "AUTOR-1";
 
         Autor autorExistente = crearAutorValido();
@@ -356,13 +356,13 @@ class AutorUseCaseTest {
         when(autorGateway.buscarAutorPorId(idAutor))
                 .thenReturn(autorExistente);
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> autorUseCase.actualizarAutor(idAutor, autor)
         );
 
-        // Assert
+
         assertEquals(
                 "La fecha de nacimiento no puede ser futura",
                 excepcion.getMessage()
@@ -373,58 +373,58 @@ class AutorUseCaseTest {
                 .buscarAutorPorNombre(anyString());
     }
 
-    // BUSCAR AUTOR POR ID
+
 
     @Test
     void buscarAutorPorId_AutorExiste_RetornaAutor() {
-        // Arrange
+
         when(autorGateway.buscarAutorPorId(autor.getIdAutor()))
                 .thenReturn(autor);
 
-        // Act
+
         Autor resultado =
                 autorUseCase.buscarAutorPorId(autor.getIdAutor());
 
-        // Assert
+
         assertSame(autor, resultado);
         verify(autorGateway).buscarAutorPorId(autor.getIdAutor());
     }
 
     @Test
     void buscarAutorPorId_AutorNoExiste_LanzaExcepcion() {
-        // Arrange
+
         String idAutor = "ID-INEXISTENTE";
 
         when(autorGateway.buscarAutorPorId(idAutor))
                 .thenReturn(null);
 
-        // Act
+
         AutorNoEncontradoException excepcion = assertThrows(
                 AutorNoEncontradoException.class,
                 () -> autorUseCase.buscarAutorPorId(idAutor)
         );
 
-        // Assert
+
         assertEquals(
                 "Autor no encontrado con id: " + idAutor,
                 excepcion.getMessage()
         );
     }
 
-    // LISTAR AUTORES
+
 
     @Test
     void listarAutores_ConsultaGateway_RetornaLista() {
-        // Arrange
+
         List<Autor> autoresEsperados = List.of(autor);
 
         when(autorGateway.listarAutores())
                 .thenReturn(autoresEsperados);
 
-        // Act
+
         List<Autor> resultado = autorUseCase.listarAutores();
 
-        // Assert
+
         assertSame(autoresEsperados, resultado);
         assertEquals(1, resultado.size());
         assertEquals(autor, resultado.get(0));
@@ -433,51 +433,51 @@ class AutorUseCaseTest {
 
     @Test
     void listarAutores_NoHayAutores_RetornaListaVacia() {
-        // Arrange
+
         when(autorGateway.listarAutores())
                 .thenReturn(List.of());
 
-        // Act
+
         List<Autor> resultado = autorUseCase.listarAutores();
 
-        // Assert
+
         assertNotNull(resultado);
         assertTrue(resultado.isEmpty());
     }
 
-    // ELIMINAR AUTOR
+
 
     @Test
     void eliminarAutor_AutorExiste_EliminaAutor() {
-        // Arrange
+
         String idAutor = autor.getIdAutor();
 
         when(autorGateway.buscarAutorPorId(idAutor))
                 .thenReturn(autor);
 
-        // Act
+
         autorUseCase.eliminarAutor(idAutor);
 
-        // Assert
+
         verify(autorGateway).buscarAutorPorId(idAutor);
         verify(autorGateway).eliminarAutor(idAutor);
     }
 
     @Test
     void eliminarAutor_AutorNoExiste_LanzaExcepcionYSinEliminar() {
-        // Arrange
+
         String idAutor = "ID-INEXISTENTE";
 
         when(autorGateway.buscarAutorPorId(idAutor))
                 .thenReturn(null);
 
-        // Act
+
         AutorNoEncontradoException excepcion = assertThrows(
                 AutorNoEncontradoException.class,
                 () -> autorUseCase.eliminarAutor(idAutor)
         );
 
-        // Assert
+
         assertEquals(
                 "Autor no encontrado con id: " + idAutor,
                 excepcion.getMessage()

@@ -36,7 +36,7 @@ class RecordatorioDataGatewayImplTest {
 
     @Test
     void guardarRecordatorio_debeMapearGuardarYRetornarRecordatorio() {
-        // Arrange
+
         Recordatorio recordatorio = mock(Recordatorio.class);
         RecordatorioData recordatorioData = mock(RecordatorioData.class);
         RecordatorioData recordatorioDataGuardado = mock(RecordatorioData.class);
@@ -49,11 +49,11 @@ class RecordatorioDataGatewayImplTest {
         when(recordatorioMapper.toRecordatorio(recordatorioDataGuardado))
                 .thenReturn(recordatorioConvertido);
 
-        // Act
+
         Recordatorio resultado =
                 recordatorioDataGateway.guardarRecordatorio(recordatorio);
 
-        // Assert
+
         assertSame(recordatorioConvertido, resultado);
         verify(recordatorioMapper).toRecordatorioData(recordatorio);
         verify(recordatorioDataJpaRepository).save(recordatorioData);
@@ -62,7 +62,7 @@ class RecordatorioDataGatewayImplTest {
 
     @Test
     void actualizarRecordatorio_debeGuardarYRetornarRecordatorioActualizado() {
-        // Arrange
+
         Recordatorio recordatorio = mock(Recordatorio.class);
         RecordatorioData recordatorioData = mock(RecordatorioData.class);
         RecordatorioData recordatorioDataActualizado = mock(RecordatorioData.class);
@@ -75,11 +75,11 @@ class RecordatorioDataGatewayImplTest {
         when(recordatorioMapper.toRecordatorio(recordatorioDataActualizado))
                 .thenReturn(recordatorioActualizado);
 
-        // Act
+
         Recordatorio resultado =
                 recordatorioDataGateway.actualizarRecordatorio(recordatorio);
 
-        // Assert
+
         assertSame(recordatorioActualizado, resultado);
         verify(recordatorioMapper).toRecordatorioData(recordatorio);
         verify(recordatorioDataJpaRepository).save(recordatorioData);
@@ -88,7 +88,7 @@ class RecordatorioDataGatewayImplTest {
 
     @Test
     void buscarRecordatorioPorId_cuandoExiste_debeRetornarRecordatorioMapeado() {
-        // Arrange
+
         String id = "recordatorio-1";
         RecordatorioData recordatorioData = mock(RecordatorioData.class);
         Recordatorio recordatorio = mock(Recordatorio.class);
@@ -98,11 +98,11 @@ class RecordatorioDataGatewayImplTest {
         when(recordatorioMapper.toRecordatorio(recordatorioData))
                 .thenReturn(recordatorio);
 
-        // Act
+
         Recordatorio resultado =
                 recordatorioDataGateway.buscarRecordatorioPorId(id);
 
-        // Assert
+
         assertSame(recordatorio, resultado);
         verify(recordatorioDataJpaRepository).findById(id);
         verify(recordatorioMapper).toRecordatorio(recordatorioData);
@@ -110,17 +110,17 @@ class RecordatorioDataGatewayImplTest {
 
     @Test
     void buscarRecordatorioPorId_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String id = "recordatorio-inexistente";
 
         when(recordatorioDataJpaRepository.findById(id))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Recordatorio resultado =
                 recordatorioDataGateway.buscarRecordatorioPorId(id);
 
-        // Assert
+
         assertEquals(null, resultado);
         verify(recordatorioDataJpaRepository).findById(id);
         verifyNoInteractions(recordatorioMapper);
@@ -128,7 +128,7 @@ class RecordatorioDataGatewayImplTest {
 
     @Test
     void listarRecordatorios_debeMapearYRetornarLaLista() {
-        // Arrange
+
         RecordatorioData recordatorioData = mock(RecordatorioData.class);
         Recordatorio recordatorio = mock(Recordatorio.class);
 
@@ -137,11 +137,11 @@ class RecordatorioDataGatewayImplTest {
         when(recordatorioMapper.toRecordatorio(recordatorioData))
                 .thenReturn(recordatorio);
 
-        // Act
+
         List<Recordatorio> resultado =
                 recordatorioDataGateway.listarRecordatorios();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(recordatorio, resultado.get(0));
         verify(recordatorioDataJpaRepository).findAllByOrderByFechaProgramadaDesc();
@@ -150,7 +150,7 @@ class RecordatorioDataGatewayImplTest {
 
     @Test
     void listarPorUsuario_debeConsultarYMapearLosRecordatorios() {
-        // Arrange
+
         String idUsuario = "usuario-1";
         RecordatorioData recordatorioData = mock(RecordatorioData.class);
         Recordatorio recordatorio = mock(Recordatorio.class);
@@ -161,11 +161,11 @@ class RecordatorioDataGatewayImplTest {
         when(recordatorioMapper.toRecordatorio(recordatorioData))
                 .thenReturn(recordatorio);
 
-        // Act
+
         List<Recordatorio> resultado =
                 recordatorioDataGateway.listarPorUsuario(idUsuario);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(recordatorio, resultado.get(0));
         verify(recordatorioDataJpaRepository)
@@ -175,7 +175,7 @@ class RecordatorioDataGatewayImplTest {
 
     @Test
     void listarPendientes_debeBuscarPorEstadoPendienteYMapearResultados() {
-        // Arrange
+
         RecordatorioData recordatorioData = mock(RecordatorioData.class);
         Recordatorio recordatorio = mock(Recordatorio.class);
 
@@ -185,11 +185,11 @@ class RecordatorioDataGatewayImplTest {
         when(recordatorioMapper.toRecordatorio(recordatorioData))
                 .thenReturn(recordatorio);
 
-        // Act
+
         List<Recordatorio> resultado =
                 recordatorioDataGateway.listarPendientes();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(recordatorio, resultado.get(0));
         verify(recordatorioDataJpaRepository)
@@ -200,7 +200,7 @@ class RecordatorioDataGatewayImplTest {
 
     @Test
     void listarPendientesHasta_debeBuscarPendientesHastaLaFechaIndicada() {
-        // Arrange
+
         LocalDateTime fecha = LocalDateTime.of(2026, 11, 25, 10, 30);
         RecordatorioData recordatorioData = mock(RecordatorioData.class);
         Recordatorio recordatorio = mock(Recordatorio.class);
@@ -212,11 +212,11 @@ class RecordatorioDataGatewayImplTest {
         when(recordatorioMapper.toRecordatorio(recordatorioData))
                 .thenReturn(recordatorio);
 
-        // Act
+
         List<Recordatorio> resultado =
                 recordatorioDataGateway.listarPendientesHasta(fecha);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(recordatorio, resultado.get(0));
         verify(recordatorioDataJpaRepository)
@@ -227,7 +227,7 @@ class RecordatorioDataGatewayImplTest {
 
     @Test
     void existePendiente_cuandoExiste_debeRetornarTrue() {
-        // Arrange
+
         String idUsuario = "usuario-1";
         String idPrestamo = "prestamo-1";
         String tipo = "RECORDATORIO_DEVOLUCION";
@@ -240,11 +240,11 @@ class RecordatorioDataGatewayImplTest {
                         EstadoRecordatorio.PENDIENTE.name()))
                 .thenReturn(true);
 
-        // Act
+
         boolean resultado =
                 recordatorioDataGateway.existePendiente(idUsuario, idPrestamo, tipo);
 
-        // Assert
+
         assertTrue(resultado);
         verify(recordatorioDataJpaRepository)
                 .existsByIdUsuarioAndIdPrestamoAndTipoAndEstado(
@@ -257,7 +257,7 @@ class RecordatorioDataGatewayImplTest {
 
     @Test
     void existePendiente_cuandoNoExiste_debeRetornarFalse() {
-        // Arrange
+
         String idUsuario = "usuario-1";
         String idPrestamo = "prestamo-1";
         String tipo = "RECORDATORIO_DEVOLUCION";
@@ -270,11 +270,11 @@ class RecordatorioDataGatewayImplTest {
                         EstadoRecordatorio.PENDIENTE.name()))
                 .thenReturn(false);
 
-        // Act
+
         boolean resultado =
                 recordatorioDataGateway.existePendiente(idUsuario, idPrestamo, tipo);
 
-        // Assert
+
         assertFalse(resultado);
         verify(recordatorioDataJpaRepository)
                 .existsByIdUsuarioAndIdPrestamoAndTipoAndEstado(
@@ -287,13 +287,13 @@ class RecordatorioDataGatewayImplTest {
 
     @Test
     void eliminarRecordatorio_debeSolicitarEliminacionPorId() {
-        // Arrange
+
         String id = "recordatorio-1";
 
-        // Act
+
         recordatorioDataGateway.eliminarRecordatorio(id);
 
-        // Assert
+
         verify(recordatorioDataJpaRepository).deleteById(id);
         verifyNoInteractions(recordatorioMapper);
     }

@@ -19,10 +19,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Resuelve la identidad contra Auth. El rol siempre proviene de Auth; no se
- * confia en encabezados de rol enviados por el cliente.
- */
+
+
+
+
 @Component
 @RequiredArgsConstructor
 public class UsuarioHeaderFilter extends OncePerRequestFilter {

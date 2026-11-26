@@ -37,7 +37,7 @@ class AutorDataGatewayImplTest {
 
     @Test
     void guardarAutor_debeMapearGuardarYRetornarAutor() {
-        // Arrange
+
         Autor autor = mock(Autor.class);
         AutorData autorData = mock(AutorData.class);
         AutorData autorDataGuardado = mock(AutorData.class);
@@ -47,10 +47,10 @@ class AutorDataGatewayImplTest {
         when(autorDataJpaRepository.save(autorData)).thenReturn(autorDataGuardado);
         when(autorMapper.toAutor(autorDataGuardado)).thenReturn(autorConvertido);
 
-        // Act
+
         Autor resultado = autorDataGateway.guardarAutor(autor);
 
-        // Assert
+
         assertSame(autorConvertido, resultado);
         verify(autorMapper).toAutorData(autor);
         verify(autorDataJpaRepository).save(autorData);
@@ -59,7 +59,7 @@ class AutorDataGatewayImplTest {
 
     @Test
     void actualizarAutor_debeGuardarYRetornarAutorActualizado() {
-        // Arrange
+
         Autor autor = mock(Autor.class);
         AutorData autorData = mock(AutorData.class);
         AutorData autorDataActualizado = mock(AutorData.class);
@@ -69,10 +69,10 @@ class AutorDataGatewayImplTest {
         when(autorDataJpaRepository.save(autorData)).thenReturn(autorDataActualizado);
         when(autorMapper.toAutor(autorDataActualizado)).thenReturn(autorActualizado);
 
-        // Act
+
         Autor resultado = autorDataGateway.actualizarAutor(autor);
 
-        // Assert
+
         assertSame(autorActualizado, resultado);
         verify(autorMapper).toAutorData(autor);
         verify(autorDataJpaRepository).save(autorData);
@@ -81,7 +81,7 @@ class AutorDataGatewayImplTest {
 
     @Test
     void buscarAutorPorId_cuandoExiste_debeRetornarAutorMapeado() {
-        // Arrange
+
         String idAutor = "autor-1";
         AutorData autorData = mock(AutorData.class);
         Autor autor = mock(Autor.class);
@@ -90,10 +90,10 @@ class AutorDataGatewayImplTest {
                 .thenReturn(Optional.of(autorData));
         when(autorMapper.toAutor(autorData)).thenReturn(autor);
 
-        // Act
+
         Autor resultado = autorDataGateway.buscarAutorPorId(idAutor);
 
-        // Assert
+
         assertSame(autor, resultado);
         verify(autorDataJpaRepository).findById(idAutor);
         verify(autorMapper).toAutor(autorData);
@@ -101,16 +101,16 @@ class AutorDataGatewayImplTest {
 
     @Test
     void buscarAutorPorId_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String idAutor = "autor-inexistente";
 
         when(autorDataJpaRepository.findById(idAutor))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Autor resultado = autorDataGateway.buscarAutorPorId(idAutor);
 
-        // Assert
+
         assertNull(resultado);
         verify(autorDataJpaRepository).findById(idAutor);
         verifyNoInteractions(autorMapper);
@@ -118,7 +118,7 @@ class AutorDataGatewayImplTest {
 
     @Test
     void buscarAutorPorNombre_cuandoExiste_debeRetornarAutorMapeado() {
-        // Arrange
+
         String nombre = "Gabriel García Márquez";
         AutorData autorData = mock(AutorData.class);
         Autor autor = mock(Autor.class);
@@ -127,10 +127,10 @@ class AutorDataGatewayImplTest {
                 .thenReturn(Optional.of(autorData));
         when(autorMapper.toAutor(autorData)).thenReturn(autor);
 
-        // Act
+
         Autor resultado = autorDataGateway.buscarAutorPorNombre(nombre);
 
-        // Assert
+
         assertSame(autor, resultado);
         verify(autorDataJpaRepository).findFirstByNombreIgnoreCase(nombre);
         verify(autorMapper).toAutor(autorData);
@@ -138,16 +138,16 @@ class AutorDataGatewayImplTest {
 
     @Test
     void buscarAutorPorNombre_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String nombre = "Autor inexistente";
 
         when(autorDataJpaRepository.findFirstByNombreIgnoreCase(nombre))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Autor resultado = autorDataGateway.buscarAutorPorNombre(nombre);
 
-        // Assert
+
         assertNull(resultado);
         verify(autorDataJpaRepository).findFirstByNombreIgnoreCase(nombre);
         verifyNoInteractions(autorMapper);
@@ -155,7 +155,7 @@ class AutorDataGatewayImplTest {
 
     @Test
     void listarAutores_debeMapearYRetornarLaLista() {
-        // Arrange
+
         AutorData autorData = mock(AutorData.class);
         Autor autor = mock(Autor.class);
 
@@ -163,10 +163,10 @@ class AutorDataGatewayImplTest {
                 .thenReturn(List.of(autorData));
         when(autorMapper.toAutor(autorData)).thenReturn(autor);
 
-        // Act
+
         List<Autor> resultado = autorDataGateway.listarAutores();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(autor, resultado.get(0));
         verify(autorDataJpaRepository).findAllByOrderByNombreAsc();
@@ -175,13 +175,13 @@ class AutorDataGatewayImplTest {
 
     @Test
     void eliminarAutor_cuandoSeEliminaCorrectamente_debeEjecutarDeleteYFlush() {
-        // Arrange
+
         String idAutor = "autor-1";
 
-        // Act
+
         autorDataGateway.eliminarAutor(idAutor);
 
-        // Assert
+
         verify(autorDataJpaRepository).deleteById(idAutor);
         verify(autorDataJpaRepository).flush();
         verifyNoInteractions(autorMapper);
@@ -189,19 +189,19 @@ class AutorDataGatewayImplTest {
 
     @Test
     void eliminarAutor_cuandoTieneLibrosAsociados_debeLanzarRecursoEnUsoException() {
-        // Arrange
+
         String idAutor = "autor-1";
 
         doThrow(new DataIntegrityViolationException("Conflicto de integridad"))
                 .when(autorDataJpaRepository).deleteById(idAutor);
 
-        // Act
+
         RecursoEnUsoException excepcion = assertThrows(
                 RecursoEnUsoException.class,
                 () -> autorDataGateway.eliminarAutor(idAutor)
         );
 
-        // Assert
+
         assertEquals(
                 "No se puede eliminar el autor porque tiene libros asociados",
                 excepcion.getMessage()

@@ -37,7 +37,7 @@ class CategoriaDataGatewayImplTest {
 
     @Test
     void guardarCategoria_debeMapearGuardarYRetornarCategoria() {
-        // Arrange
+
         Categoria categoria = mock(Categoria.class);
         CategoriaData categoriaData = mock(CategoriaData.class);
         CategoriaData categoriaDataGuardada = mock(CategoriaData.class);
@@ -47,10 +47,10 @@ class CategoriaDataGatewayImplTest {
         when(categoriaDataJpaRepository.save(categoriaData)).thenReturn(categoriaDataGuardada);
         when(categoriaMapper.toCategoria(categoriaDataGuardada)).thenReturn(categoriaConvertida);
 
-        // Act
+
         Categoria resultado = categoriaDataGateway.guardarCategoria(categoria);
 
-        // Assert
+
         assertSame(categoriaConvertida, resultado);
         verify(categoriaMapper).toCategoriaData(categoria);
         verify(categoriaDataJpaRepository).save(categoriaData);
@@ -59,7 +59,7 @@ class CategoriaDataGatewayImplTest {
 
     @Test
     void actualizarCategoria_debeGuardarYRetornarCategoriaActualizada() {
-        // Arrange
+
         Categoria categoria = mock(Categoria.class);
         CategoriaData categoriaData = mock(CategoriaData.class);
         CategoriaData categoriaDataActualizada = mock(CategoriaData.class);
@@ -70,10 +70,10 @@ class CategoriaDataGatewayImplTest {
         when(categoriaMapper.toCategoria(categoriaDataActualizada))
                 .thenReturn(categoriaActualizada);
 
-        // Act
+
         Categoria resultado = categoriaDataGateway.actualizarCategoria(categoria);
 
-        // Assert
+
         assertSame(categoriaActualizada, resultado);
         verify(categoriaMapper).toCategoriaData(categoria);
         verify(categoriaDataJpaRepository).save(categoriaData);
@@ -82,7 +82,7 @@ class CategoriaDataGatewayImplTest {
 
     @Test
     void buscarCategoriaPorId_cuandoExiste_debeRetornarCategoriaMapeada() {
-        // Arrange
+
         String idCategoria = "categoria-1";
         CategoriaData categoriaData = mock(CategoriaData.class);
         Categoria categoria = mock(Categoria.class);
@@ -91,10 +91,10 @@ class CategoriaDataGatewayImplTest {
                 .thenReturn(Optional.of(categoriaData));
         when(categoriaMapper.toCategoria(categoriaData)).thenReturn(categoria);
 
-        // Act
+
         Categoria resultado = categoriaDataGateway.buscarCategoriaPorId(idCategoria);
 
-        // Assert
+
         assertSame(categoria, resultado);
         verify(categoriaDataJpaRepository).findById(idCategoria);
         verify(categoriaMapper).toCategoria(categoriaData);
@@ -102,16 +102,16 @@ class CategoriaDataGatewayImplTest {
 
     @Test
     void buscarCategoriaPorId_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String idCategoria = "categoria-inexistente";
 
         when(categoriaDataJpaRepository.findById(idCategoria))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Categoria resultado = categoriaDataGateway.buscarCategoriaPorId(idCategoria);
 
-        // Assert
+
         assertNull(resultado);
         verify(categoriaDataJpaRepository).findById(idCategoria);
         verifyNoInteractions(categoriaMapper);
@@ -119,7 +119,7 @@ class CategoriaDataGatewayImplTest {
 
     @Test
     void buscarCategoriaPorNombre_cuandoExiste_debeRetornarCategoriaMapeada() {
-        // Arrange
+
         String nombre = "Novela";
         CategoriaData categoriaData = mock(CategoriaData.class);
         Categoria categoria = mock(Categoria.class);
@@ -128,10 +128,10 @@ class CategoriaDataGatewayImplTest {
                 .thenReturn(Optional.of(categoriaData));
         when(categoriaMapper.toCategoria(categoriaData)).thenReturn(categoria);
 
-        // Act
+
         Categoria resultado = categoriaDataGateway.buscarCategoriaPorNombre(nombre);
 
-        // Assert
+
         assertSame(categoria, resultado);
         verify(categoriaDataJpaRepository).findFirstByNombreIgnoreCase(nombre);
         verify(categoriaMapper).toCategoria(categoriaData);
@@ -139,16 +139,16 @@ class CategoriaDataGatewayImplTest {
 
     @Test
     void buscarCategoriaPorNombre_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String nombre = "Categoria inexistente";
 
         when(categoriaDataJpaRepository.findFirstByNombreIgnoreCase(nombre))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Categoria resultado = categoriaDataGateway.buscarCategoriaPorNombre(nombre);
 
-        // Assert
+
         assertNull(resultado);
         verify(categoriaDataJpaRepository).findFirstByNombreIgnoreCase(nombre);
         verifyNoInteractions(categoriaMapper);
@@ -156,7 +156,7 @@ class CategoriaDataGatewayImplTest {
 
     @Test
     void listarCategorias_debeMapearYRetornarLaLista() {
-        // Arrange
+
         CategoriaData categoriaData = mock(CategoriaData.class);
         Categoria categoria = mock(Categoria.class);
 
@@ -164,10 +164,10 @@ class CategoriaDataGatewayImplTest {
                 .thenReturn(List.of(categoriaData));
         when(categoriaMapper.toCategoria(categoriaData)).thenReturn(categoria);
 
-        // Act
+
         List<Categoria> resultado = categoriaDataGateway.listarCategorias();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(categoria, resultado.get(0));
         verify(categoriaDataJpaRepository).findAllByOrderByNombreAsc();
@@ -176,13 +176,13 @@ class CategoriaDataGatewayImplTest {
 
     @Test
     void eliminarCategoria_cuandoSeEliminaCorrectamente_debeEjecutarDeleteYFlush() {
-        // Arrange
+
         String idCategoria = "categoria-1";
 
-        // Act
+
         categoriaDataGateway.eliminarCategoria(idCategoria);
 
-        // Assert
+
         verify(categoriaDataJpaRepository).deleteById(idCategoria);
         verify(categoriaDataJpaRepository).flush();
         verifyNoInteractions(categoriaMapper);
@@ -190,19 +190,19 @@ class CategoriaDataGatewayImplTest {
 
     @Test
     void eliminarCategoria_cuandoTieneLibrosAsociados_debeLanzarRecursoEnUsoException() {
-        // Arrange
+
         String idCategoria = "categoria-1";
 
         doThrow(new DataIntegrityViolationException("Conflicto de integridad"))
                 .when(categoriaDataJpaRepository).deleteById(idCategoria);
 
-        // Act
+
         RecursoEnUsoException excepcion = assertThrows(
                 RecursoEnUsoException.class,
                 () -> categoriaDataGateway.eliminarCategoria(idCategoria)
         );
 
-        // Assert
+
         assertEquals(
                 "No se puede eliminar la categoria porque tiene libros asociados",
                 excepcion.getMessage()

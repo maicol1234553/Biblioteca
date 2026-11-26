@@ -32,18 +32,18 @@ class MultaControllerTest {
 
     @Test
     void listarMultas_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Multa multa = mock(Multa.class);
 
         when(multaUseCase.listarMultas(solicitante))
                 .thenReturn(List.of(multa));
 
-        // Act
+
         ResponseEntity<List<MultaResponse>> respuesta =
                 multaController.listarMultas(solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -52,7 +52,7 @@ class MultaControllerTest {
 
     @Test
     void buscarMulta_debeRetornarMultaYEstadoOk() {
-        // Arrange
+
         String idMulta = "multa-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Multa multa = mock(Multa.class);
@@ -60,11 +60,11 @@ class MultaControllerTest {
         when(multaUseCase.buscarMulta(idMulta, solicitante))
                 .thenReturn(multa);
 
-        // Act
+
         ResponseEntity<MultaResponse> respuesta =
                 multaController.buscarMulta(idMulta, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(multaUseCase).buscarMulta(idMulta, solicitante);
@@ -72,7 +72,7 @@ class MultaControllerTest {
 
     @Test
     void listarMultasPorUsuario_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         String usuarioId = "usuario-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Multa multa = mock(Multa.class);
@@ -80,11 +80,11 @@ class MultaControllerTest {
         when(multaUseCase.consultarMultasPorUsuario(usuarioId, solicitante))
                 .thenReturn(List.of(multa));
 
-        // Act
+
         ResponseEntity<List<MultaResponse>> respuesta =
                 multaController.listarMultasPorUsuario(usuarioId, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -93,7 +93,7 @@ class MultaControllerTest {
 
     @Test
     void listarMultasPendientesPorUsuario_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         String usuarioId = "usuario-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Multa multa = mock(Multa.class);
@@ -101,11 +101,11 @@ class MultaControllerTest {
         when(multaUseCase.consultarMultasPendientesPorUsuario(usuarioId, solicitante))
                 .thenReturn(List.of(multa));
 
-        // Act
+
         ResponseEntity<List<MultaResponse>> respuesta =
                 multaController.listarMultasPendientesPorUsuario(usuarioId, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -114,7 +114,7 @@ class MultaControllerTest {
 
     @Test
     void listarMultasPorPrestamo_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Multa multa = mock(Multa.class);
@@ -122,11 +122,11 @@ class MultaControllerTest {
         when(multaUseCase.listarMultasPorPrestamo(idPrestamo, solicitante))
                 .thenReturn(List.of(multa));
 
-        // Act
+
         ResponseEntity<List<MultaResponse>> respuesta =
                 multaController.listarMultasPorPrestamo(idPrestamo, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -135,7 +135,7 @@ class MultaControllerTest {
 
     @Test
     void pagarMulta_debeRetornarMultaPagadaYEstadoOk() {
-        // Arrange
+
         String idMulta = "multa-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Multa multa = mock(Multa.class);
@@ -143,11 +143,11 @@ class MultaControllerTest {
         when(multaUseCase.pagarMulta(idMulta, solicitante))
                 .thenReturn(multa);
 
-        // Act
+
         ResponseEntity<MultaResponse> respuesta =
                 multaController.pagarMulta(idMulta, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(multaUseCase).pagarMulta(idMulta, solicitante);
@@ -155,7 +155,7 @@ class MultaControllerTest {
 
     @Test
     void anularMulta_debeRetornarMultaAnuladaYEstadoOk() {
-        // Arrange
+
         String idMulta = "multa-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Multa multa = mock(Multa.class);
@@ -163,11 +163,11 @@ class MultaControllerTest {
         when(multaUseCase.anularMulta(idMulta, solicitante))
                 .thenReturn(multa);
 
-        // Act
+
         ResponseEntity<MultaResponse> respuesta =
                 multaController.anularMulta(idMulta, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(multaUseCase).anularMulta(idMulta, solicitante);
@@ -175,15 +175,15 @@ class MultaControllerTest {
 
     @Test
     void eliminarMulta_debeRetornarMensajeYEstadoOk() {
-        // Arrange
+
         String idMulta = "multa-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
 
-        // Act
+
         ResponseEntity<MensajeResponse> respuesta =
                 multaController.eliminarMulta(idMulta, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals("Multa eliminada con exito", respuesta.getBody().mensaje());

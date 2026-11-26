@@ -36,15 +36,15 @@ class RolHeaderFilterTest {
 
     @Test
     void doFilter_cuandoNoHayEncabezado_debeContinuarSinConsultarRol() throws Exception {
-        // Arrange
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain chain = mock(FilterChain.class);
 
-        // Act
+
         filter.doFilter(request, response, chain);
 
-        // Assert
+
         verify(chain).doFilter(request, response);
         verifyNoInteractions(usuarioRolJdbcAdapter);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
@@ -53,17 +53,17 @@ class RolHeaderFilterTest {
     @Test
     void doFilter_cuandoEncabezadoEstaEnBlanco_debeContinuarSinConsultarRol()
             throws Exception {
-        // Arrange
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(RolHeaderFilter.HEADER_USUARIO, "   ");
 
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain chain = mock(FilterChain.class);
 
-        // Act
+
         filter.doFilter(request, response, chain);
 
-        // Assert
+
         verify(chain).doFilter(request, response);
         verifyNoInteractions(usuarioRolJdbcAdapter);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
@@ -80,7 +80,7 @@ class RolHeaderFilterTest {
             String rolEncontrado,
             String autoridadEsperada
     ) throws Exception {
-        // Arrange
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(RolHeaderFilter.HEADER_USUARIO, "  usuario-1  ");
 
@@ -90,10 +90,10 @@ class RolHeaderFilterTest {
         when(usuarioRolJdbcAdapter.buscarRol("usuario-1"))
                 .thenReturn(rolEncontrado);
 
-        // Act
+
         filter.doFilter(request, response, chain);
 
-        // Assert
+
         Authentication autenticacion =
                 SecurityContextHolder.getContext().getAuthentication();
 
@@ -109,7 +109,7 @@ class RolHeaderFilterTest {
     @Test
     void doFilter_cuandoUsuarioNoTieneRol_debeResponder401YSinContinuar()
             throws Exception {
-        // Arrange
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(RolHeaderFilter.HEADER_USUARIO, "usuario-1");
 
@@ -118,10 +118,10 @@ class RolHeaderFilterTest {
 
         when(usuarioRolJdbcAdapter.buscarRol("usuario-1")).thenReturn(null);
 
-        // Act
+
         filter.doFilter(request, response, chain);
 
-        // Assert
+
         assertEquals(401, response.getStatus());
         assertEquals(
                 "{\"mensaje\":\"Usuario no autorizado\"}",
@@ -135,7 +135,7 @@ class RolHeaderFilterTest {
     @Test
     void doFilter_cuandoRolNoEsValido_debeResponder401YSinContinuar()
             throws Exception {
-        // Arrange
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(RolHeaderFilter.HEADER_USUARIO, "usuario-1");
 
@@ -145,10 +145,10 @@ class RolHeaderFilterTest {
         when(usuarioRolJdbcAdapter.buscarRol("usuario-1"))
                 .thenReturn("INVITADO");
 
-        // Act
+
         filter.doFilter(request, response, chain);
 
-        // Assert
+
         assertEquals(401, response.getStatus());
         assertEquals(
                 "{\"mensaje\":\"El usuario no tiene un rol valido\"}",

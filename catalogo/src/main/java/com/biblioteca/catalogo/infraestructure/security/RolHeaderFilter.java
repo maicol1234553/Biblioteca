@@ -16,12 +16,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Autentica al usuario a partir del encabezado X-Usuario-Id.
- * El rol NO se toma del encabezado: se consulta en la tabla usuario de la
- * base de datos compartida con auth, para que un cliente no pueda escalar
- * privilegios enviando X-Usuario-Rol: ADMINISTRADOR.
- */
+
+
+
+
+
+
 @Component
 @RequiredArgsConstructor
 public class RolHeaderFilter extends OncePerRequestFilter {

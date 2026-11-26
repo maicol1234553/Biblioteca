@@ -49,11 +49,11 @@ class NotificacionControllerTest {
         notificacion = crearNotificacion();
     }
 
-    // ENVIAR CORREO
+
 
     @Test
     void enviarCorreo_RequestValido_RetornaNotificacionYEstado201() {
-        // Arrange
+
         EnviarCorreoRequest request = mock(EnviarCorreoRequest.class);
 
         when(request.idUsuario()).thenReturn("USR-1");
@@ -71,11 +71,11 @@ class NotificacionControllerTest {
                 TipoNotificacion.PRESTAMO_CONFIRMADO.name()
         )).thenReturn(notificacion);
 
-        // Act
+
         ResponseEntity<?> respuesta =
                 notificacionController.enviarCorreo(request);
 
-        // Assert
+
         assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
 
@@ -88,11 +88,11 @@ class NotificacionControllerTest {
         );
     }
 
-    // PROGRAMAR RECORDATORIO DE DEVOLUCIÓN
+
 
     @Test
     void programarRecordatorioDevolucion_RequestValido_RetornaEstado201() {
-        // Arrange
+
         RecordatorioDevolucionRequest request =
                 mock(RecordatorioDevolucionRequest.class);
         Recordatorio recordatorio = mock(Recordatorio.class);
@@ -108,11 +108,11 @@ class NotificacionControllerTest {
                 "DEVOLUCION"
         )).thenReturn(recordatorio);
 
-        // Act
+
         ResponseEntity<?> respuesta =
                 notificacionController.programarRecordatorioDevolucion(request);
 
-        // Assert
+
         assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
 
@@ -124,11 +124,11 @@ class NotificacionControllerTest {
         );
     }
 
-    // NOTIFICACIONES DE PRÉSTAMO, LIBRO DISPONIBLE Y VENCIMIENTO
+
 
     @Test
     void enviarPrestamoConfirmado_RequestValido_RetornaEstado201() {
-        // Arrange
+
         PrestamoConfirmadoRequest request =
                 mock(PrestamoConfirmadoRequest.class);
 
@@ -145,11 +145,11 @@ class NotificacionControllerTest {
                 "Préstamo confirmado"
         )).thenReturn(notificacion);
 
-        // Act
+
         ResponseEntity<?> respuesta =
                 notificacionController.enviarPrestamoConfirmado(request);
 
-        // Assert
+
         assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
 
@@ -163,7 +163,7 @@ class NotificacionControllerTest {
 
     @Test
     void enviarLibroDisponible_RequestValido_RetornaEstado201() {
-        // Arrange
+
         LibroDisponibleRequest request =
                 mock(LibroDisponibleRequest.class);
 
@@ -180,11 +180,11 @@ class NotificacionControllerTest {
                 "Libro disponible"
         )).thenReturn(notificacion);
 
-        // Act
+
         ResponseEntity<?> respuesta =
                 notificacionController.enviarLibroDisponible(request);
 
-        // Assert
+
         assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
 
@@ -198,7 +198,7 @@ class NotificacionControllerTest {
 
     @Test
     void enviarAvisoVencido_RequestValido_RetornaEstado201() {
-        // Arrange
+
         AvisoVencidoRequest request = mock(AvisoVencidoRequest.class);
 
         when(request.idUsuario()).thenReturn("USR-1");
@@ -214,11 +214,11 @@ class NotificacionControllerTest {
                 "Préstamo vencido"
         )).thenReturn(notificacion);
 
-        // Act
+
         ResponseEntity<?> respuesta =
                 notificacionController.enviarAvisoVencido(request);
 
-        // Assert
+
         assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
 
@@ -230,11 +230,11 @@ class NotificacionControllerTest {
         );
     }
 
-    // RECIBIR EVENTO
+
 
     @Test
     void recibirEvento_RequestValido_CreaEventoYRetornaEstado201() {
-        // Arrange
+
         EventoNotificacionRequest request =
                 mock(EventoNotificacionRequest.class);
 
@@ -250,11 +250,11 @@ class NotificacionControllerTest {
         ArgumentCaptor<EventoNotificacion> eventoCaptor =
                 ArgumentCaptor.forClass(EventoNotificacion.class);
 
-        // Act
+
         ResponseEntity<?> respuesta =
                 notificacionController.recibirEvento(request);
 
-        // Assert
+
         assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
 
@@ -271,158 +271,158 @@ class NotificacionControllerTest {
         assertEquals("Préstamo confirmado", eventoEnviado.mensaje());
     }
 
-    // REINTENTAR UNA NOTIFICACIÓN
+
 
     @Test
     void reintentarNotificacion_IdValido_RetornaNotificacionYEstado200() {
-        // Arrange
+
         String id = "NOT-1";
 
         when(notificacionUseCase.reintentarNotificacion(id))
                 .thenReturn(notificacion);
 
-        // Act
+
         ResponseEntity<?> respuesta =
                 notificacionController.reintentarNotificacion(id);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(notificacionUseCase).reintentarNotificacion(id);
     }
 
-    // REINTENTAR NOTIFICACIONES FALLIDAS
+
 
     @Test
     void reintentarFallidas_RetornaListaYEstado200() {
-        // Arrange
+
         when(notificacionUseCase.reintentarFallidas())
                 .thenReturn(List.of(notificacion));
 
-        // Act
+
         ResponseEntity<?> respuesta =
                 notificacionController.reintentarFallidas();
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, ((List<?>) respuesta.getBody()).size());
         verify(notificacionUseCase).reintentarFallidas();
     }
 
-    // CONSULTAR HISTORIAL DEL USUARIO
+
 
     @Test
     void consultarHistorialUsuario_IdValido_RetornaListaYEstado200() {
-        // Arrange
+
         String idUsuario = "USR-1";
 
         when(notificacionUseCase.consultarHistorialUsuario(idUsuario))
                 .thenReturn(List.of(notificacion));
 
-        // Act
+
         ResponseEntity<?> respuesta =
                 notificacionController.consultarHistorialUsuario(idUsuario);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, ((List<?>) respuesta.getBody()).size());
         verify(notificacionUseCase).consultarHistorialUsuario(idUsuario);
     }
 
-    // CONSULTAR NOTIFICACIONES PENDIENTES
+
 
     @Test
     void consultarPendientes_RetornaListaYEstado200() {
-        // Arrange
+
         when(notificacionUseCase.consultarPendientes())
                 .thenReturn(List.of(notificacion));
 
-        // Act
+
         ResponseEntity<?> respuesta =
                 notificacionController.consultarPendientes();
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, ((List<?>) respuesta.getBody()).size());
         verify(notificacionUseCase).consultarPendientes();
     }
 
-    // LISTAR NOTIFICACIONES
+
 
     @Test
     void listarNotificaciones_RetornaListaYEstado200() {
-        // Arrange
+
         when(notificacionUseCase.listarNotificaciones())
                 .thenReturn(List.of(notificacion));
 
-        // Act
+
         ResponseEntity<?> respuesta =
                 notificacionController.listarNotificaciones();
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, ((List<?>) respuesta.getBody()).size());
         verify(notificacionUseCase).listarNotificaciones();
     }
 
-    // BUSCAR NOTIFICACIÓN POR ID
+
 
     @Test
     void buscarNotificacion_IdValido_RetornaNotificacionYEstado200() {
-        // Arrange
+
         String id = "NOT-1";
 
         when(notificacionUseCase.buscarNotificacion(id))
                 .thenReturn(notificacion);
 
-        // Act
+
         ResponseEntity<?> respuesta =
                 notificacionController.buscarNotificacion(id);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(notificacionUseCase).buscarNotificacion(id);
     }
 
-    // CONSULTAR HISTORIAL DE ENVÍOS
+
 
     @Test
     void consultarHistorialEnvios_IdValido_RetornaListaYEstado200() {
-        // Arrange
+
         String id = "NOT-1";
         HistorialEnvio historial = mock(HistorialEnvio.class);
 
         when(notificacionUseCase.consultarHistorialEnvios(id))
                 .thenReturn(List.of(historial));
 
-        // Act
+
         ResponseEntity<?> respuesta =
                 notificacionController.consultarHistorialEnvios(id);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, ((List<?>) respuesta.getBody()).size());
         verify(notificacionUseCase).consultarHistorialEnvios(id);
     }
 
-    // ELIMINAR NOTIFICACIÓN
+
 
     @Test
     void eliminarNotificacion_IdValido_RetornaMensajeYEstado200() {
-        // Arrange
+
         String id = "NOT-1";
 
-        // Act
+
         ResponseEntity<?> respuesta =
                 notificacionController.eliminarNotificacion(id);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         verify(notificacionUseCase).eliminarNotificacion(id);
     }

@@ -9,10 +9,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Informacion normalizada que devuelve una API externa (Open Library o
- * Google Books), lista para mostrarse o para importarse al catalogo local.
- */
+
+
+
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

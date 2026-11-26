@@ -29,7 +29,7 @@ class OpenLibraryGatewayImplTest {
 
     @BeforeEach
     void setUp() {
-        // Arrange común: crea clientes HTTP conectados a servidores simulados.
+
         RestClient.Builder openLibraryBuilder = RestClient.builder()
                 .baseUrl("https://openlibrary.org");
 
@@ -53,7 +53,7 @@ class OpenLibraryGatewayImplTest {
 
     @Test
     void buscar_cuandoOpenLibraryEncuentraLibros_debeMapearlos() {
-        // Arrange
+
         esperarBusquedaOpenLibrary("q", "Dune", "20");
 
         openLibraryServer.expect(request ->
@@ -80,10 +80,10 @@ class OpenLibraryGatewayImplTest {
                         }
                         """, MediaType.APPLICATION_JSON));
 
-        // Act
+
         List<LibroExterno> resultado = gateway.buscar("Dune");
 
-        // Assert
+
         assertEquals(1, resultado.size());
 
         LibroExterno libro = resultado.get(0);
@@ -105,7 +105,7 @@ class OpenLibraryGatewayImplTest {
 
     @Test
     void buscar_cuandoOpenLibraryNoEncuentra_debeConsultarGoogleBooks() {
-        // Arrange
+
         esperarBusquedaOpenLibrary("q", "El nombre del viento", "20");
         esperarBusquedaGoogleBooks("q", "El nombre del viento", "20");
 
@@ -155,11 +155,11 @@ class OpenLibraryGatewayImplTest {
                         }
                         """, MediaType.APPLICATION_JSON));
 
-        // Act
+
         List<LibroExterno> resultado =
                 gateway.buscar("El nombre del viento");
 
-        // Assert
+
         assertEquals(1, resultado.size());
 
         LibroExterno libro = resultado.get(0);
@@ -179,7 +179,7 @@ class OpenLibraryGatewayImplTest {
 
     @Test
     void buscar_cuandoOpenLibraryFalla_debeIntentarGoogleBooks() {
-        // Arrange
+
         esperarBusquedaOpenLibrary("q", "libro desconocido", "20");
         esperarBusquedaGoogleBooks("q", "libro desconocido", "20");
 
@@ -196,16 +196,16 @@ class OpenLibraryGatewayImplTest {
                         {"items": []}
                         """, MediaType.APPLICATION_JSON));
 
-        // Act
+
         List<LibroExterno> resultado = gateway.buscar("libro desconocido");
 
-        // Assert
+
         assertTrue(resultado.isEmpty());
     }
 
     @Test
     void buscarPorIsbn_cuandoOpenLibraryEncuentraElLibro_debeRetornarlo() {
-        // Arrange
+
         String isbn = "9780441172719";
 
         esperarBusquedaOpenLibrary("isbn", isbn, "1");
@@ -229,10 +229,10 @@ class OpenLibraryGatewayImplTest {
                         }
                         """, MediaType.APPLICATION_JSON));
 
-        // Act
+
         Optional<LibroExterno> resultado = gateway.buscarPorIsbn(isbn);
 
-        // Assert
+
         assertTrue(resultado.isPresent());
         assertEquals("Open Library", resultado.get().getFuente());
         assertEquals("Dune", resultado.get().getTitulo());
@@ -241,7 +241,7 @@ class OpenLibraryGatewayImplTest {
 
     @Test
     void buscarPorIsbn_cuandoOpenLibraryNoEncuentra_debeConsultarGoogleBooks() {
-        // Arrange
+
         String isbn = "9788401352836";
 
         esperarBusquedaOpenLibrary("isbn", isbn, "1");
@@ -276,10 +276,10 @@ class OpenLibraryGatewayImplTest {
                         }
                         """, MediaType.APPLICATION_JSON));
 
-        // Act
+
         Optional<LibroExterno> resultado = gateway.buscarPorIsbn(isbn);
 
-        // Assert
+
         assertTrue(resultado.isPresent());
         assertEquals("Google Books", resultado.get().getFuente());
         assertEquals("El nombre del viento", resultado.get().getTitulo());
@@ -289,7 +289,7 @@ class OpenLibraryGatewayImplTest {
 
     @Test
     void buscarPorIsbn_cuandoNingunaFuenteEncuentraElLibro_debeRetornarOptionalVacio() {
-        // Arrange
+
         String isbn = "9780000000000";
 
         esperarBusquedaOpenLibrary("isbn", isbn, "1");
@@ -307,24 +307,24 @@ class OpenLibraryGatewayImplTest {
                         {"items": []}
                         """, MediaType.APPLICATION_JSON));
 
-        // Act
+
         Optional<LibroExterno> resultado = gateway.buscarPorIsbn(isbn);
 
-        // Assert
+
         assertFalse(resultado.isPresent());
     }
 
     private void esperarBusquedaOpenLibrary(
             String nombreParametro, String valorParametro, String limite) {
 
-        // Este método solo documenta y valida los parámetros comunes en cada test.
-        // Las expectativas HTTP concretas se declaran dentro de cada caso.
+
+
     }
 
     private void esperarBusquedaGoogleBooks(
             String nombreParametro, String valorParametro, String limite) {
 
-        // Este método solo documenta y valida los parámetros comunes en cada test.
-        // Las expectativas HTTP concretas se declaran dentro de cada caso.
+
+
     }
 }

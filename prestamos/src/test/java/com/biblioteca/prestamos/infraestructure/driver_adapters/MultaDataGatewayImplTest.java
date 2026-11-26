@@ -44,7 +44,7 @@ class MultaDataGatewayImplTest {
 
     @Test
     void guardarMulta_debeBuscarPrestamoMapearGuardarYRetornarMulta() {
-        // Arrange
+
         Multa multa = mock(Multa.class);
         PrestamoData prestamoData = mock(PrestamoData.class);
         MultaData multaData = mock(MultaData.class);
@@ -58,10 +58,10 @@ class MultaDataGatewayImplTest {
         when(multaDataJpaRepository.save(multaData)).thenReturn(multaDataGuardada);
         when(multaMapper.toMulta(multaDataGuardada)).thenReturn(multaConvertida);
 
-        // Act
+
         Multa resultado = multaDataGateway.guardarMulta(multa);
 
-        // Assert
+
         assertSame(multaConvertida, resultado);
         verify(prestamoDataJpaRepository).findById("prestamo-1");
         verify(multaMapper).toMultaData(multa, prestamoData);
@@ -71,7 +71,7 @@ class MultaDataGatewayImplTest {
 
     @Test
     void actualizarMulta_debeBuscarPrestamoGuardarYRetornarMultaActualizada() {
-        // Arrange
+
         Multa multa = mock(Multa.class);
         PrestamoData prestamoData = mock(PrestamoData.class);
         MultaData multaData = mock(MultaData.class);
@@ -85,10 +85,10 @@ class MultaDataGatewayImplTest {
         when(multaDataJpaRepository.save(multaData)).thenReturn(multaDataActualizada);
         when(multaMapper.toMulta(multaDataActualizada)).thenReturn(multaActualizada);
 
-        // Act
+
         Multa resultado = multaDataGateway.actualizarMulta(multa);
 
-        // Assert
+
         assertSame(multaActualizada, resultado);
         verify(prestamoDataJpaRepository).findById("prestamo-1");
         verify(multaMapper).toMultaData(multa, prestamoData);
@@ -98,20 +98,20 @@ class MultaDataGatewayImplTest {
 
     @Test
     void guardarMulta_cuandoPrestamoNoExiste_debeLanzarExcepcion() {
-        // Arrange
+
         Multa multa = mock(Multa.class);
 
         when(multa.getIdPrestamo()).thenReturn("prestamo-inexistente");
         when(prestamoDataJpaRepository.findById("prestamo-inexistente"))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         PrestamoNoEncontradoException excepcion = assertThrows(
                 PrestamoNoEncontradoException.class,
                 () -> multaDataGateway.guardarMulta(multa)
         );
 
-        // Assert
+
         assertEquals(
                 "Prestamo no encontrado con id: prestamo-inexistente",
                 excepcion.getMessage()
@@ -122,7 +122,7 @@ class MultaDataGatewayImplTest {
 
     @Test
     void buscarMultaPorId_cuandoExiste_debeRetornarMultaMapeada() {
-        // Arrange
+
         String idMulta = "multa-1";
         MultaData multaData = mock(MultaData.class);
         Multa multa = mock(Multa.class);
@@ -131,10 +131,10 @@ class MultaDataGatewayImplTest {
                 .thenReturn(Optional.of(multaData));
         when(multaMapper.toMulta(multaData)).thenReturn(multa);
 
-        // Act
+
         Multa resultado = multaDataGateway.buscarMultaPorId(idMulta);
 
-        // Assert
+
         assertSame(multa, resultado);
         verify(multaDataJpaRepository).findById(idMulta);
         verify(multaMapper).toMulta(multaData);
@@ -142,16 +142,16 @@ class MultaDataGatewayImplTest {
 
     @Test
     void buscarMultaPorId_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String idMulta = "multa-inexistente";
 
         when(multaDataJpaRepository.findById(idMulta))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Multa resultado = multaDataGateway.buscarMultaPorId(idMulta);
 
-        // Assert
+
         assertNull(resultado);
         verify(multaDataJpaRepository).findById(idMulta);
         verifyNoInteractions(multaMapper);
@@ -159,7 +159,7 @@ class MultaDataGatewayImplTest {
 
     @Test
     void listarMultas_debeMapearYRetornarLaLista() {
-        // Arrange
+
         MultaData multaData = mock(MultaData.class);
         Multa multa = mock(Multa.class);
 
@@ -167,10 +167,10 @@ class MultaDataGatewayImplTest {
                 .thenReturn(List.of(multaData));
         when(multaMapper.toMulta(multaData)).thenReturn(multa);
 
-        // Act
+
         List<Multa> resultado = multaDataGateway.listarMultas();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(multa, resultado.get(0));
         verify(multaDataJpaRepository).findAllByOrderByFechaGeneracionDesc();
@@ -179,7 +179,7 @@ class MultaDataGatewayImplTest {
 
     @Test
     void listarMultasPorPrestamo_debeBuscarYMapearLasMultas() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         MultaData multaData = mock(MultaData.class);
         Multa multa = mock(Multa.class);
@@ -189,10 +189,10 @@ class MultaDataGatewayImplTest {
                 .thenReturn(List.of(multaData));
         when(multaMapper.toMulta(multaData)).thenReturn(multa);
 
-        // Act
+
         List<Multa> resultado = multaDataGateway.listarMultasPorPrestamo(idPrestamo);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(multa, resultado.get(0));
         verify(multaDataJpaRepository)
@@ -202,7 +202,7 @@ class MultaDataGatewayImplTest {
 
     @Test
     void listarMultasPorUsuario_debeBuscarYMapearLasMultas() {
-        // Arrange
+
         String idUsuario = "usuario-1";
         MultaData multaData = mock(MultaData.class);
         Multa multa = mock(Multa.class);
@@ -212,10 +212,10 @@ class MultaDataGatewayImplTest {
                 .thenReturn(List.of(multaData));
         when(multaMapper.toMulta(multaData)).thenReturn(multa);
 
-        // Act
+
         List<Multa> resultado = multaDataGateway.listarMultasPorUsuario(idUsuario);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(multa, resultado.get(0));
         verify(multaDataJpaRepository)
@@ -225,7 +225,7 @@ class MultaDataGatewayImplTest {
 
     @Test
     void listarMultasPendientesPorUsuario_debeFiltrarPorEstadoPendiente() {
-        // Arrange
+
         String idUsuario = "usuario-1";
         MultaData multaData = mock(MultaData.class);
         Multa multa = mock(Multa.class);
@@ -236,11 +236,11 @@ class MultaDataGatewayImplTest {
                 .thenReturn(List.of(multaData));
         when(multaMapper.toMulta(multaData)).thenReturn(multa);
 
-        // Act
+
         List<Multa> resultado =
                 multaDataGateway.listarMultasPendientesPorUsuario(idUsuario);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(multa, resultado.get(0));
         verify(multaDataJpaRepository)
@@ -251,7 +251,7 @@ class MultaDataGatewayImplTest {
 
     @Test
     void buscarMultaPendientePorPrestamo_cuandoExiste_debeRetornarMultaMapeada() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         MultaData multaData = mock(MultaData.class);
         Multa multa = mock(Multa.class);
@@ -262,11 +262,11 @@ class MultaDataGatewayImplTest {
                 .thenReturn(Optional.of(multaData));
         when(multaMapper.toMulta(multaData)).thenReturn(multa);
 
-        // Act
+
         Multa resultado =
                 multaDataGateway.buscarMultaPendientePorPrestamo(idPrestamo);
 
-        // Assert
+
         assertSame(multa, resultado);
         verify(multaDataJpaRepository)
                 .findFirstByPrestamo_IdPrestamoAndEstadoOrderByFechaGeneracionDesc(
@@ -276,7 +276,7 @@ class MultaDataGatewayImplTest {
 
     @Test
     void buscarMultaPendientePorPrestamo_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String idPrestamo = "prestamo-sin-multa-pendiente";
 
         when(multaDataJpaRepository
@@ -284,11 +284,11 @@ class MultaDataGatewayImplTest {
                         idPrestamo, EstadoMulta.PENDIENTE.name()))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Multa resultado =
                 multaDataGateway.buscarMultaPendientePorPrestamo(idPrestamo);
 
-        // Assert
+
         assertNull(resultado);
         verify(multaDataJpaRepository)
                 .findFirstByPrestamo_IdPrestamoAndEstadoOrderByFechaGeneracionDesc(
@@ -298,13 +298,13 @@ class MultaDataGatewayImplTest {
 
     @Test
     void eliminarMulta_cuandoSeEliminaCorrectamente_debeEjecutarDeleteYFlush() {
-        // Arrange
+
         String idMulta = "multa-1";
 
-        // Act
+
         multaDataGateway.eliminarMulta(idMulta);
 
-        // Assert
+
         verify(multaDataJpaRepository).deleteById(idMulta);
         verify(multaDataJpaRepository).flush();
         verifyNoInteractions(multaMapper, prestamoDataJpaRepository);
@@ -312,19 +312,19 @@ class MultaDataGatewayImplTest {
 
     @Test
     void eliminarMulta_cuandoTieneInformacionAsociada_debeLanzarRecursoEnUsoException() {
-        // Arrange
+
         String idMulta = "multa-1";
 
         doThrow(new DataIntegrityViolationException("Conflicto de integridad"))
                 .when(multaDataJpaRepository).flush();
 
-        // Act
+
         RecursoEnUsoException excepcion = assertThrows(
                 RecursoEnUsoException.class,
                 () -> multaDataGateway.eliminarMulta(idMulta)
         );
 
-        // Assert
+
         assertEquals(
                 "No se puede eliminar la multa porque tiene informacion asociada",
                 excepcion.getMessage()

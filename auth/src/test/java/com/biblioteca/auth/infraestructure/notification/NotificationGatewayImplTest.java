@@ -65,17 +65,19 @@ class NotificationGatewayImplTest {
                 "GENERICA"
         ));
 
-        // Si se hubiera hecho una petición, MockRestServiceServer lanzaría
-        // "Unexpected request" al no haber expectativas configuradas.
+
+
         server.verify();
     }
 
     @Test
     void enviarCorreo_siElServicioRespondeError_noPropagaExcepcion() {
-        server.expect(requestTo(URL_ENVIO))
-                .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body("{\"mensaje\":\"fallo interno\"}"));
+        for (int intento = 0; intento < 3; intento++) {
+            server.expect(requestTo(URL_ENVIO))
+                    .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body("{\"mensaje\":\"fallo interno\"}"));
+        }
 
         assertDoesNotThrow(() -> notificationGateway.enviarCorreo(
                 ID_USUARIO,

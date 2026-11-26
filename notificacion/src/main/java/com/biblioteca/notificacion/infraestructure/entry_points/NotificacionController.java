@@ -109,9 +109,9 @@ public class NotificacionController {
         return new ResponseEntity<>(NotificacionResponse.from(notificacion), HttpStatus.CREATED);
     }
 
-    /**
-     * Endpoint usado por el microservicio de prestamos.
-     */
+
+
+
     @PostMapping("/evento")
     public ResponseEntity<NotificacionResponse> recibirEvento(
             @Valid @RequestBody EventoNotificacionRequest request) {

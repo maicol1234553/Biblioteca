@@ -11,11 +11,11 @@ public final class ValidadorUsuario {
     private ValidadorUsuario() {
     }
 
-    /**
-     * Reutiliza la identidad ya validada por el filtro cuando el solicitante
-     * opera sobre si mismo. Si un administrador opera sobre otro usuario,
-     * consulta Auth para validar que exista.
-     */
+
+
+
+
+
     public static UsuarioExterno validar(AuthGateway authGateway,
                                          UsuarioExterno solicitante,
                                          String idUsuario) {

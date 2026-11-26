@@ -34,7 +34,7 @@ class RecordatorioDevolucionRequestTest {
 
     @Test
     void validar_cuandoFechaEsFuturaYDatosSonValidos_noDebeTenerViolaciones() {
-        // Arrange
+
         RecordatorioDevolucionRequest request = crearRequest(
                 UUID_USUARIO,
                 UUID_PRESTAMO,
@@ -42,7 +42,7 @@ class RecordatorioDevolucionRequestTest {
                 "DEVOLUCION"
         );
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).isEmpty());
     }
 

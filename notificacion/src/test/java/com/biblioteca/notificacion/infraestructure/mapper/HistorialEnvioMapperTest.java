@@ -21,16 +21,16 @@ class HistorialEnvioMapperTest {
 
     @Test
     void toHistorial_cuandoDataEsNull_debeRetornarNull() {
-        // Act
+
         HistorialEnvio resultado = mapper.toHistorial(null);
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void toHistorial_debeMapearLosCamposYElIdDeLaNotificacion() {
-        // Arrange
+
         LocalDateTime fecha = LocalDateTime.of(2026, 11, 26, 10, 30);
 
         NotificacionData notificacion = mock(NotificacionData.class);
@@ -43,10 +43,10 @@ class HistorialEnvioMapperTest {
         when(data.getResultado()).thenReturn("ENVIADO");
         when(data.getMensajeError()).thenReturn(null);
 
-        // Act
+
         HistorialEnvio resultado = mapper.toHistorial(data);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("historial-1", resultado.getIdHistorial()),
                 () -> assertEquals(
@@ -61,20 +61,20 @@ class HistorialEnvioMapperTest {
 
     @Test
     void toHistorial_cuandoNoTieneNotificacion_debeDejarElIdEnNull() {
-        // Arrange
+
         HistorialEnvioData data = mock(HistorialEnvioData.class);
         when(data.getNotificacion()).thenReturn(null);
 
-        // Act
+
         HistorialEnvio resultado = mapper.toHistorial(data);
 
-        // Assert
+
         assertNull(resultado.getIdNotificacion());
     }
 
     @Test
     void toHistorialData_debeMapearLosCamposYAsignarLaNotificacion() {
-        // Arrange
+
         LocalDateTime fecha = LocalDateTime.of(2026, 11, 26, 10, 30);
 
         HistorialEnvio historial = mock(HistorialEnvio.class);
@@ -85,11 +85,11 @@ class HistorialEnvioMapperTest {
 
         NotificacionData notificacion = mock(NotificacionData.class);
 
-        // Act
+
         HistorialEnvioData resultado =
                 mapper.toHistorialData(historial, notificacion);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("historial-1", resultado.getIdHistorial()),
                 () -> assertSame(notificacion, resultado.getNotificacion()),
@@ -104,7 +104,7 @@ class HistorialEnvioMapperTest {
 
     @Test
     void toHistorialData_cuandoHistorialEsNull_debeLanzarNullPointerException() {
-        // Act y Assert
+
         assertThrows(
                 NullPointerException.class,
                 () -> mapper.toHistorialData(null, null)

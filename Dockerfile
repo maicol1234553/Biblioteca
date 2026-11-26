@@ -1,15 +1,3 @@
-# syntax=docker/dockerfile:1
-#
-# Dockerfile generico para la RAIZ del repositorio.
-#
-# Render lo usa cuando un servicio tiene el "Dockerfile Path" por defecto.
-# Selecciona el microservicio de dos formas:
-#   1. Build arg / variable de entorno MODULE=auth|catalogo|prestamos|notificacion
-#   2. Si MODULE no esta definido, deduce el modulo desde RENDER_SERVICE_NAME
-#      (por ejemplo "biblioteca-auth-maicol" -> auth).
-#
-# Los servicios gestionados por el Blueprint (render.yaml) usan directamente
-# el Dockerfile de cada modulo, que es la via recomendada.
 
 ARG MODULE
 ARG RENDER_SERVICE_NAME

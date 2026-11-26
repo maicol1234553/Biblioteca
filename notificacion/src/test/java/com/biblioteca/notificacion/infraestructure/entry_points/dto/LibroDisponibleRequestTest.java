@@ -32,7 +32,7 @@ class LibroDisponibleRequestTest {
 
     @Test
     void validar_cuandoDatosSonCorrectos_noDebeTenerViolaciones() {
-        // Arrange
+
         LibroDisponibleRequest request = crearRequest(
                 UUID_USUARIO,
                 UUID_LIBRO,
@@ -40,7 +40,7 @@ class LibroDisponibleRequestTest {
                 "El libro ya está disponible"
         );
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).isEmpty());
     }
 
@@ -126,7 +126,7 @@ class LibroDisponibleRequestTest {
 
     @Test
     void validar_cuandoDestinatarioYMensajeSonNull_noDebeTenerViolaciones() {
-        // Arrange
+
         LibroDisponibleRequest request = crearRequest(
                 UUID_USUARIO,
                 UUID_LIBRO,
@@ -134,7 +134,7 @@ class LibroDisponibleRequestTest {
                 null
         );
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).isEmpty());
     }
 

@@ -35,11 +35,11 @@ class CategoriaUseCaseTest {
         categoria = crearCategoriaValida();
     }
 
-    // GUARDAR CATEGORÍA
+
 
     @Test
     void guardarCategoria_DatosValidosSinId_GeneraIdYGuarda() {
-        // Arrange
+
         categoria.setIdCategoria(null);
 
         when(categoriaGateway.buscarCategoriaPorNombre(categoria.getNombre()))
@@ -48,10 +48,10 @@ class CategoriaUseCaseTest {
         when(categoriaGateway.guardarCategoria(categoria))
                 .thenReturn(categoria);
 
-        // Act
+
         Categoria resultado = categoriaUseCase.guardarCategoria(categoria);
 
-        // Assert
+
         assertSame(categoria, resultado);
         assertNotNull(resultado.getIdCategoria());
         assertDoesNotThrow(() -> UUID.fromString(resultado.getIdCategoria()));
@@ -62,7 +62,7 @@ class CategoriaUseCaseTest {
 
     @Test
     void guardarCategoria_IdEnBlanco_GeneraIdYGuarda() {
-        // Arrange
+
         categoria.setIdCategoria(" ");
 
         when(categoriaGateway.buscarCategoriaPorNombre(categoria.getNombre()))
@@ -71,10 +71,10 @@ class CategoriaUseCaseTest {
         when(categoriaGateway.guardarCategoria(categoria))
                 .thenReturn(categoria);
 
-        // Act
+
         Categoria resultado = categoriaUseCase.guardarCategoria(categoria);
 
-        // Assert
+
         assertNotNull(resultado.getIdCategoria());
         assertDoesNotThrow(() -> UUID.fromString(resultado.getIdCategoria()));
         verify(categoriaGateway).guardarCategoria(categoria);
@@ -82,7 +82,7 @@ class CategoriaUseCaseTest {
 
     @Test
     void guardarCategoria_IdExistente_LoConserva() {
-        // Arrange
+
         categoria.setIdCategoria("CAT-1");
 
         when(categoriaGateway.buscarCategoriaPorNombre(categoria.getNombre()))
@@ -91,30 +91,30 @@ class CategoriaUseCaseTest {
         when(categoriaGateway.guardarCategoria(categoria))
                 .thenReturn(categoria);
 
-        // Act
+
         Categoria resultado = categoriaUseCase.guardarCategoria(categoria);
 
-        // Assert
+
         assertEquals("CAT-1", resultado.getIdCategoria());
         verify(categoriaGateway).guardarCategoria(categoria);
     }
 
     @Test
     void guardarCategoria_NombreDuplicado_LanzaExcepcion() {
-        // Arrange
+
         Categoria existente = crearCategoriaValida();
         existente.setIdCategoria("CAT-2");
 
         when(categoriaGateway.buscarCategoriaPorNombre(categoria.getNombre()))
                 .thenReturn(existente);
 
-        // Act
+
         RecursoDuplicadoException excepcion = assertThrows(
                 RecursoDuplicadoException.class,
                 () -> categoriaUseCase.guardarCategoria(categoria)
         );
 
-        // Assert
+
         assertEquals(
                 "Ya existe una categoria con el nombre: " + categoria.getNombre(),
                 excepcion.getMessage()
@@ -125,32 +125,32 @@ class CategoriaUseCaseTest {
 
     @Test
     void guardarCategoria_CategoriaNula_LanzaExcepcion() {
-        // Arrange
+
         Categoria categoriaNula = null;
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> categoriaUseCase.guardarCategoria(categoriaNula)
         );
 
-        // Assert
+
         assertEquals("La categoria es obligatoria", excepcion.getMessage());
         verifyNoInteractions(categoriaGateway);
     }
 
     @Test
     void guardarCategoria_NombreNulo_LanzaExcepcion() {
-        // Arrange
+
         categoria.setNombre(null);
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> categoriaUseCase.guardarCategoria(categoria)
         );
 
-        // Assert
+
         assertEquals(
                 "El nombre de la categoria es obligatorio",
                 excepcion.getMessage()
@@ -160,16 +160,16 @@ class CategoriaUseCaseTest {
 
     @Test
     void guardarCategoria_NombreEnBlanco_LanzaExcepcion() {
-        // Arrange
+
         categoria.setNombre(" ");
 
-        // Act
+
         IllegalArgumentException excepcion = assertThrows(
                 IllegalArgumentException.class,
                 () -> categoriaUseCase.guardarCategoria(categoria)
         );
 
-        // Assert
+
         assertEquals(
                 "El nombre de la categoria es obligatorio",
                 excepcion.getMessage()
@@ -177,11 +177,11 @@ class CategoriaUseCaseTest {
         verifyNoInteractions(categoriaGateway);
     }
 
-    // ACTUALIZAR CATEGORÍA
+
 
     @Test
     void actualizarCategoria_DatosValidos_AsignaIdYActualiza() {
-        // Arrange
+
         String idCategoria = "CAT-1";
         Categoria existente = crearCategoriaValida();
         existente.setIdCategoria(idCategoria);
@@ -195,11 +195,11 @@ class CategoriaUseCaseTest {
         when(categoriaGateway.actualizarCategoria(categoria))
                 .thenReturn(categoria);
 
-        // Act
+
         Categoria resultado =
                 categoriaUseCase.actualizarCategoria(idCategoria, categoria);
 
-        // Assert
+
         assertSame(categoria, resultado);
         assertEquals(idCategoria, resultado.getIdCategoria());
 
@@ -210,19 +210,19 @@ class CategoriaUseCaseTest {
 
     @Test
     void actualizarCategoria_CategoriaNoExiste_LanzaExcepcion() {
-        // Arrange
+
         String idCategoria = "ID-INEXISTENTE";
 
         when(categoriaGateway.buscarCategoriaPorId(idCategoria))
                 .thenReturn(null);
 
-        // Act
+
         CategoriaNoEncontradaException excepcion = assertThrows(
                 CategoriaNoEncontradaException.class,
                 () -> categoriaUseCase.actualizarCategoria(idCategoria, categoria)
         );
 
-        // Assert
+
         assertEquals(
                 "Categoria no encontrada con id: " + idCategoria,
                 excepcion.getMessage()
@@ -235,7 +235,7 @@ class CategoriaUseCaseTest {
 
     @Test
     void actualizarCategoria_NombreDeOtraCategoria_LanzaExcepcion() {
-        // Arrange
+
         String idCategoria = "CAT-1";
 
         Categoria categoriaExistente = crearCategoriaValida();
@@ -250,13 +250,13 @@ class CategoriaUseCaseTest {
         when(categoriaGateway.buscarCategoriaPorNombre(categoria.getNombre()))
                 .thenReturn(otraCategoria);
 
-        // Act
+
         RecursoDuplicadoException excepcion = assertThrows(
                 RecursoDuplicadoException.class,
                 () -> categoriaUseCase.actualizarCategoria(idCategoria, categoria)
         );
 
-        // Assert
+
         assertEquals(
                 "Ya existe una categoria con el nombre: " + categoria.getNombre(),
                 excepcion.getMessage()
@@ -267,7 +267,7 @@ class CategoriaUseCaseTest {
 
     @Test
     void actualizarCategoria_ConservaMismoNombre_PermiteActualizar() {
-        // Arrange
+
         String idCategoria = "CAT-1";
 
         Categoria existente = crearCategoriaValida();
@@ -284,29 +284,29 @@ class CategoriaUseCaseTest {
         when(categoriaGateway.actualizarCategoria(categoria))
                 .thenReturn(categoria);
 
-        // Act
+
         Categoria resultado =
                 categoriaUseCase.actualizarCategoria(idCategoria, categoria);
 
-        // Assert
+
         assertSame(categoria, resultado);
         assertEquals(idCategoria, resultado.getIdCategoria());
         verify(categoriaGateway).actualizarCategoria(categoria);
     }
 
-    // BUSCAR CATEGORÍA POR ID
+
 
     @Test
     void buscarCategoriaPorId_CategoriaExiste_RetornaCategoria() {
-        // Arrange
+
         when(categoriaGateway.buscarCategoriaPorId(categoria.getIdCategoria()))
                 .thenReturn(categoria);
 
-        // Act
+
         Categoria resultado =
                 categoriaUseCase.buscarCategoriaPorId(categoria.getIdCategoria());
 
-        // Assert
+
         assertSame(categoria, resultado);
         verify(categoriaGateway)
                 .buscarCategoriaPorId(categoria.getIdCategoria());
@@ -314,39 +314,39 @@ class CategoriaUseCaseTest {
 
     @Test
     void buscarCategoriaPorId_CategoriaNoExiste_LanzaExcepcion() {
-        // Arrange
+
         String idCategoria = "ID-INEXISTENTE";
 
         when(categoriaGateway.buscarCategoriaPorId(idCategoria))
                 .thenReturn(null);
 
-        // Act
+
         CategoriaNoEncontradaException excepcion = assertThrows(
                 CategoriaNoEncontradaException.class,
                 () -> categoriaUseCase.buscarCategoriaPorId(idCategoria)
         );
 
-        // Assert
+
         assertEquals(
                 "Categoria no encontrada con id: " + idCategoria,
                 excepcion.getMessage()
         );
     }
 
-    // LISTAR CATEGORÍAS
+
 
     @Test
     void listarCategorias_ConsultaGateway_RetornaLista() {
-        // Arrange
+
         List<Categoria> categoriasEsperadas = List.of(categoria);
 
         when(categoriaGateway.listarCategorias())
                 .thenReturn(categoriasEsperadas);
 
-        // Act
+
         List<Categoria> resultado = categoriaUseCase.listarCategorias();
 
-        // Assert
+
         assertSame(categoriasEsperadas, resultado);
         assertEquals(1, resultado.size());
         assertEquals(categoria, resultado.get(0));
@@ -355,51 +355,51 @@ class CategoriaUseCaseTest {
 
     @Test
     void listarCategorias_NoHayCategorias_RetornaListaVacia() {
-        // Arrange
+
         when(categoriaGateway.listarCategorias())
                 .thenReturn(List.of());
 
-        // Act
+
         List<Categoria> resultado = categoriaUseCase.listarCategorias();
 
-        // Assert
+
         assertNotNull(resultado);
         assertTrue(resultado.isEmpty());
     }
 
-    // ELIMINAR CATEGORÍA
+
 
     @Test
     void eliminarCategoria_CategoriaExiste_EliminaCategoria() {
-        // Arrange
+
         String idCategoria = categoria.getIdCategoria();
 
         when(categoriaGateway.buscarCategoriaPorId(idCategoria))
                 .thenReturn(categoria);
 
-        // Act
+
         categoriaUseCase.eliminarCategoria(idCategoria);
 
-        // Assert
+
         verify(categoriaGateway).buscarCategoriaPorId(idCategoria);
         verify(categoriaGateway).eliminarCategoria(idCategoria);
     }
 
     @Test
     void eliminarCategoria_CategoriaNoExiste_LanzaExcepcionYSinEliminar() {
-        // Arrange
+
         String idCategoria = "ID-INEXISTENTE";
 
         when(categoriaGateway.buscarCategoriaPorId(idCategoria))
                 .thenReturn(null);
 
-        // Act
+
         CategoriaNoEncontradaException excepcion = assertThrows(
                 CategoriaNoEncontradaException.class,
                 () -> categoriaUseCase.eliminarCategoria(idCategoria)
         );
 
-        // Assert
+
         assertEquals(
                 "Categoria no encontrada con id: " + idCategoria,
                 excepcion.getMessage()

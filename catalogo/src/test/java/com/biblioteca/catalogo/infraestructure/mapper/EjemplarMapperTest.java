@@ -19,16 +19,16 @@ class EjemplarMapperTest {
 
     @Test
     void toEjemplar_cuandoEjemplarDataEsNull_debeRetornarNull() {
-        // Act
+
         Ejemplar resultado = mapper.toEjemplar(null);
 
-        // Assert
+
         assertNull(resultado);
     }
 
     @Test
     void toEjemplar_cuandoTieneLibro_debeCopiarLosCampos() {
-        // Arrange
+
         LibroData libro = mock(LibroData.class);
         when(libro.getIdLibro()).thenReturn("libro-1");
         when(libro.getTitulo()).thenReturn("Cien años de soledad");
@@ -43,10 +43,10 @@ class EjemplarMapperTest {
                 "Buen estado"
         );
 
-        // Act
+
         Ejemplar resultado = mapper.toEjemplar(ejemplarData);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("ejemplar-1", resultado.getIdEjemplar()),
                 () -> assertEquals("libro-1", resultado.getIdLibro()),
@@ -61,7 +61,7 @@ class EjemplarMapperTest {
 
     @Test
     void toEjemplar_cuandoLibroEsNull_debeDejarNulosSusDatos() {
-        // Arrange
+
         EjemplarData ejemplarData = new EjemplarData(
                 "ejemplar-1",
                 null,
@@ -72,10 +72,10 @@ class EjemplarMapperTest {
                 "Buen estado"
         );
 
-        // Act
+
         Ejemplar resultado = mapper.toEjemplar(ejemplarData);
 
-        // Assert
+
         assertAll(
                 () -> assertNull(resultado.getIdLibro()),
                 () -> assertNull(resultado.getTituloLibro())
@@ -84,7 +84,7 @@ class EjemplarMapperTest {
 
     @Test
     void toEjemplarData_debeCopiarLosCamposYAsignarElLibro() {
-        // Arrange
+
         Ejemplar ejemplar = new Ejemplar(
                 "ejemplar-1",
                 "libro-1",
@@ -97,10 +97,10 @@ class EjemplarMapperTest {
         );
         LibroData libro = mock(LibroData.class);
 
-        // Act
+
         EjemplarData resultado = mapper.toEjemplarData(ejemplar, libro);
 
-        // Assert
+
         assertAll(
                 () -> assertEquals("ejemplar-1", resultado.getIdEjemplar()),
                 () -> assertSame(libro, resultado.getLibro()),
@@ -114,7 +114,7 @@ class EjemplarMapperTest {
 
     @Test
     void toEjemplarData_cuandoEjemplarEsNull_debeLanzarNullPointerException() {
-        // Act y Assert
+
         assertThrows(
                 NullPointerException.class,
                 () -> mapper.toEjemplarData(null, null)

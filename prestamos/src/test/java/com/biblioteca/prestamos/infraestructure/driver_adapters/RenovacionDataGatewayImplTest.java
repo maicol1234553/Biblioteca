@@ -43,7 +43,7 @@ class RenovacionDataGatewayImplTest {
 
     @Test
     void guardarRenovacion_debeBuscarPrestamoMapearGuardarYRetornarRenovacion() {
-        // Arrange
+
         Renovacion renovacion = mock(Renovacion.class);
         PrestamoData prestamoData = mock(PrestamoData.class);
         RenovacionData renovacionData = mock(RenovacionData.class);
@@ -60,10 +60,10 @@ class RenovacionDataGatewayImplTest {
         when(renovacionMapper.toRenovacion(renovacionDataGuardada))
                 .thenReturn(renovacionConvertida);
 
-        // Act
+
         Renovacion resultado = renovacionDataGateway.guardarRenovacion(renovacion);
 
-        // Assert
+
         assertSame(renovacionConvertida, resultado);
         verify(prestamoDataJpaRepository).findById("prestamo-1");
         verify(renovacionMapper).toRenovacionData(renovacion, prestamoData);
@@ -73,20 +73,20 @@ class RenovacionDataGatewayImplTest {
 
     @Test
     void guardarRenovacion_cuandoPrestamoNoExiste_debeLanzarExcepcion() {
-        // Arrange
+
         Renovacion renovacion = mock(Renovacion.class);
 
         when(renovacion.getIdPrestamo()).thenReturn("prestamo-inexistente");
         when(prestamoDataJpaRepository.findById("prestamo-inexistente"))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         PrestamoNoEncontradoException excepcion = assertThrows(
                 PrestamoNoEncontradoException.class,
                 () -> renovacionDataGateway.guardarRenovacion(renovacion)
         );
 
-        // Assert
+
         assertEquals(
                 "Prestamo no encontrado con id: prestamo-inexistente",
                 excepcion.getMessage()
@@ -97,7 +97,7 @@ class RenovacionDataGatewayImplTest {
 
     @Test
     void buscarRenovacionPorId_cuandoExiste_debeRetornarRenovacionMapeada() {
-        // Arrange
+
         String idRenovacion = "renovacion-1";
         RenovacionData renovacionData = mock(RenovacionData.class);
         Renovacion renovacion = mock(Renovacion.class);
@@ -106,11 +106,11 @@ class RenovacionDataGatewayImplTest {
                 .thenReturn(Optional.of(renovacionData));
         when(renovacionMapper.toRenovacion(renovacionData)).thenReturn(renovacion);
 
-        // Act
+
         Renovacion resultado =
                 renovacionDataGateway.buscarRenovacionPorId(idRenovacion);
 
-        // Assert
+
         assertSame(renovacion, resultado);
         verify(renovacionDataJpaRepository).findById(idRenovacion);
         verify(renovacionMapper).toRenovacion(renovacionData);
@@ -118,17 +118,17 @@ class RenovacionDataGatewayImplTest {
 
     @Test
     void buscarRenovacionPorId_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String idRenovacion = "renovacion-inexistente";
 
         when(renovacionDataJpaRepository.findById(idRenovacion))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         Renovacion resultado =
                 renovacionDataGateway.buscarRenovacionPorId(idRenovacion);
 
-        // Assert
+
         assertNull(resultado);
         verify(renovacionDataJpaRepository).findById(idRenovacion);
         verifyNoInteractions(renovacionMapper);
@@ -136,7 +136,7 @@ class RenovacionDataGatewayImplTest {
 
     @Test
     void listarRenovaciones_debeMapearYRetornarLaLista() {
-        // Arrange
+
         RenovacionData renovacionData = mock(RenovacionData.class);
         Renovacion renovacion = mock(Renovacion.class);
 
@@ -144,10 +144,10 @@ class RenovacionDataGatewayImplTest {
                 .thenReturn(List.of(renovacionData));
         when(renovacionMapper.toRenovacion(renovacionData)).thenReturn(renovacion);
 
-        // Act
+
         List<Renovacion> resultado = renovacionDataGateway.listarRenovaciones();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(renovacion, resultado.get(0));
         verify(renovacionDataJpaRepository).findAllByOrderByFechaSolicitudDesc();
@@ -156,7 +156,7 @@ class RenovacionDataGatewayImplTest {
 
     @Test
     void listarRenovacionesPorPrestamo_debeBuscarYMapearLasRenovaciones() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
         RenovacionData renovacionData = mock(RenovacionData.class);
         Renovacion renovacion = mock(Renovacion.class);
@@ -166,11 +166,11 @@ class RenovacionDataGatewayImplTest {
                 .thenReturn(List.of(renovacionData));
         when(renovacionMapper.toRenovacion(renovacionData)).thenReturn(renovacion);
 
-        // Act
+
         List<Renovacion> resultado =
                 renovacionDataGateway.listarRenovacionesPorPrestamo(idPrestamo);
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(renovacion, resultado.get(0));
         verify(renovacionDataJpaRepository)
@@ -180,17 +180,17 @@ class RenovacionDataGatewayImplTest {
 
     @Test
     void contarRenovacionesPorPrestamo_debeRetornarLaCantidad() {
-        // Arrange
+
         String idPrestamo = "prestamo-1";
 
         when(renovacionDataJpaRepository.countByPrestamo_IdPrestamo(idPrestamo))
                 .thenReturn(2L);
 
-        // Act
+
         long resultado =
                 renovacionDataGateway.contarRenovacionesPorPrestamo(idPrestamo);
 
-        // Assert
+
         assertEquals(2L, resultado);
         verify(renovacionDataJpaRepository).countByPrestamo_IdPrestamo(idPrestamo);
         verifyNoInteractions(renovacionMapper);
@@ -198,13 +198,13 @@ class RenovacionDataGatewayImplTest {
 
     @Test
     void eliminarRenovacion_cuandoSeEliminaCorrectamente_debeEjecutarDeleteYFlush() {
-        // Arrange
+
         String idRenovacion = "renovacion-1";
 
-        // Act
+
         renovacionDataGateway.eliminarRenovacion(idRenovacion);
 
-        // Assert
+
         verify(renovacionDataJpaRepository).deleteById(idRenovacion);
         verify(renovacionDataJpaRepository).flush();
         verifyNoInteractions(renovacionMapper, prestamoDataJpaRepository);
@@ -212,19 +212,19 @@ class RenovacionDataGatewayImplTest {
 
     @Test
     void eliminarRenovacion_cuandoTieneInformacionAsociada_debeLanzarRecursoEnUsoException() {
-        // Arrange
+
         String idRenovacion = "renovacion-1";
 
         doThrow(new DataIntegrityViolationException("Conflicto de integridad"))
                 .when(renovacionDataJpaRepository).flush();
 
-        // Act
+
         RecursoEnUsoException excepcion = assertThrows(
                 RecursoEnUsoException.class,
                 () -> renovacionDataGateway.eliminarRenovacion(idRenovacion)
         );
 
-        // Assert
+
         assertEquals(
                 "No se puede eliminar la renovacion porque tiene informacion asociada",
                 excepcion.getMessage()

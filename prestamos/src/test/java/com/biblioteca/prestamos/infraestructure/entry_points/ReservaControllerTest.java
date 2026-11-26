@@ -32,18 +32,18 @@ class ReservaControllerTest {
 
     @Test
     void listarReservas_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Reserva reserva = mock(Reserva.class);
 
         when(reservaUseCase.listarReservas(solicitante))
                 .thenReturn(List.of(reserva));
 
-        // Act
+
         ResponseEntity<List<ReservaResponse>> respuesta =
                 reservaController.listarReservas(solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -52,7 +52,7 @@ class ReservaControllerTest {
 
     @Test
     void buscarReserva_debeRetornarReservaYEstadoOk() {
-        // Arrange
+
         String id = "reserva-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Reserva reserva = mock(Reserva.class);
@@ -60,11 +60,11 @@ class ReservaControllerTest {
         when(reservaUseCase.buscarReserva(id, solicitante))
                 .thenReturn(reserva);
 
-        // Act
+
         ResponseEntity<ReservaResponse> respuesta =
                 reservaController.buscarReserva(id, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(reservaUseCase).buscarReserva(id, solicitante);
@@ -72,7 +72,7 @@ class ReservaControllerTest {
 
     @Test
     void listarReservasPorUsuario_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         String usuarioId = "usuario-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Reserva reserva = mock(Reserva.class);
@@ -80,11 +80,11 @@ class ReservaControllerTest {
         when(reservaUseCase.consultarReservasPorUsuario(usuarioId, solicitante))
                 .thenReturn(List.of(reserva));
 
-        // Act
+
         ResponseEntity<List<ReservaResponse>> respuesta =
                 reservaController.listarReservasPorUsuario(usuarioId, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -93,7 +93,7 @@ class ReservaControllerTest {
 
     @Test
     void listarReservasPendientesPorLibro_debeRetornarListaYEstadoOk() {
-        // Arrange
+
         String libroId = "libro-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Reserva reserva = mock(Reserva.class);
@@ -101,11 +101,11 @@ class ReservaControllerTest {
         when(reservaUseCase.consultarReservasPendientesPorLibro(libroId, solicitante))
                 .thenReturn(List.of(reserva));
 
-        // Act
+
         ResponseEntity<List<ReservaResponse>> respuesta =
                 reservaController.listarReservasPendientesPorLibro(libroId, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -115,7 +115,7 @@ class ReservaControllerTest {
 
     @Test
     void cancelarReserva_debeRetornarReservaCanceladaYEstadoOk() {
-        // Arrange
+
         String id = "reserva-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Reserva reserva = mock(Reserva.class);
@@ -123,11 +123,11 @@ class ReservaControllerTest {
         when(reservaUseCase.cancelarReserva(id, solicitante))
                 .thenReturn(reserva);
 
-        // Act
+
         ResponseEntity<ReservaResponse> respuesta =
                 reservaController.cancelarReserva(id, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         verify(reservaUseCase).cancelarReserva(id, solicitante);
@@ -135,18 +135,18 @@ class ReservaControllerTest {
 
     @Test
     void expirarReservas_debeRetornarReservasExpiradasYEstadoOk() {
-        // Arrange
+
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
         Reserva reserva = mock(Reserva.class);
 
         when(reservaUseCase.expirarReservas(solicitante))
                 .thenReturn(List.of(reserva));
 
-        // Act
+
         ResponseEntity<List<ReservaResponse>> respuesta =
                 reservaController.expirarReservas(solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals(1, respuesta.getBody().size());
@@ -155,15 +155,15 @@ class ReservaControllerTest {
 
     @Test
     void eliminarReserva_debeRetornarMensajeYEstadoOk() {
-        // Arrange
+
         String id = "reserva-1";
         UsuarioExterno solicitante = mock(UsuarioExterno.class);
 
-        // Act
+
         ResponseEntity<MensajeResponse> respuesta =
                 reservaController.eliminarReserva(id, solicitante);
 
-        // Assert
+
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
         assertNotNull(respuesta.getBody());
         assertEquals("Reserva eliminada con exito", respuesta.getBody().mensaje());

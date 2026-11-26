@@ -57,11 +57,11 @@ public class LibroData {
     @JoinColumn(name = "id_editorial", nullable = false)
     private EditorialData editorial;
 
-    /**
-     * Un libro puede estar clasificado en varias categorias.
-     * La tabla intermedia libro_categoria crea las llaves foraneas
-     * hacia libro y categoria.
-     */
+
+
+
+
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "libro_categoria",
@@ -70,11 +70,11 @@ public class LibroData {
     )
     private Set<CategoriaData> categorias = new LinkedHashSet<>();
 
-    /**
-     * Un libro puede tener varios autores y un autor varios libros.
-     * La tabla intermedia libro_autor crea las llaves foraneas
-     * hacia libro y autor.
-     */
+
+
+
+
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "libro_autor",

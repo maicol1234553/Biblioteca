@@ -34,7 +34,7 @@ class PlantillaNotificacionDataGatewayImplTest {
 
     @Test
     void guardarPlantilla_debeMapearGuardarYRetornarPlantilla() {
-        // Arrange
+
         PlantillaNotificacion plantilla = mock(PlantillaNotificacion.class);
         PlantillaNotificacionData plantillaData =
                 mock(PlantillaNotificacionData.class);
@@ -49,10 +49,10 @@ class PlantillaNotificacionDataGatewayImplTest {
         when(plantillaMapper.toPlantilla(plantillaDataGuardada))
                 .thenReturn(plantillaConvertida);
 
-        // Act
+
         PlantillaNotificacion resultado = plantillaGateway.guardarPlantilla(plantilla);
 
-        // Assert
+
         assertSame(plantillaConvertida, resultado);
         verify(plantillaMapper).toPlantillaData(plantilla);
         verify(plantillaDataJpaRepository).save(plantillaData);
@@ -61,7 +61,7 @@ class PlantillaNotificacionDataGatewayImplTest {
 
     @Test
     void actualizarPlantilla_debeGuardarYRetornarPlantillaActualizada() {
-        // Arrange
+
         PlantillaNotificacion plantilla = mock(PlantillaNotificacion.class);
         PlantillaNotificacionData plantillaData =
                 mock(PlantillaNotificacionData.class);
@@ -76,11 +76,11 @@ class PlantillaNotificacionDataGatewayImplTest {
         when(plantillaMapper.toPlantilla(plantillaDataActualizada))
                 .thenReturn(plantillaActualizada);
 
-        // Act
+
         PlantillaNotificacion resultado =
                 plantillaGateway.actualizarPlantilla(plantilla);
 
-        // Assert
+
         assertSame(plantillaActualizada, resultado);
         verify(plantillaMapper).toPlantillaData(plantilla);
         verify(plantillaDataJpaRepository).save(plantillaData);
@@ -89,7 +89,7 @@ class PlantillaNotificacionDataGatewayImplTest {
 
     @Test
     void buscarPlantillaPorId_cuandoExiste_debeRetornarPlantillaMapeada() {
-        // Arrange
+
         String id = "plantilla-1";
         PlantillaNotificacionData plantillaData =
                 mock(PlantillaNotificacionData.class);
@@ -100,10 +100,10 @@ class PlantillaNotificacionDataGatewayImplTest {
                 .thenReturn(Optional.of(plantillaData));
         when(plantillaMapper.toPlantilla(plantillaData)).thenReturn(plantilla);
 
-        // Act
+
         PlantillaNotificacion resultado = plantillaGateway.buscarPlantillaPorId(id);
 
-        // Assert
+
         assertSame(plantilla, resultado);
         verify(plantillaDataJpaRepository).findById(id);
         verify(plantillaMapper).toPlantilla(plantillaData);
@@ -111,16 +111,16 @@ class PlantillaNotificacionDataGatewayImplTest {
 
     @Test
     void buscarPlantillaPorId_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String id = "plantilla-inexistente";
 
         when(plantillaDataJpaRepository.findById(id))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         PlantillaNotificacion resultado = plantillaGateway.buscarPlantillaPorId(id);
 
-        // Assert
+
         assertNull(resultado);
         verify(plantillaDataJpaRepository).findById(id);
         verifyNoInteractions(plantillaMapper);
@@ -128,7 +128,7 @@ class PlantillaNotificacionDataGatewayImplTest {
 
     @Test
     void buscarPlantillaPorNombre_cuandoExiste_debeRetornarPlantillaMapeada() {
-        // Arrange
+
         String nombre = "Confirmacion de prestamo";
         PlantillaNotificacionData plantillaData =
                 mock(PlantillaNotificacionData.class);
@@ -139,11 +139,11 @@ class PlantillaNotificacionDataGatewayImplTest {
                 .thenReturn(Optional.of(plantillaData));
         when(plantillaMapper.toPlantilla(plantillaData)).thenReturn(plantilla);
 
-        // Act
+
         PlantillaNotificacion resultado =
                 plantillaGateway.buscarPlantillaPorNombre(nombre);
 
-        // Assert
+
         assertSame(plantilla, resultado);
         verify(plantillaDataJpaRepository).findFirstByNombreIgnoreCase(nombre);
         verify(plantillaMapper).toPlantilla(plantillaData);
@@ -151,17 +151,17 @@ class PlantillaNotificacionDataGatewayImplTest {
 
     @Test
     void buscarPlantillaPorNombre_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String nombre = "Plantilla inexistente";
 
         when(plantillaDataJpaRepository.findFirstByNombreIgnoreCase(nombre))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         PlantillaNotificacion resultado =
                 plantillaGateway.buscarPlantillaPorNombre(nombre);
 
-        // Assert
+
         assertNull(resultado);
         verify(plantillaDataJpaRepository).findFirstByNombreIgnoreCase(nombre);
         verifyNoInteractions(plantillaMapper);
@@ -169,7 +169,7 @@ class PlantillaNotificacionDataGatewayImplTest {
 
     @Test
     void buscarActivaPorTipo_cuandoExiste_debeRetornarPlantillaMapeada() {
-        // Arrange
+
         String tipo = "PRESTAMO_CONFIRMADO";
         PlantillaNotificacionData plantillaData =
                 mock(PlantillaNotificacionData.class);
@@ -182,10 +182,10 @@ class PlantillaNotificacionDataGatewayImplTest {
                 .thenReturn(Optional.of(plantillaData));
         when(plantillaMapper.toPlantilla(plantillaData)).thenReturn(plantilla);
 
-        // Act
+
         PlantillaNotificacion resultado = plantillaGateway.buscarActivaPorTipo(tipo);
 
-        // Assert
+
         assertSame(plantilla, resultado);
         verify(plantillaDataJpaRepository)
                 .findFirstByTipoIgnoreCaseAndEstadoOrderByNombreAsc(
@@ -195,7 +195,7 @@ class PlantillaNotificacionDataGatewayImplTest {
 
     @Test
     void buscarActivaPorTipo_cuandoNoExiste_debeRetornarNull() {
-        // Arrange
+
         String tipo = "PRESTAMO_CONFIRMADO";
 
         when(plantillaDataJpaRepository
@@ -203,10 +203,10 @@ class PlantillaNotificacionDataGatewayImplTest {
                         tipo, EstadoPlantilla.ACTIVA.name()))
                 .thenReturn(Optional.empty());
 
-        // Act
+
         PlantillaNotificacion resultado = plantillaGateway.buscarActivaPorTipo(tipo);
 
-        // Assert
+
         assertNull(resultado);
         verify(plantillaDataJpaRepository)
                 .findFirstByTipoIgnoreCaseAndEstadoOrderByNombreAsc(
@@ -216,7 +216,7 @@ class PlantillaNotificacionDataGatewayImplTest {
 
     @Test
     void listarPlantillas_debeMapearYRetornarLaLista() {
-        // Arrange
+
         PlantillaNotificacionData plantillaData =
                 mock(PlantillaNotificacionData.class);
         PlantillaNotificacion plantilla =
@@ -226,10 +226,10 @@ class PlantillaNotificacionDataGatewayImplTest {
                 .thenReturn(List.of(plantillaData));
         when(plantillaMapper.toPlantilla(plantillaData)).thenReturn(plantilla);
 
-        // Act
+
         List<PlantillaNotificacion> resultado = plantillaGateway.listarPlantillas();
 
-        // Assert
+
         assertEquals(1, resultado.size());
         assertSame(plantilla, resultado.get(0));
         verify(plantillaDataJpaRepository).findAllByOrderByNombreAsc();
@@ -238,13 +238,13 @@ class PlantillaNotificacionDataGatewayImplTest {
 
     @Test
     void eliminarPlantilla_debeSolicitarEliminacionPorId() {
-        // Arrange
+
         String id = "plantilla-1";
 
-        // Act
+
         plantillaGateway.eliminarPlantilla(id);
 
-        // Assert
+
         verify(plantillaDataJpaRepository).deleteById(id);
         verifyNoInteractions(plantillaMapper);
     }

@@ -7,11 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * Lee el rol del usuario desde la tabla usuario que administra el
- * microservicio auth. Al compartir la misma base de datos no se duplica
- * la informacion de identidad: el catalogo solo consulta el rol.
- */
+
+
+
+
+
 @Repository
 @RequiredArgsConstructor
 public class UsuarioRolJdbcAdapter {

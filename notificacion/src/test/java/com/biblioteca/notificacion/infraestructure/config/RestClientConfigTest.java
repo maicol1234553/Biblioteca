@@ -11,7 +11,7 @@ class RestClientConfigTest {
 
     @Test
     void authRestClient_debeCrearClienteConLasPropiedades() {
-        // Arrange
+
         NotificacionProperties properties = mock(NotificacionProperties.class);
         NotificacionProperties.Servicios servicios =
                 mock(NotificacionProperties.Servicios.class);
@@ -22,10 +22,10 @@ class RestClientConfigTest {
 
         RestClientConfig config = new RestClientConfig();
 
-        // Act
+
         RestClient resultado = config.authRestClient(properties);
 
-        // Assert
+
         assertNotNull(resultado);
     }
 }

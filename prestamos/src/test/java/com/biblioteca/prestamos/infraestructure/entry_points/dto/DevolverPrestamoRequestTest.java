@@ -36,21 +36,21 @@ class DevolverPrestamoRequestTest {
             "BUEN_ESTADO", "buen_estado"
     })
     void validar_cuandoEstadoEsPermitido_noDebeTenerViolaciones(String estado) {
-        // Arrange
+
         DevolverPrestamoRequest request =
                 new DevolverPrestamoRequest(estado, null);
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).isEmpty());
     }
 
     @Test
     void validar_cuandoEstadoEstaEnBlanco_debeIndicarQueEsObligatorio() {
-        // Arrange
+
         DevolverPrestamoRequest request =
                 new DevolverPrestamoRequest(" ", null);
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).stream().anyMatch(violacion ->
                 violacion.getPropertyPath().toString().equals("estadoEjemplar")
                         && violacion.getMessage().equals(
@@ -61,11 +61,11 @@ class DevolverPrestamoRequestTest {
 
     @Test
     void validar_cuandoEstadoNoEstaPermitido_debeIndicarFormatoInvalido() {
-        // Arrange
+
         DevolverPrestamoRequest request =
                 new DevolverPrestamoRequest("REGULAR", null);
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).stream().anyMatch(violacion ->
                 violacion.getPropertyPath().toString().equals("estadoEjemplar")
                         && violacion.getMessage().equals(
@@ -76,25 +76,25 @@ class DevolverPrestamoRequestTest {
 
     @Test
     void validar_cuandoObservacionesTienen1000Caracteres_debeAceptarlas() {
-        // Arrange
+
         DevolverPrestamoRequest request = new DevolverPrestamoRequest(
                 "BUENO",
                 "a".repeat(1000)
         );
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).isEmpty());
     }
 
     @Test
     void validar_cuandoObservacionesSuperan1000Caracteres_debeRechazarlas() {
-        // Arrange
+
         DevolverPrestamoRequest request = new DevolverPrestamoRequest(
                 "BUENO",
                 "a".repeat(1001)
         );
 
-        // Act y Assert
+
         assertTrue(validator.validate(request).stream().anyMatch(violacion ->
                 violacion.getPropertyPath().toString().equals("observaciones")
                         && violacion.getMessage().equals(
