@@ -19,9 +19,7 @@ COPY --from=build /build/target/*.jar app.jar
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75"
 USER app
 
-EXPOSE 8082
-
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-    CMD wget -qO- http://localhost:${PORT:-8082}/actuator/health || exit 1
+    CMD wget -qO- http://localhost:${PORT}/actuator/health || exit 1
 
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
