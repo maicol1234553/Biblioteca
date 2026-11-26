@@ -1,5 +1,6 @@
 package com.biblioteca.notificacion;
 
+import com.biblioteca.notificacion.domain.model.CanalNotificacion;
 import com.biblioteca.notificacion.domain.model.HistorialEnvio;
 import com.biblioteca.notificacion.domain.model.Notificacion;
 import com.biblioteca.notificacion.domain.model.PlantillaNotificacion;
@@ -17,13 +18,19 @@ public final class TestFixtures {
             LocalDateTime.of(2026, 1, 15, 10, 0).toInstant(ZoneOffset.UTC),
             ZoneOffset.UTC);
     public static final LocalDateTime AHORA = LocalDateTime.now(CLOCK);
-    public static final PoliticaNotificaciones POLITICA = new PoliticaNotificaciones(3, 1);
+    public static final PoliticaNotificaciones POLITICA = new PoliticaNotificaciones(3, 1, "57", CanalNotificacion.SMS);
+    /** Canal por defecto en produccion: SMS. */
+    public static final CanalNotificacion CANAL_DEFECTO = CanalNotificacion.SMS;
 
     private TestFixtures() {
     }
 
     public static UsuarioContacto contacto(String id) {
-        return new UsuarioContacto(id, "Usuario " + id, id + "@example.com");
+        return new UsuarioContacto(id, "Usuario " + id, id + "@example.com", "3001234567");
+    }
+
+    public static UsuarioContacto contactoSinTelefono(String id) {
+        return new UsuarioContacto(id, "Usuario " + id, id + "@example.com", null);
     }
 
     public static Notificacion notificacion(String id,
@@ -40,7 +47,8 @@ public final class TestFixtures {
                 tipo,
                 AHORA.minusHours(1),
                 null,
-                estado
+                estado,
+                CanalNotificacion.CORREO.name()
         );
     }
 

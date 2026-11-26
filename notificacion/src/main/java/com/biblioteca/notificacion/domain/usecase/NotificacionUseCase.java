@@ -2,9 +2,11 @@ package com.biblioteca.notificacion.domain.usecase;
 
 import com.biblioteca.notificacion.domain.exception.DestinatarioInvalidoException;
 import com.biblioteca.notificacion.domain.exception.EnvioCorreoException;
+import com.biblioteca.notificacion.domain.exception.EnvioSmsException;
 import com.biblioteca.notificacion.domain.exception.EstadoInvalidoException;
 import com.biblioteca.notificacion.domain.exception.LimiteReintentosExcedidoException;
 import com.biblioteca.notificacion.domain.exception.NotificacionNoEncontradaException;
+import com.biblioteca.notificacion.domain.model.CanalNotificacion;
 import com.biblioteca.notificacion.domain.model.ContenidoNotificacion;
 import com.biblioteca.notificacion.domain.model.EventoNotificacion;
 import com.biblioteca.notificacion.domain.model.EstadoNotificacion;
@@ -15,6 +17,7 @@ import com.biblioteca.notificacion.domain.model.PlantillaNotificacion;
 import com.biblioteca.notificacion.domain.model.PlantillaRenderer;
 import com.biblioteca.notificacion.domain.model.PoliticaNotificaciones;
 import com.biblioteca.notificacion.domain.model.ResultadoEnvio;
+import com.biblioteca.notificacion.domain.model.Telefono;
 import com.biblioteca.notificacion.domain.model.TipoNotificacion;
 import com.biblioteca.notificacion.domain.model.UsuarioContacto;
 import com.biblioteca.notificacion.domain.model.gateway.AuthGateway;
@@ -22,6 +25,7 @@ import com.biblioteca.notificacion.domain.model.gateway.CorreoGateway;
 import com.biblioteca.notificacion.domain.model.gateway.HistorialEnvioGateway;
 import com.biblioteca.notificacion.domain.model.gateway.NotificacionGateway;
 import com.biblioteca.notificacion.domain.model.gateway.PlantillaNotificacionGateway;
+import com.biblioteca.notificacion.domain.model.gateway.SmsGateway;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,64 +48,38 @@ public class NotificacionUseCase {
     private final PlantillaNotificacionGateway plantillaGateway;
     private final AuthGateway authGateway;
     private final CorreoGateway correoGateway;
+    private final SmsGateway smsGateway;
     private final PoliticaNotificaciones politica;
     private final Clock clock;
+
+    /**
+     * Envia por el canal configurado como por defecto (SMS en produccion).
+     * Es el punto de entrada de los eventos de otros microservicios y de los
+     * recordatorios.
+     */
+    public Notificacion enviar(String idUsuario,
+                              String destinatario,
+                              String asunto,
+                              String mensaje,
+                              String tipo) {
+        return enviar(idUsuario, destinatario, asunto, mensaje, tipo,
+                politica.canalPorDefecto());
+    }
 
     public Notificacion enviarCorreo(String idUsuario,
                                      String destinatario,
                                      String asunto,
                                      String mensaje,
                                      String tipo) {
-        if (esBlanco(idUsuario)) {
-            throw new IllegalArgumentException("El usuario es obligatorio");
-        }
+        return enviar(idUsuario, destinatario, asunto, mensaje, tipo,
+                CanalNotificacion.CORREO);
+    }
 
-        LocalDateTime ahora = LocalDateTime.now(clock);
-        TipoNotificacion tipoEnum = TipoNotificacion.desde(tipo);
-        Notificacion notificacion = nuevaNotificacion(idUsuario, destinatario, tipoEnum, ahora);
-        String nombre = idUsuario;
-        UsuarioContacto contacto = null;
-
-        if (esBlanco(destinatario)) {
-            RuntimeException errorAuth = null;
-
-            try {
-                contacto = authGateway.buscarUsuario(idUsuario);
-            } catch (RuntimeException exception) {
-                errorAuth = exception;
-            }
-
-            if (contacto == null || esBlanco(contacto.correo())) {
-                completarContenido(
-                        notificacion,
-                        construirContenido(tipoEnum, asunto, mensaje, idUsuario, idUsuario, ahora)
-                );
-                notificacion = notificacionGateway.guardarNotificacion(notificacion);
-                registrarFallo(
-                        notificacion,
-                        "No se pudo resolver el correo del usuario " + idUsuario,
-                        ahora
-                );
-
-                if (errorAuth != null) {
-                    throw errorAuth;
-                }
-
-                throw new DestinatarioInvalidoException(
-                        "No se pudo resolver el correo del usuario " + idUsuario);
-            }
-
-            nombre = esBlanco(contacto.nombre()) ? idUsuario : contacto.nombre();
-            notificacion.setDestinatario(contacto.correo());
-        }
-
-        completarContenido(
-                notificacion,
-                construirContenido(tipoEnum, asunto, mensaje, nombre, idUsuario, ahora)
-        );
-        notificacion = notificacionGateway.guardarNotificacion(notificacion);
-
-        return intentarEnvio(notificacion, ahora);
+    public Notificacion enviarSms(String idUsuario,
+                                   String destinatario,
+                                   String mensaje,
+                                   String tipo) {
+        return enviar(idUsuario, destinatario, null, mensaje, tipo, CanalNotificacion.SMS);
     }
 
     public Notificacion enviarEvento(EventoNotificacion evento) {
@@ -119,7 +97,7 @@ public class NotificacionUseCase {
             mensaje = base + "\nReferencia: " + evento.referenciaId();
         }
 
-        return enviarCorreo(evento.idUsuario(), null, null, mensaje, tipo.name());
+        return enviar(evento.idUsuario(), null, null, mensaje, tipo.name());
     }
 
     public Notificacion enviarPrestamoConfirmado(String idUsuario,
@@ -130,7 +108,7 @@ public class NotificacionUseCase {
                 ? "Tu prestamo con id " + idPrestamo + " fue confirmado correctamente."
                 : mensaje;
 
-        return enviarCorreo(
+        return enviar(
                 idUsuario,
                 destinatario,
                 null,
@@ -147,7 +125,7 @@ public class NotificacionUseCase {
                 ? "El libro con id " + idLibro + " que reservaste ya esta disponible."
                 : mensaje;
 
-        return enviarCorreo(
+        return enviar(
                 idUsuario,
                 destinatario,
                 null,
@@ -164,7 +142,7 @@ public class NotificacionUseCase {
                 ? "Tu prestamo con id " + idPrestamo + " se encuentra vencido."
                 : mensaje;
 
-        return enviarCorreo(
+        return enviar(
                 idUsuario,
                 destinatario,
                 null,
@@ -199,17 +177,31 @@ public class NotificacionUseCase {
                 throw exception;
             }
 
-            if (contacto == null || esBlanco(contacto.correo())) {
+            String canalGuardado = notificacion.getCanal();
+            CanalNotificacion canal = CanalNotificacion.desdeGuardado(canalGuardado);
+            String destino = destinoParaCanal(contacto, canal);
+
+            if (destino == null && canal == CanalNotificacion.SMS) {
+                // Respaldo: sin telefono reintentamos por correo.
+                destino = contacto == null ? null
+                        : (correoUsable(contacto.correo()) ? contacto.correo() : null);
+                canal = CanalNotificacion.CORREO;
+                notificacion.setCanal(canal.name());
+            }
+
+            if (destino == null) {
                 registrarFallo(
                         notificacion,
-                        "No se pudo resolver el correo del usuario " + notificacion.getIdUsuario(),
+                        "No se pudo resolver el destinatario del usuario "
+                                + notificacion.getIdUsuario(),
                         ahora
                 );
                 throw new DestinatarioInvalidoException(
-                        "No se pudo resolver el correo del usuario " + notificacion.getIdUsuario());
+                        "No se pudo resolver el destinatario del usuario "
+                                + notificacion.getIdUsuario());
             }
 
-            notificacion.setDestinatario(contacto.correo());
+            notificacion.setDestinatario(destino);
             notificacion = notificacionGateway.actualizarNotificacion(notificacion);
         }
 
@@ -275,13 +267,108 @@ public class NotificacionUseCase {
         notificacionGateway.eliminarNotificacion(idNotificacion);
     }
 
-    private Notificacion intentarEnvio(Notificacion notificacion, LocalDateTime ahora) {
+    private Notificacion enviar(String idUsuario,
+                                String destinatario,
+                                String asunto,
+                                String mensaje,
+                                String tipo,
+                                CanalNotificacion canalSolicitado) {
+        if (esBlanco(idUsuario)) {
+            throw new IllegalArgumentException("El usuario es obligatorio");
+        }
+
+        CanalNotificacion canal = canalSolicitado == null
+                ? politica.canalPorDefecto()
+                : canalSolicitado;
+        LocalDateTime ahora = LocalDateTime.now(clock);
+        TipoNotificacion tipoEnum = TipoNotificacion.desde(tipo);
+        Notificacion notificacion = nuevaNotificacion(
+                idUsuario, destinatario, tipoEnum, ahora, canal);
+
+        String nombre = idUsuario;
+        UsuarioContacto contacto = null;
+
         try {
-            correoGateway.enviar(
-                    notificacion.getDestinatario(),
-                    notificacion.getAsunto(),
-                    notificacion.getMensaje()
-            );
+            if (canal == CanalNotificacion.SMS) {
+                String telefono = Telefono.normalizar(destinatario, politica.codigoPais());
+
+                if (telefono == null) {
+                    contacto = authGateway.buscarUsuario(idUsuario);
+                    telefono = destinoParaCanal(contacto, CanalNotificacion.SMS);
+                }
+
+                if (telefono != null) {
+                    notificacion.setDestinatario(telefono);
+                } else {
+                    // Respaldo: sin telefono utilizable se intenta por correo.
+                    String correo = correoUsable(destinatario) ? destinatario.trim() : null;
+
+                    if (correo == null && contacto != null) {
+                        correo = contacto.correo();
+                    }
+
+                    if (correo == null) {
+                        throw new DestinatarioInvalidoException(
+                                "El usuario " + idUsuario
+                                        + " no tiene telefono ni correo registrados");
+                    }
+
+                    canal = CanalNotificacion.CORREO;
+                    notificacion.setCanal(canal.name());
+                    notificacion.setDestinatario(correo);
+
+                    if (contacto != null && !esBlanco(contacto.nombre())) {
+                        nombre = contacto.nombre();
+                    }
+
+                    log.warn("Sin telefono para el usuario {}; se enviara por correo",
+                            idUsuario);
+                }
+            } else if (esBlanco(destinatario)) {
+                contacto = authGateway.buscarUsuario(idUsuario);
+
+                if (contacto == null || esBlanco(contacto.correo())) {
+                    throw new DestinatarioInvalidoException(
+                            "No se pudo resolver el correo del usuario " + idUsuario);
+                }
+
+                nombre = esBlanco(contacto.nombre()) ? idUsuario : contacto.nombre();
+                notificacion.setDestinatario(contacto.correo());
+            }
+        } catch (RuntimeException exception) {
+            completarContenido(notificacion, construirContenido(
+                    tipoEnum, asunto, mensaje, nombre, idUsuario, ahora, canal));
+            notificacion = notificacionGateway.guardarNotificacion(notificacion);
+            registrarFallo(notificacion, exception.getMessage(), ahora);
+
+            throw exception;
+        }
+
+        completarContenido(
+                notificacion,
+                construirContenido(tipoEnum, asunto, mensaje, nombre, idUsuario, ahora, canal)
+        );
+        notificacion = notificacionGateway.guardarNotificacion(notificacion);
+
+        return intentarEnvio(notificacion, ahora);
+    }
+
+    private Notificacion intentarEnvio(Notificacion notificacion, LocalDateTime ahora) {
+        CanalNotificacion canal = CanalNotificacion.desdeGuardado(notificacion.getCanal());
+
+        try {
+            if (canal == CanalNotificacion.SMS) {
+                smsGateway.enviar(
+                        notificacion.getDestinatario(),
+                        notificacion.getMensaje()
+                );
+            } else {
+                correoGateway.enviar(
+                        notificacion.getDestinatario(),
+                        notificacion.getAsunto(),
+                        notificacion.getMensaje()
+                );
+            }
 
             notificacion.setEstado(EstadoNotificacion.ENVIADA.name());
             notificacion.setFechaEnvio(ahora);
@@ -289,13 +376,41 @@ public class NotificacionUseCase {
             registrarHistorial(actualizada, ResultadoEnvio.EXITOSO, null, ahora);
 
             return actualizada;
-        } catch (DestinatarioInvalidoException | EnvioCorreoException exception) {
+        } catch (DestinatarioInvalidoException | EnvioCorreoException | EnvioSmsException exception) {
             registrarFallo(notificacion, exception.getMessage(), ahora);
             throw exception;
         } catch (RuntimeException exception) {
             registrarFallo(notificacion, exception.getMessage(), ahora);
-            throw new EnvioCorreoException("Error inesperado al enviar el correo", exception);
+            throw canal == CanalNotificacion.SMS
+                    ? new EnvioSmsException("Error inesperado al enviar el SMS", exception)
+                    : new EnvioCorreoException("Error inesperado al enviar el correo", exception);
         }
+    }
+
+    /**
+     * Destinatario canonico para el canal pedido: E.164 para SMS y correo
+     * electronico para CORREO. Devuelve null cuando el contacto no permite
+     * enviar por ese canal.
+     */
+    private String destinoParaCanal(UsuarioContacto contacto, CanalNotificacion canal) {
+        if (contacto == null) {
+            return null;
+        }
+
+        return canal == CanalNotificacion.SMS
+                ? Telefono.normalizar(contacto.telefono(), politica.codigoPais())
+                : (correoUsable(contacto.correo()) ? contacto.correo() : null);
+    }
+
+    private boolean correoUsable(String correo) {
+        if (esBlanco(correo)) {
+            return false;
+        }
+
+        String limpio = correo.trim();
+        int arroba = limpio.indexOf('@');
+
+        return arroba > 0 && arroba < limpio.length() - 1 && !limpio.contains(" ");
     }
 
     private void registrarHistorial(Notificacion notificacion,
@@ -323,7 +438,8 @@ public class NotificacionUseCase {
     private Notificacion nuevaNotificacion(String idUsuario,
                                            String destinatario,
                                            TipoNotificacion tipo,
-                                           LocalDateTime fecha) {
+                                           LocalDateTime fecha,
+                                           CanalNotificacion canal) {
         String asunto = ContenidoNotificacion.asuntoPorDefecto(tipo);
         String mensaje = ContenidoNotificacion.html(
                 asunto, ContenidoNotificacion.mensajePorDefecto(tipo));
@@ -337,7 +453,8 @@ public class NotificacionUseCase {
                 tipo.name(),
                 fecha,
                 null,
-                EstadoNotificacion.PENDIENTE.name()
+                EstadoNotificacion.PENDIENTE.name(),
+                canal.name()
         );
     }
 
@@ -351,32 +468,40 @@ public class NotificacionUseCase {
                                               String mensaje,
                                               String nombre,
                                               String idUsuario,
-                                              LocalDateTime fecha) {
+                                              LocalDateTime fecha,
+                                              CanalNotificacion canal) {
         PlantillaNotificacion plantilla = plantillaGateway.buscarActivaPorTipo(tipo.name());
         String mensajeBase = esBlanco(mensaje)
                 ? ContenidoNotificacion.mensajePorDefecto(tipo)
                 : mensaje;
 
-        if (plantilla != null) {
-            Map<String, String> variables = new HashMap<>();
-            variables.put("nombre", HtmlUtil.escape(nombre));
-            variables.put("idUsuario", idUsuario == null ? "" : idUsuario);
-            variables.put("mensaje", HtmlUtil.escape(mensajeBase));
-            variables.put("fecha", fecha.toString());
+        Map<String, String> variables = new HashMap<>();
+        variables.put("nombre", HtmlUtil.escape(nombre));
+        variables.put("idUsuario", idUsuario == null ? "" : idUsuario);
+        variables.put("mensaje", HtmlUtil.escape(mensajeBase));
+        variables.put("fecha", fecha.toString());
 
-            return new ContenidoFinal(
-                    PlantillaRenderer.render(plantilla.getAsunto(), variables),
-                    PlantillaRenderer.render(plantilla.getContenido(), variables)
-            );
+        String asuntoFinal = plantilla != null
+                ? PlantillaRenderer.render(plantilla.getAsunto(), variables)
+                : (esBlanco(asunto)
+                        ? ContenidoNotificacion.asuntoPorDefecto(tipo)
+                        : asunto);
+
+        if (canal == CanalNotificacion.SMS) {
+            // El cuerpo del SMS es texto plano: nunca se envia HTML por Brevo.
+            Map<String, String> texto = new HashMap<>();
+            texto.put("nombre", nombre == null ? "" : nombre);
+            texto.put("idUsuario", idUsuario == null ? "" : idUsuario);
+            texto.put("fecha", fecha.toString());
+
+            return new ContenidoFinal(asuntoFinal, PlantillaRenderer.render(mensajeBase, texto));
         }
-
-        String asuntoFinal = esBlanco(asunto)
-                ? ContenidoNotificacion.asuntoPorDefecto(tipo)
-                : asunto;
 
         return new ContenidoFinal(
                 asuntoFinal,
-                ContenidoNotificacion.html(asuntoFinal, mensajeBase)
+                plantilla != null
+                        ? PlantillaRenderer.render(plantilla.getContenido(), variables)
+                        : ContenidoNotificacion.html(asuntoFinal, mensajeBase)
         );
     }
 

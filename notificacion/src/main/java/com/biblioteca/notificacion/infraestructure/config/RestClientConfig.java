@@ -21,4 +21,30 @@ public class RestClientConfig {
                 .requestFactory(requestFactory)
                 .build();
     }
+
+    /**
+     * Cliente de la API de Brevo. La autenticacion va en la cabecera api-key
+     * que exige el proveedor; nunca se imprime en log ni se persiste.
+     */
+    @Bean("brevoRestClient")
+    public RestClient brevoRestClient(NotificacionProperties properties) {
+        int timeout = properties.sms() == null || properties.sms().timeoutSegundos() <= 0
+                ? 10
+                : properties.sms().timeoutSegundos();
+
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(Duration.ofSeconds(timeout));
+        requestFactory.setReadTimeout(Duration.ofSeconds(timeout));
+
+        RestClient.Builder builder = RestClient.builder()
+                .baseUrl("https://api.brevo.com")
+                .requestFactory(requestFactory);
+
+        if (properties.sms() != null && properties.sms().apiKey() != null
+                && !properties.sms().apiKey().isBlank()) {
+            builder.defaultHeader("api-key", properties.sms().apiKey().trim());
+        }
+
+        return builder.build();
+    }
 }

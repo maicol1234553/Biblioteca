@@ -8,7 +8,9 @@ public record NotificacionProperties(
         Reintentos reintentos,
         Job job,
         Recordatorio recordatorio,
-        Servicios servicios
+        Servicios servicios,
+        Sms sms,
+        String canal
 ) {
 
     public record Reintentos(int maximos, long esperaMs) {
@@ -21,5 +23,12 @@ public record NotificacionProperties(
     }
 
     public record Servicios(String authUrl, int timeoutSegundos) {
+    }
+
+    /**
+     * Envio de mensajes de texto por el proveedor Brevo (ex Sendinblue).
+     * Sin api-key configurada el envio SMS queda FALLIDA y es reintentable.
+     */
+    public record Sms(String apiKey, String sender, String codigoPais, int timeoutSegundos) {
     }
 }

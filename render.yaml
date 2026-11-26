@@ -16,6 +16,14 @@ envVarGroups:
         sync: false
       - key: CATALOGO_ADMIN_USUARIO_ID
         value: 8e03853d-7058-40a4-9692-2b5fbf82d47e
+      - key: BREVO_API_KEY
+        sync: false
+      - key: SMS_SENDER
+        value: Biblioteca
+      - key: SMS_PAIS
+        value: "57"
+      - key: NOTIFICACION_CANAL
+        value: "SMS"
 
 services:
   - type: web

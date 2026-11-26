@@ -175,10 +175,10 @@ class RecordatorioUseCaseTest {
         assertEquals(2, procesados.size());
         assertEquals("PROCESADO", devolucion.getEstado());
         assertEquals("PROCESADO", vencido.getEstado());
-        verify(notificacionUseCase).enviarCorreo(
+        verify(notificacionUseCase).enviar(
                 eq("u1"), eq(null), eq(null), contains("proximo a vencer"),
                 eq("DEVOLUCION_PROXIMA"));
-        verify(notificacionUseCase).enviarCorreo(
+        verify(notificacionUseCase).enviar(
                 eq("u2"), eq(null), eq(null), contains("vencido"),
                 eq("PRESTAMO_VENCIDO"));
     }
@@ -191,7 +191,7 @@ class RecordatorioUseCaseTest {
         when(recordatorioGateway.listarPendientesHasta(TestFixtures.AHORA))
                 .thenReturn(List.of(recordatorio));
         doThrow(new RuntimeException("smtp"))
-                .when(notificacionUseCase).enviarCorreo(
+                .when(notificacionUseCase).enviar(
                         anyString(), any(), any(), anyString(), anyString());
         when(recordatorioGateway.actualizarRecordatorio(any()))
                 .thenAnswer(invocation -> invocation.getArgument(0));

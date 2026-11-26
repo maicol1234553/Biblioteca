@@ -41,7 +41,9 @@ class CorreoGatewayImplTest {
                 new NotificacionProperties.Reintentos(3, 2000),
                 new NotificacionProperties.Job(60000),
                 new NotificacionProperties.Recordatorio(1),
-                new NotificacionProperties.Servicios("http://localhost:8081", 5)
+                new NotificacionProperties.Servicios("http://localhost:8081", 5),
+                new NotificacionProperties.Sms("test-key", "Biblioteca", "57", 10),
+                "CORREO"
         );
         gateway = new CorreoGatewayImpl(mailSender, properties);
     }

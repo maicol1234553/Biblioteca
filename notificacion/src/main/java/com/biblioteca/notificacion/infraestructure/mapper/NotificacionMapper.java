@@ -21,7 +21,8 @@ public class NotificacionMapper {
                 data.getTipo(),
                 data.getFechaCreacion(),
                 data.getFechaEnvio(),
-                data.getEstado()
+                data.getEstado(),
+                data.getCanal()
         );
     }
 
@@ -35,7 +36,8 @@ public class NotificacionMapper {
                 notificacion.getTipo(),
                 notificacion.getFechaCreacion(),
                 notificacion.getFechaEnvio(),
-                notificacion.getEstado()
+                notificacion.getEstado(),
+                notificacion.getCanal()
         );
     }
 }

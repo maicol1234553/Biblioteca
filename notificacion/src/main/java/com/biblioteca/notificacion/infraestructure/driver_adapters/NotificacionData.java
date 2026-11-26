@@ -54,4 +54,8 @@ public class NotificacionData {
 
     @Column(name = "estado", length = 30, nullable = false)
     private String estado;
+
+    /** CORREO o SMS. Nulo en filas creadas antes de soportar SMS. */
+    @Column(name = "canal", length = 20)
+    private String canal;
 }

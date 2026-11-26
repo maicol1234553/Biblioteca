@@ -2,6 +2,7 @@ package com.biblioteca.notificacion.infraestructure.entry_points;
 
 import com.biblioteca.notificacion.domain.exception.DestinatarioInvalidoException;
 import com.biblioteca.notificacion.domain.exception.EnvioCorreoException;
+import com.biblioteca.notificacion.domain.exception.EnvioSmsException;
 import com.biblioteca.notificacion.domain.exception.EstadoInvalidoException;
 import com.biblioteca.notificacion.domain.exception.LimiteReintentosExcedidoException;
 import com.biblioteca.notificacion.domain.exception.NotificacionNoEncontradaException;
@@ -72,6 +73,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EnvioCorreoException.class)
     public ResponseEntity<ErrorResponse> errorCorreo(EnvioCorreoException exception) {
         log.warn("Error SMTP: {}", exception.getMessage());
+        return respuesta(HttpStatus.BAD_GATEWAY, exception, Map.of());
+    }
+
+    @ExceptionHandler(EnvioSmsException.class)
+    public ResponseEntity<ErrorResponse> errorSms(EnvioSmsException exception) {
+        log.warn("Error SMS: {}", exception.getMessage());
         return respuesta(HttpStatus.BAD_GATEWAY, exception, Map.of());
     }
 

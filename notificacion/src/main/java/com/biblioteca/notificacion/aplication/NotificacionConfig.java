@@ -1,5 +1,6 @@
 package com.biblioteca.notificacion.aplication;
 
+import com.biblioteca.notificacion.domain.model.CanalNotificacion;
 import com.biblioteca.notificacion.domain.model.PoliticaNotificaciones;
 import com.biblioteca.notificacion.domain.model.gateway.AuthGateway;
 import com.biblioteca.notificacion.domain.model.gateway.CorreoGateway;
@@ -7,6 +8,7 @@ import com.biblioteca.notificacion.domain.model.gateway.HistorialEnvioGateway;
 import com.biblioteca.notificacion.domain.model.gateway.NotificacionGateway;
 import com.biblioteca.notificacion.domain.model.gateway.PlantillaNotificacionGateway;
 import com.biblioteca.notificacion.domain.model.gateway.RecordatorioGateway;
+import com.biblioteca.notificacion.domain.model.gateway.SmsGateway;
 import com.biblioteca.notificacion.domain.usecase.NotificacionUseCase;
 import com.biblioteca.notificacion.domain.usecase.PlantillaUseCase;
 import com.biblioteca.notificacion.domain.usecase.RecordatorioUseCase;
@@ -25,9 +27,19 @@ public class NotificacionConfig {
 
     @Bean
     public PoliticaNotificaciones politicaNotificaciones(NotificacionProperties properties) {
+        NotificacionProperties.Sms sms = properties.sms();
+        String codigoPais = sms == null || sms.codigoPais() == null
+                ? ""
+                : sms.codigoPais().trim();
+        CanalNotificacion canal = properties.canal() == null || properties.canal().isBlank()
+                ? CanalNotificacion.SMS
+                : CanalNotificacion.desde(properties.canal());
+
         return new PoliticaNotificaciones(
                 properties.reintentos().maximos(),
-                properties.recordatorio().diasAnticipacion()
+                properties.recordatorio().diasAnticipacion(),
+                codigoPais,
+                canal
         );
     }
 
@@ -42,6 +54,7 @@ public class NotificacionConfig {
                                                    PlantillaNotificacionGateway plantillaGateway,
                                                    AuthGateway authGateway,
                                                    CorreoGateway correoGateway,
+                                                   SmsGateway smsGateway,
                                                    PoliticaNotificaciones politicaNotificaciones,
                                                    Clock clock) {
         return new NotificacionUseCase(
@@ -50,6 +63,7 @@ public class NotificacionConfig {
                 plantillaGateway,
                 authGateway,
                 correoGateway,
+                smsGateway,
                 politicaNotificaciones,
                 clock
         );
