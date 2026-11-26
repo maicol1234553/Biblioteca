@@ -1,0 +1,500 @@
+{
+    "info":  {
+                 "name":  "Biblioteca Auth - Render",
+                 "description":  "Coleccion de pruebas del microservicio AUTH desplegado en Render.\n\nBase URL: https://biblioteca-auth-maicol.onrender.com\n\nIMPORTANTE:\n- No hay JWT: todos los endpoints /api/** son publicos.\n- Los errores de negocio responden HTTP 200 con texto plano.\n- Las respuestas de objetos son application/json; las de texto son text/plain.\n- El registro genera un correo unico automaticamente en el pre-request.\n- Ejecuta las carpetas en orden: Registro -\u003e Consultas -\u003e Actualizacion -\u003e Login -\u003e Contrasena -\u003e Eliminacion.",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "variable":  [
+                     {
+                         "key":  "baseUrl",
+                         "value":  "https://biblioteca-auth-maicol.onrender.com"
+                     },
+                     {
+                         "key":  "correo",
+                         "value":  "prueba.postman@biblioteca.local"
+                     },
+                     {
+                         "key":  "idUsuario",
+                         "value":  ""
+                     },
+                     {
+                         "key":  "tokenRecuperacion",
+                         "value":  ""
+                     }
+                 ],
+    "item":  [
+                 {
+                     "name":  "01 - Salud",
+                     "item":  [
+                                  {
+                                      "name":  "Health check",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/actuator/health",
+                                                      "description":  "Verifica que el servicio este arriba y conectado a Neon.\n\nRespuesta esperada HTTP 200:\n{\"groups\":[\"liveness\",\"readiness\"],\"status\":\"UP\"}"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027HTTP 200\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027status UP\u0027, () =\u003e pm.expect(pm.response.json().status).to.eql(\u0027UP\u0027));"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "02 - Registro y consultas",
+                     "item":  [
+                                  {
+                                      "name":  "Registrar usuario",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Usuario Postman\",\n  \"correo\": \"{{correo}}\",\n  \"password\": \"Prueba1234\",\n  \"rol\": \"USUARIO\",\n  \"edad\": 25,\n  \"nTelefono\": \"3001234567\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/save",
+                                                      "description":  "Registra un usuario. El idUsuario es opcional (se genera UUID).\n\nRespuesta esperada HTTP 200 (application/json):\n{\n  \"idUsuario\": \"uuid\",\n  \"nombre\": \"Usuario Postman\",\n  \"correo\": \"...\",\n  \"password\": \"$2a$10$...\",\n  \"rol\": \"USUARIO\",\n  \"edad\": 25,\n  \"nTelefono\": \"3001234567\"\n}\n\nErrores esperados (HTTP 200, text/plain):\n- El correo ya estÃ¡ registrado\n- Usuario menor de edad\n- La contraseÃ±a debe tener mÃ­nimo 8 caracteres\n- El nÃºmero telefÃ³nico debe tener 10 dÃ­gitos"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "prerequest",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "const ts = Date.now();",
+                                                                                    "pm.environment.set(\u0027correo\u0027, `prueba.postman.${ts}@biblioteca.local`);"
+                                                                                ]
+                                                                   }
+                                                    },
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027HTTP 200\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "const body = pm.response.json();",
+                                                                                    "pm.test(\u0027idUsuario presente\u0027, () =\u003e pm.expect(body.idUsuario).to.be.a(\u0027string\u0027));",
+                                                                                    "pm.test(\u0027password cifrada con BCrypt\u0027, () =\u003e pm.expect(body.password.startsWith(\u0027$2\u0027)).to.eql(true));",
+                                                                                    "pm.environment.set(\u0027idUsuario\u0027, body.idUsuario);",
+                                                                                    "pm.environment.set(\u0027correo\u0027, body.correo);"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Buscar usuario por ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/id/{{idUsuario}}",
+                                                      "description":  "Respuesta esperada HTTP 200: JSON del usuario.\nSi no existe: HTTP 200, text/plain \"Usuario no encontrado con id: ...\""
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Buscar usuario por correo",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/correo/{{correo}}",
+                                                      "description":  "Respuesta esperada HTTP 200: JSON del usuario.\nSi no existe: HTTP 200, text/plain \"Usuerio no encontrado con correo: ...\" (asi esta en el codigo)."
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Existe usuario por correo",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/existe/{{correo}}",
+                                                      "description":  "Respuesta esperada HTTP 200: true o false (JSON boolean)."
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Estadisticas de usuarios",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/estadisticas",
+                                                      "description":  "Respuesta esperada HTTP 200:\n{\"totalUsuarios\":3,\"usuariosPorRol\":{\"ADMINISTRADOR\":2,\"USUARIO\":1},\"edadPromedio\":26.0}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Registro duplicado",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Duplicado\",\n  \"correo\": \"{{correo}}\",\n  \"password\": \"Prueba1234\",\n  \"rol\": \"USUARIO\",\n  \"edad\": 30,\n  \"nTelefono\": \"3001112233\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/save",
+                                                      "description":  "Ejecutar despues de Registrar usuario (misma carpeta).\nRespuesta esperada HTTP 200: El correo ya está registrado"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "03 - Actualizacion",
+                     "item":  [
+                                  {
+                                      "name":  "Actualizar usuario",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"idUsuario\": \"{{idUsuario}}\",\n  \"nombre\": \"Usuario Postman Actualizado\",\n  \"correo\": \"{{correo}}\",\n  \"password\": \"Prueba1234\",\n  \"rol\": \"USUARIO\",\n  \"edad\": 26,\n  \"nTelefono\": \"3007654321\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/update",
+                                                      "description":  "Debes enviar TODOS los campos (incluido password). Si el password no empieza por $2, se vuelve a cifrar con BCrypt.\n\nRespuesta esperada HTTP 200: JSON actualizado.\nSi el id no existe: HTTP 200, text/plain \"Usuario no encontrado con id: ...\""
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Cambiar rol",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"rol\": \"ADMIN\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/{{idUsuario}}/rol",
+                                                      "description":  "Valores aceptados: ADMINISTRADOR, USUARIO, ADMIN, USER.\n\nRespuesta esperada HTTP 200: JSON con \"rol\":\"ADMINISTRADOR\" o \"USUARIO\".\nSi el id no existe: HTTP 200, text/plain con el error."
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "04 - Login",
+                     "item":  [
+                                  {
+                                      "name":  "Login correcto",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"correo\": \"{{correo}}\",\n  \"password\": \"Prueba1234\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/login",
+                                                      "description":  "NO devuelve JWT. Devuelve texto plano.\n\nRespuesta esperada HTTP 200: Logueo EXITOSO"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027HTTP 200\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027login exitoso\u0027, () =\u003e pm.expect(pm.response.text()).to.eql(\u0027Logueo EXITOSO\u0027));"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Login password incorrecta",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"correo\": \"{{correo}}\",\n  \"password\": \"Incorrecta1\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/login",
+                                                      "description":  "Respuesta esperada HTTP 200: Credenciales invalidas"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Login usuario inexistente",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"correo\": \"noexiste@biblioteca.local\",\n  \"password\": \"Prueba1234\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/login",
+                                                      "description":  "Respuesta esperada HTTP 200: Usuario no encontrado"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "05 - Contrasena",
+                     "item":  [
+                                  {
+                                      "name":  "Cambiar contrasena",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"correo\": \"{{correo}}\",\n  \"passwordActual\": \"Prueba1234\",\n  \"passwordNueva\": \"NuevaClave99\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/cambiar-password",
+                                                      "description":  "Respuesta esperada HTTP 200: ContraseÃ±a actualizada correctamente\nErrores (HTTP 200): La contraseÃ±a actual no es correcta / La contraseÃ±a debe tener mÃ­nimo 8 caracteres"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Login con nueva contrasena",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"correo\": \"{{correo}}\",\n  \"password\": \"NuevaClave99\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/login",
+                                                      "description":  "Ejecutar despues de Cambiar contrasena.\nRespuesta esperada HTTP 200: Logueo EXITOSO"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Recuperar contrasena",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"correo\": \"{{correo}}\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/recuperar-password",
+                                                      "description":  "Respuesta esperada HTTP 200: Si el correo estÃ¡ registrado, enviamos instrucciones de recuperaciÃ³n\n\nEl token NO se devuelve por la API. Se guarda su hash SHA-256 en password_reset_token y el token se escribe en los logs de Render (NotificationGatewayImpl usa consola, no SMTP). Para probar Restablecer, copia el token desde los logs de Render y ponlo en la variable tokenRecuperacion."
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Restablecer contrasena",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"token\": \"{{tokenRecuperacion}}\",\n  \"passwordNueva\": \"ResetClave123\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/restablecer-password",
+                                                      "description":  "Requiere el token real generado por Recuperar contrasena (visible en logs de Render).\n\nRespuesta esperada HTTP 200: ContraseÃ±a actualizada correctamente\nErrores (HTTP 200): Token invÃ¡lido o ya utilizado / El token expirÃ³ / La contraseÃ±a debe tener mÃ­nimo 8 caracteres"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Restablecer con token invalido",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"token\": \"token-invalido\",\n  \"passwordNueva\": \"OtraClave123\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/restablecer-password",
+                                                      "description":  "Respuesta esperada HTTP 200: Token invÃ¡lido o ya utilizado"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "06 - Eliminacion",
+                     "item":  [
+                                  {
+                                      "name":  "Eliminar usuario",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/{{idUsuario}}",
+                                                      "description":  "Respuesta esperada HTTP 200: Usuario eliminado con Ã©xito\nSi no existe: HTTP 200, text/plain con el error."
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Consultar usuario eliminado",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/id/{{idUsuario}}",
+                                                      "description":  "Respuesta esperada HTTP 200: Usuario no encontrado con id: ..."
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "07 - Casos de error",
+                     "item":  [
+                                  {
+                                      "name":  "Registro con edad invalida",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Menor\",\n  \"correo\": \"{{correoMenor}}\",\n  \"password\": \"Prueba1234\",\n  \"rol\": \"USUARIO\",\n  \"edad\": 17,\n  \"nTelefono\": \"3001112233\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/biblioteca/usuario/save",
+                                                      "description":  "Respuesta esperada HTTP 200: Usuario menor de edad"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "prerequest",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "const ts = Date.now();",
+                                                                                    "pm.environment.set(\u0027correoMenor\u0027, `menor.postman.${ts}@biblioteca.local`);"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 }
+             ]
+}

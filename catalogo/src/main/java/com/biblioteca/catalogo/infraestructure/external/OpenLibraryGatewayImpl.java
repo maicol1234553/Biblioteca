@@ -34,18 +34,27 @@ public class OpenLibraryGatewayImpl implements LibroExternoGateway {
     private final RestClient googleBooks;
 
     public OpenLibraryGatewayImpl() {
+        this(
+                crearCliente("https://openlibrary.org"),
+                crearCliente("https://www.googleapis.com")
+        );
+    }
+
+    /**
+     * Constructor para pruebas: permite inyectar clientes HTTP simulados.
+     */
+    OpenLibraryGatewayImpl(RestClient openLibrary, RestClient googleBooks) {
+        this.openLibrary = openLibrary;
+        this.googleBooks = googleBooks;
+    }
+
+    private static RestClient crearCliente(String baseUrl) {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(Duration.ofSeconds(5));
         requestFactory.setReadTimeout(Duration.ofSeconds(8));
 
-        this.openLibrary = RestClient.builder()
-                .baseUrl("https://openlibrary.org")
-                .requestFactory(requestFactory)
-                .defaultHeader(HttpHeaders.USER_AGENT, "biblioteca-catalogo/1.0")
-                .build();
-
-        this.googleBooks = RestClient.builder()
-                .baseUrl("https://www.googleapis.com")
+        return RestClient.builder()
+                .baseUrl(baseUrl)
                 .requestFactory(requestFactory)
                 .defaultHeader(HttpHeaders.USER_AGENT, "biblioteca-catalogo/1.0")
                 .build();

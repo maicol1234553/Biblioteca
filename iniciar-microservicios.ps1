@@ -2,6 +2,32 @@ param(
     [switch]$Detener
 )
 
+# Carga .env para que los procesos hijos (java -jar) hereden los secretos
+# (DATABASE_URL, BREVO_API_KEY, MAIL_FROM, etc.).
+$envFile = Join-Path $PSScriptRoot '.env'
+if (Test-Path $envFile) {
+    foreach ($linea in Get-Content $envFile) {
+        $texto = $linea.Trim()
+        if ($texto -eq '' -or $texto.StartsWith('#')) { continue }
+
+        $separador = $texto.IndexOf('=')
+        if ($separador -le 0) { continue }
+
+        $clave = $texto.Substring(0, $separador).Trim()
+        $valor = $texto.Substring($separador + 1).Trim()
+
+        if ($valor.Length -ge 2 -and
+            (($valor.StartsWith('"') -and $valor.EndsWith('"')) -or
+             ($valor.StartsWith("'") -and $valor.EndsWith("'")))) {
+            $valor = $valor.Substring(1, $valor.Length - 2)
+        }
+
+        [Environment]::SetEnvironmentVariable($clave, $valor, 'Process')
+    }
+
+    Write-Host "Variables cargadas desde $envFile"
+}
+
 $servicios = @(
     @{ Nombre = 'auth';         Directorio = 'C:\BIBLIOTECA\auth';         Jar = 'target\auth-0.0.1-SNAPSHOT.jar';         Puerto = 8081; Argumentos = @() },
     @{ Nombre = 'catalogo';     Directorio = 'C:\BIBLIOTECA\catalogo';     Jar = 'target\catalogo-0.0.1-SNAPSHOT.jar';     Puerto = 8082; Argumentos = @() },

@@ -16,14 +16,27 @@ envVarGroups:
         sync: false
       - key: CATALOGO_ADMIN_USUARIO_ID
         value: 8e03853d-7058-40a4-9692-2b5fbf82d47e
+      # Correo: configura al menos una de estas dos API keys. Render Free
+      # bloquea los puertos SMTP, por lo que SMTP no funciona en plan free.
+      - key: SENDGRID_API_KEY
+        sync: false
       - key: BREVO_API_KEY
         sync: false
-      - key: SMS_SENDER
-        value: Biblioteca
-      - key: SMS_PAIS
-        value: "57"
-      - key: NOTIFICACION_CANAL
-        value: "SMS"
+      - key: MAIL_FROM
+        sync: false
+      # SMTP solo se usa si no hay SENDGRID_API_KEY ni BREVO_API_KEY.
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_SMTP_AUTH
+        value: "true"
+      - key: MAIL_SMTP_STARTTLS
+        value: "true"
 
 services:
   - type: web
@@ -38,6 +51,10 @@ services:
       - fromGroup: biblioteca-config
       - key: MODULE
         value: auth
+      # URL publica del servicio de notificacion (se configura tras el primer
+      # despliegue). Ejemplo: https://biblioteca-notificacion-maicol.onrender.com
+      - key: NOTIFICACION_URL
+        sync: false
       - key: JAVA_OPTS
         value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -Xss512k
       - key: SPRING_JPA_SHOW_SQL
@@ -72,6 +89,9 @@ services:
       - fromGroup: biblioteca-config
       - key: MODULE
         value: notificacion
+      # URL publica del servicio auth para resolver correos por idUsuario.
+      - key: AUTH_URL
+        sync: false
       # AUTH_URL se configura DESPUES del primer despliegue con la URL real
       # del servicio auth en Render (no se inventa aqui).
       - key: JAVA_OPTS

@@ -22,6 +22,4 @@ public class Notificacion {
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaEnvio;
     private String estado;
-    /** CORREO o SMS. Nulo en filas creadas antes de soportar SMS. */
-    private String canal;
 }

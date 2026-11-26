@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 public record DevolverPrestamoRequest(
         @NotBlank(message = "La condicion del ejemplar es obligatoria")
         @Pattern(
-                regexp = "(?i)BUENO|DANADO|DAÑADO|PERDIDO|BUEN_ESTADO",
+                regexp = "(?iu)BUENO|DANADO|DAÑADO|PERDIDO|BUEN_ESTADO",
                 message = "La condicion debe ser BUENO, DANADO o PERDIDO"
         )
         String estadoEjemplar,

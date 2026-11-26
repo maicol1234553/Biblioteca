@@ -15,7 +15,6 @@ import com.biblioteca.notificacion.domain.model.gateway.CorreoGateway;
 import com.biblioteca.notificacion.domain.model.gateway.HistorialEnvioGateway;
 import com.biblioteca.notificacion.domain.model.gateway.NotificacionGateway;
 import com.biblioteca.notificacion.domain.model.gateway.PlantillaNotificacionGateway;
-import com.biblioteca.notificacion.domain.model.gateway.SmsGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,8 +50,6 @@ class NotificacionUseCaseTest {
     private AuthGateway authGateway;
     @Mock
     private CorreoGateway correoGateway;
-    @Mock
-    private SmsGateway smsGateway;
 
     private NotificacionUseCase useCase;
 
@@ -64,7 +61,6 @@ class NotificacionUseCaseTest {
                 plantillaGateway,
                 authGateway,
                 correoGateway,
-                smsGateway,
                 TestFixtures.POLITICA,
                 TestFixtures.CLOCK
         );
@@ -266,8 +262,7 @@ class NotificacionUseCaseTest {
     void reintentarNotificacion_rechazaYaEnviada() {
         Notificacion notificacion = new Notificacion(
                 "n1", "u1", "user@example.com", "Asunto", "<p>m</p>", "GENERICA",
-                TestFixtures.AHORA.minusHours(1), TestFixtures.AHORA.minusMinutes(5), "ENVIADA",
-                "CORREO");
+                TestFixtures.AHORA.minusHours(1), TestFixtures.AHORA.minusMinutes(5), "ENVIADA");
         when(notificacionGateway.buscarNotificacionPorId("n1")).thenReturn(notificacion);
 
         assertThrows(EstadoInvalidoException.class,

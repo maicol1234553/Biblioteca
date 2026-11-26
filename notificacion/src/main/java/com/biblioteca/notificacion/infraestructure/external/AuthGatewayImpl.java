@@ -45,8 +45,7 @@ public class AuthGatewayImpl implements AuthGateway {
             return new UsuarioContacto(
                     id,
                     texto(usuario, "nombre"),
-                    texto(usuario, "correo"),
-                    texto(usuario, "nTelefono")
+                    texto(usuario, "correo")
             );
         } catch (RestClientResponseException exception) {
             if (exception.getStatusCode().value() == 404) {

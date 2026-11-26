@@ -166,9 +166,6 @@
 							<goal>check</goal>
 						</goals>
 						<configuration>
-							<includes>
-								<include>com/biblioteca/prestamos/domain/usecase/**</include>
-							</includes>
 							<rules>
 								<rule>
 									<element>BUNDLE</element>
@@ -176,7 +173,7 @@
 										<limit>
 											<counter>LINE</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.90</minimum>
+											<minimum>0.95</minimum>
 										</limit>
 									</limits>
 								</rule>

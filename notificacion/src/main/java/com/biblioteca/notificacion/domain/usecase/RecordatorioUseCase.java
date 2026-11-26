@@ -122,7 +122,7 @@ public class RecordatorioUseCase {
                             + " esta proximo a vencer.";
 
             try {
-                notificacionUseCase.enviar(
+                notificacionUseCase.enviarCorreo(
                         recordatorio.getIdUsuario(),
                         null,
                         null,

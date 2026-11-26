@@ -13,8 +13,7 @@ public record NotificacionResponse(
         String tipo,
         LocalDateTime fechaCreacion,
         LocalDateTime fechaEnvio,
-        String estado,
-        String canal
+        String estado
 ) {
 
     public static NotificacionResponse from(Notificacion notificacion) {
@@ -27,8 +26,7 @@ public record NotificacionResponse(
                 notificacion.getTipo(),
                 notificacion.getFechaCreacion(),
                 notificacion.getFechaEnvio(),
-                notificacion.getEstado(),
-                notificacion.getCanal()
+                notificacion.getEstado()
         );
     }
 }

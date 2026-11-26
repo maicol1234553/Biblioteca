@@ -8,6 +8,7 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL:?Define DATABASE_URL en el archivo .env}
       DATABASE_URL_UNPOOLED: ${DATABASE_URL_UNPOOLED:-}
+      NOTIFICACION_URL: http://notificacion:8084
     ports:
       - "8081:8081"
     restart: unless-stopped
@@ -31,15 +32,28 @@ services:
       DATABASE_URL: ${DATABASE_URL:?Define DATABASE_URL en el archivo .env}
       DATABASE_URL_UNPOOLED: ${DATABASE_URL_UNPOOLED:-}
       AUTH_URL: http://auth:8081
-      MAIL_HOST: ${MAIL_HOST:-localhost}
+      # Si hay API key HTTP se usa esa; si no, SMTP local (MailHog).
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY:-}
+      BREVO_API_KEY: ${BREVO_API_KEY:-}
+      MAIL_HOST: ${MAIL_HOST:-mailhog}
       MAIL_PORT: ${MAIL_PORT:-1025}
       MAIL_USERNAME: ${MAIL_USERNAME:-}
       MAIL_PASSWORD: ${MAIL_PASSWORD:-}
       MAIL_FROM: ${MAIL_FROM:-no-reply@biblioteca.local}
       MAIL_SMTP_AUTH: ${MAIL_SMTP_AUTH:-false}
       MAIL_SMTP_STARTTLS: ${MAIL_SMTP_STARTTLS:-false}
+    depends_on:
+      - mailhog
     ports:
       - "8084:8084"
+    restart: unless-stopped
+
+  # Bandeja local para ver los correos: http://localhost:8025
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    ports:
+      - "1025:1025"
+      - "8025:8025"
     restart: unless-stopped
 
   prestamos:

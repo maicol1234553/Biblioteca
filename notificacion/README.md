@@ -195,9 +195,23 @@ Ejemplo:
 Si no existe una plantilla activa, se genera un HTML por defecto con el mismo
 estilo visual. Los valores interpolados se escapan para evitar inyeccion HTML.
 
-## Correo SMTP
+## Envio de correo (API HTTP o SMTP)
 
-Configuracion por variables de entorno (sin credenciales en el codigo):
+En Render Free los puertos SMTP (25, 465 y 587) estan bloqueados. Por eso el
+adaptador usa primero una API HTTP si existe alguna de estas variables:
+
+```properties
+# SendGrid (Twilio). La clave empieza por "SG." (no por "SK...").
+SENDGRID_API_KEY=
+# Brevo. La clave empieza por "xkeysib-".
+BREVO_API_KEY=
+MAIL_FROM=no-reply@tudominio.com
+```
+
+Si `SENDGRID_API_KEY` esta configurada se usa SendGrid; si no, `BREVO_API_KEY`
+usa Brevo. Si no hay ninguna de las dos, se usa SMTP.
+
+Configuracion SMTP (MailHog local o planes pagos):
 
 ```properties
 MAIL_HOST=

@@ -1,0 +1,297 @@
+package com.biblioteca.catalogo.infraestructure.entry_points;
+
+import com.biblioteca.catalogo.domain.exception.EjemplarNoEncontradoException;
+import com.biblioteca.catalogo.domain.model.Ejemplar;
+import com.biblioteca.catalogo.domain.usecase.EjemplarUseCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class EjemplarControllerTest {
+
+    @Mock
+    private EjemplarUseCase ejemplarUseCase;
+
+    @InjectMocks
+    private EjemplarController ejemplarController;
+
+    private Ejemplar ejemplar;
+
+    @BeforeEach
+    void setUp() {
+        ejemplar = crearEjemplar();
+    }
+
+    // LISTAR EJEMPLARES
+
+    @Test
+    void listarEjemplares_RetornaListaYEstado200() {
+        // Arrange
+        List<Ejemplar> esperados = List.of(ejemplar);
+
+        when(ejemplarUseCase.listarEjemplares())
+                .thenReturn(esperados);
+
+        // Act
+        ResponseEntity<List<Ejemplar>> respuesta =
+                ejemplarController.listarEjemplares();
+
+        // Assert
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertSame(esperados, respuesta.getBody());
+        verify(ejemplarUseCase).listarEjemplares();
+    }
+
+    // LISTAR EJEMPLARES DISPONIBLES
+
+    @Test
+    void listarEjemplaresDisponibles_RetornaListaYEstado200() {
+        // Arrange
+        List<Ejemplar> esperados = List.of(ejemplar);
+
+        when(ejemplarUseCase.listarEjemplaresDisponibles())
+                .thenReturn(esperados);
+
+        // Act
+        ResponseEntity<List<Ejemplar>> respuesta =
+                ejemplarController.listarEjemplaresDisponibles();
+
+        // Assert
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertSame(esperados, respuesta.getBody());
+        verify(ejemplarUseCase).listarEjemplaresDisponibles();
+    }
+
+    // LISTAR EJEMPLARES POR LIBRO
+
+    @Test
+    void listarEjemplaresPorLibro_IdValido_RetornaListaYEstado200() {
+        // Arrange
+        String idLibro = "LIB-1";
+        List<Ejemplar> esperados = List.of(ejemplar);
+
+        when(ejemplarUseCase.listarEjemplaresPorLibro(idLibro))
+                .thenReturn(esperados);
+
+        // Act
+        ResponseEntity<List<Ejemplar>> respuesta =
+                ejemplarController.listarEjemplaresPorLibro(idLibro);
+
+        // Assert
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertSame(esperados, respuesta.getBody());
+        verify(ejemplarUseCase).listarEjemplaresPorLibro(idLibro);
+    }
+
+    // BUSCAR EJEMPLAR POR ID
+
+    @Test
+    void buscarEjemplarPorId_EjemplarExiste_RetornaEjemplarYEstado200() {
+        // Arrange
+        String id = "EJ-1";
+
+        when(ejemplarUseCase.buscarEjemplarPorId(id))
+                .thenReturn(ejemplar);
+
+        // Act
+        ResponseEntity<Ejemplar> respuesta =
+                ejemplarController.buscarEjemplarPorId(id);
+
+        // Assert
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertSame(ejemplar, respuesta.getBody());
+        verify(ejemplarUseCase).buscarEjemplarPorId(id);
+    }
+
+    @Test
+    void buscarEjemplarPorId_EjemplarNoExiste_PropagaExcepcion() {
+        // Arrange
+        String id = "EJ-INEXISTENTE";
+
+        when(ejemplarUseCase.buscarEjemplarPorId(id))
+                .thenThrow(new EjemplarNoEncontradoException(
+                        "Ejemplar no encontrado con id: " + id
+                ));
+
+        // Act
+        EjemplarNoEncontradoException excepcion = assertThrows(
+                EjemplarNoEncontradoException.class,
+                () -> ejemplarController.buscarEjemplarPorId(id)
+        );
+
+        // Assert
+        assertEquals(
+                "Ejemplar no encontrado con id: " + id,
+                excepcion.getMessage()
+        );
+        verify(ejemplarUseCase).buscarEjemplarPorId(id);
+    }
+
+    // GUARDAR EJEMPLAR
+
+    @Test
+    void guardarEjemplar_RequestValido_CreaEjemplarYRetornaEstado201() {
+        // Arrange
+        EjemplarController.EjemplarRequest request =
+                crearRequestValido();
+
+        when(ejemplarUseCase.guardarEjemplar(any(Ejemplar.class)))
+                .thenReturn(ejemplar);
+
+        ArgumentCaptor<Ejemplar> captor =
+                ArgumentCaptor.forClass(Ejemplar.class);
+
+        // Act
+        ResponseEntity<Ejemplar> respuesta =
+                ejemplarController.guardarEjemplar(request);
+
+        // Assert
+        assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
+        assertSame(ejemplar, respuesta.getBody());
+
+        verify(ejemplarUseCase).guardarEjemplar(captor.capture());
+
+        Ejemplar enviadoAlUseCase = captor.getValue();
+
+        assertEquals(request.idLibro(), enviadoAlUseCase.getIdLibro());
+        assertEquals(
+                request.codigoInventario(),
+                enviadoAlUseCase.getCodigoInventario()
+        );
+        assertEquals(request.ubicacion(), enviadoAlUseCase.getUbicacion());
+        assertEquals(request.estado(), enviadoAlUseCase.getEstado());
+        assertEquals(
+                request.fechaAdquisicion(),
+                enviadoAlUseCase.getFechaAdquisicion()
+        );
+        assertEquals(
+                request.observaciones(),
+                enviadoAlUseCase.getObservaciones()
+        );
+    }
+
+    // ACTUALIZAR EJEMPLAR
+
+    @Test
+    void actualizarEjemplar_RequestValido_PasaIdYEjemplarAlUseCase() {
+        // Arrange
+        String id = "EJ-1";
+        EjemplarController.EjemplarRequest request =
+                crearRequestValido();
+
+        when(ejemplarUseCase.actualizarEjemplar(
+                eq(id),
+                any(Ejemplar.class)
+        )).thenReturn(ejemplar);
+
+        ArgumentCaptor<Ejemplar> captor =
+                ArgumentCaptor.forClass(Ejemplar.class);
+
+        // Act
+        ResponseEntity<Ejemplar> respuesta =
+                ejemplarController.actualizarEjemplar(id, request);
+
+        // Assert
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertSame(ejemplar, respuesta.getBody());
+
+        verify(ejemplarUseCase)
+                .actualizarEjemplar(eq(id), captor.capture());
+
+        Ejemplar enviadoAlUseCase = captor.getValue();
+
+        assertEquals(request.idLibro(), enviadoAlUseCase.getIdLibro());
+        assertEquals(
+                request.codigoInventario(),
+                enviadoAlUseCase.getCodigoInventario()
+        );
+        assertEquals(request.ubicacion(), enviadoAlUseCase.getUbicacion());
+        assertEquals(request.estado(), enviadoAlUseCase.getEstado());
+        assertEquals(
+                request.fechaAdquisicion(),
+                enviadoAlUseCase.getFechaAdquisicion()
+        );
+        assertEquals(
+                request.observaciones(),
+                enviadoAlUseCase.getObservaciones()
+        );
+    }
+
+    // ELIMINAR EJEMPLAR
+
+    @Test
+    void eliminarEjemplar_EjemplarExiste_RetornaMensajeYEstado200() {
+        // Arrange
+        String id = "EJ-1";
+
+        // Act
+        ResponseEntity<String> respuesta =
+                ejemplarController.eliminarEjemplar(id);
+
+        // Assert
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals("Ejemplar eliminado con exito", respuesta.getBody());
+        verify(ejemplarUseCase).eliminarEjemplar(id);
+    }
+
+    @Test
+    void eliminarEjemplar_EjemplarNoExiste_PropagaExcepcion() {
+        // Arrange
+        String id = "EJ-INEXISTENTE";
+
+        doThrow(new EjemplarNoEncontradoException(
+                "Ejemplar no encontrado con id: " + id
+        )).when(ejemplarUseCase).eliminarEjemplar(id);
+
+        // Act
+        EjemplarNoEncontradoException excepcion = assertThrows(
+                EjemplarNoEncontradoException.class,
+                () -> ejemplarController.eliminarEjemplar(id)
+        );
+
+        // Assert
+        assertEquals(
+                "Ejemplar no encontrado con id: " + id,
+                excepcion.getMessage()
+        );
+        verify(ejemplarUseCase).eliminarEjemplar(id);
+    }
+
+    private Ejemplar crearEjemplar() {
+        Ejemplar nuevoEjemplar = new Ejemplar();
+        nuevoEjemplar.setIdEjemplar("EJ-1");
+        nuevoEjemplar.setIdLibro("LIB-1");
+        nuevoEjemplar.setCodigoInventario("INV-001");
+        nuevoEjemplar.setUbicacion("Estante A");
+        nuevoEjemplar.setEstado("DISPONIBLE");
+        nuevoEjemplar.setFechaAdquisicion(LocalDate.of(2024, 1, 15));
+        nuevoEjemplar.setObservaciones("Buen estado");
+        return nuevoEjemplar;
+    }
+
+    private EjemplarController.EjemplarRequest crearRequestValido() {
+        return new EjemplarController.EjemplarRequest(
+                "LIB-1",
+                "INV-001",
+                "Estante A",
+                "DISPONIBLE",
+                LocalDate.of(2024, 1, 15),
+                "Buen estado"
+        );
+    }
+}

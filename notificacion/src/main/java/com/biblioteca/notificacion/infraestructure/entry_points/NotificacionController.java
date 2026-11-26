@@ -8,7 +8,6 @@ import com.biblioteca.notificacion.domain.usecase.NotificacionUseCase;
 import com.biblioteca.notificacion.domain.usecase.RecordatorioUseCase;
 import com.biblioteca.notificacion.infraestructure.entry_points.dto.AvisoVencidoRequest;
 import com.biblioteca.notificacion.infraestructure.entry_points.dto.EnviarCorreoRequest;
-import com.biblioteca.notificacion.infraestructure.entry_points.dto.EnviarSmsRequest;
 import com.biblioteca.notificacion.infraestructure.entry_points.dto.EventoNotificacionRequest;
 import com.biblioteca.notificacion.infraestructure.entry_points.dto.HistorialEnvioResponse;
 import com.biblioteca.notificacion.infraestructure.entry_points.dto.LibroDisponibleRequest;
@@ -47,24 +46,6 @@ public class NotificacionController {
                 request.idUsuario(),
                 request.destinatario(),
                 request.asunto(),
-                request.mensaje(),
-                request.tipo()
-        );
-
-        return new ResponseEntity<>(NotificacionResponse.from(notificacion), HttpStatus.CREATED);
-    }
-
-    /**
-     * Envio directo por SMS (Brevo). Si el usuario no tiene telefono se
-     * responde 400 y la notificacion queda FALLIDA y reintentable.
-     */
-    @PostMapping("/enviar-sms")
-    public ResponseEntity<NotificacionResponse> enviarSms(
-            @Valid @RequestBody EnviarSmsRequest request) {
-
-        Notificacion notificacion = notificacionUseCase.enviarSms(
-                request.idUsuario(),
-                request.destinatario(),
                 request.mensaje(),
                 request.tipo()
         );

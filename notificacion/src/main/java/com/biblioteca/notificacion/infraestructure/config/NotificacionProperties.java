@@ -9,8 +9,7 @@ public record NotificacionProperties(
         Job job,
         Recordatorio recordatorio,
         Servicios servicios,
-        Sms sms,
-        String canal
+        CorreoApi correoApi
 ) {
 
     public record Reintentos(int maximos, long esperaMs) {
@@ -26,9 +25,17 @@ public record NotificacionProperties(
     }
 
     /**
-     * Envio de mensajes de texto por el proveedor Brevo (ex Sendinblue).
-     * Sin api-key configurada el envio SMS queda FALLIDA y es reintentable.
+     * Envio de correo por API HTTP (funciona en Render Free, donde los puertos
+     * SMTP estan bloqueados). Si no hay ninguna api-key, se usa SMTP.
+     *
+     * - SENDGRID_API_KEY: clave de SendGrid (Twilio). Empieza por "SG.".
+     * - BREVO_API_KEY: clave de Brevo. Empieza por "xkeysib-".
+     *
+     * SendGrid tiene prioridad si ambas estan configuradas.
      */
-    public record Sms(String apiKey, String sender, String codigoPais, int timeoutSegundos) {
+    public record CorreoApi(String sendgridApiKey,
+                            String sendgridUrl,
+                            String brevoApiKey,
+                            String brevoUrl) {
     }
 }
