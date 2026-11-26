@@ -63,7 +63,14 @@ public class NotificationGatewayImpl implements NotificationGateway {
             throw new IllegalArgumentException("El telefono es obligatorio para envio de SMS");
         }
         try {
+            // Normalizar telefono: si viene sin prefijo +, se asume Colombia (+57)
+            String telefonoNormalizado = telefono;
+            if (!telefonoNormalizado.startsWith("+")) {
+                telefonoNormalizado = "+57" + telefonoNormalizado;
+            }
+
             MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+            body.add("telefono", telefonoNormalizado);
             body.add("mensaje", mensaje);
             body.add("tipo", "RECUPERACION_PASSWORD");
             body.add("idUsuario", "internal");
