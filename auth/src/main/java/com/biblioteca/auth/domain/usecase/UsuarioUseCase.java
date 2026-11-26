@@ -78,6 +78,18 @@ public class UsuarioUseCase {
         usuario.setPassword(encrypterGateway.encrypt(passwordNueva));
         usuarioGateway.actualizarUsuario(usuario);
 
+        // Notificación de confirmación: contraseña cambiada
+        notificationGateway.enviarCorreo(
+                usuario.getCorreo(),
+                "Contraseña cambiada",
+                "Tu contraseña ha sido cambiada correctamente."
+        );
+
+        // También por SMS si tiene teléfono
+        notificationGateway.enviarSms(usuario.getNTelefono(),
+                "Tu contraseña ha sido cambiada correctamente."
+        );
+
         return "Contraseña actualizada correctamente";
     }
 
@@ -102,9 +114,15 @@ public class UsuarioUseCase {
 
         passwordResetTokenGateway.guardarToken(registro);
 
+        // Enviar por correo (siempre)
         notificationGateway.enviarCorreo(
                 correo,
                 "Recuperación de contraseña",
+                "Tu código de recuperación es: " + token + ". Expira en " + MINUTOS_VIGENCIA_TOKEN + " minutos."
+        );
+
+        // Enviar por SMS si el usuario tiene teléfono registrado (validado por validarUsuario)
+        notificationGateway.enviarSms(usuario.getNTelefono(),
                 "Tu código de recuperación es: " + token + ". Expira en " + MINUTOS_VIGENCIA_TOKEN + " minutos."
         );
 
@@ -139,6 +157,18 @@ public class UsuarioUseCase {
 
         registro.setUsado(true);
         passwordResetTokenGateway.actualizarToken(registro);
+
+        // Notificación de confirmación: contraseña restablecida
+        notificationGateway.enviarCorreo(
+                usuario.getCorreo(),
+                "Contraseña restablecida",
+                "Tu contraseña ha sido actualizada correctamente."
+        );
+
+        // También por SMS si tiene teléfono
+        notificationGateway.enviarSms(usuario.getNTelefono(),
+                "Tu contraseña ha sido actualizada correctamente."
+        );
 
         return "Contraseña actualizada correctamente";
     }
