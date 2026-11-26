@@ -78,14 +78,7 @@ public class UsuarioUseCase {
         usuario.setPassword(encrypterGateway.encrypt(passwordNueva));
         usuarioGateway.actualizarUsuario(usuario);
 
-        // Notificación de confirmación: contraseña cambiada
-        notificationGateway.enviarCorreo(
-                usuario.getCorreo(),
-                "Contraseña cambiada",
-                "Tu contraseña ha sido cambiada correctamente."
-        );
-
-        // También por SMS si tiene teléfono
+        // Notificación por SMS: contraseña cambiada
         notificationGateway.enviarSms(usuario.getNTelefono(),
                 "Tu contraseña ha sido cambiada correctamente."
         );
@@ -94,7 +87,7 @@ public class UsuarioUseCase {
     }
 
     public String solicitarRecuperacionPassword(String correo) {
-        String respuesta = "Si el correo está registrado, enviamos instrucciones de recuperación";
+        String respuesta = "Si el usuario está registrado, enviamos instrucciones de recuperación por SMS";
 
         Usuario usuario = usuarioGateway.buscarUsuarioPorCorreo(correo);
 
@@ -114,14 +107,7 @@ public class UsuarioUseCase {
 
         passwordResetTokenGateway.guardarToken(registro);
 
-        // Enviar por correo (siempre)
-        notificationGateway.enviarCorreo(
-                correo,
-                "Recuperación de contraseña",
-                "Tu código de recuperación es: " + token + ". Expira en " + MINUTOS_VIGENCIA_TOKEN + " minutos."
-        );
-
-        // Enviar por SMS si el usuario tiene teléfono registrado (validado por validarUsuario)
+        // Enviar por SMS (el usuario debe tener nTelefono, validado por validarUsuario)
         notificationGateway.enviarSms(usuario.getNTelefono(),
                 "Tu código de recuperación es: " + token + ". Expira en " + MINUTOS_VIGENCIA_TOKEN + " minutos."
         );
@@ -158,14 +144,7 @@ public class UsuarioUseCase {
         registro.setUsado(true);
         passwordResetTokenGateway.actualizarToken(registro);
 
-        // Notificación de confirmación: contraseña restablecida
-        notificationGateway.enviarCorreo(
-                usuario.getCorreo(),
-                "Contraseña restablecida",
-                "Tu contraseña ha sido actualizada correctamente."
-        );
-
-        // También por SMS si tiene teléfono
+        // Notificación por SMS: contraseña restablecida
         notificationGateway.enviarSms(usuario.getNTelefono(),
                 "Tu contraseña ha sido actualizada correctamente."
         );
